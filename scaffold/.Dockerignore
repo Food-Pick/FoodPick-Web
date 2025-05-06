@@ -1,0 +1,26 @@
+# node_modules는 OS 환경에 따라 달라서 무조건 컨테이너에서 새로 설치
+node_modules
+
+# Next.js 빌드 결과물
+.next
+
+# 로그 파일
+npm-debug.log
+yarn-debug.log
+yarn-error.log
+
+# 환경 설정
+.env
+.env.local
+.env.*.local
+
+# macOS 특유의 파일
+.DS_Store
+
+# Git 관련 (필요 시)
+.git
+.gitignore
+
+# IDE 설정 파일 (협업 시 충돌 방지)
+.vscode
+.idea

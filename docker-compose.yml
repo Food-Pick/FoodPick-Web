@@ -1,0 +1,15 @@
+version: "3.9"
+
+services:
+  frontend:
+    container_name: foodpick-frontend
+    build:
+      context: ./scaffold
+      dockerfile: Dockerfile
+    volumes:
+      - ./foodpick-nextjs-front:/app
+    working_dir: /app
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=development

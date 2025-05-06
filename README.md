@@ -5,7 +5,11 @@
 협업시 환경셋업의 편리성을 위하여 Next.js 기반의 프로네젝트를 
 Docker 환경에서 자동 생성/실행되도록 구성했습니다.
 
+
+
 ---
+
+
 
 ## 🧱 기술 스택
 
@@ -14,7 +18,11 @@ Docker 환경에서 자동 생성/실행되도록 구성했습니다.
 - **Node.js 20**
 - **Docker / Docker Compose**
 
+
+
 ---
+
+
 
 ## ⚙️ 프로젝트 구조
 
@@ -30,7 +38,11 @@ foodpick-web/
  - foodpick-nextjs-front/: 실제 Next.js 프로젝트가 생성되는 위치
  - scaffold/: Dockerfile 및 entrypoint 스크립트 보관
 
+
+
 ---
+
+
 
 ## ✅ 특징
 
@@ -46,7 +58,11 @@ docker compose up
 
 package.json이 존재하면 자동 생성은 생략하고 바로 실행합니다.
 
+
+
 ---
+
+
 
 ## 📌 주의
 

@@ -5,7 +5,7 @@ FROM node:20
 WORKDIR /app
 
 # 엔트리포인트 복사
-COPY entrypoint.sh /entrypoint.sh
+COPY scaffold/entrypoint.sh /entrypoint.sh
 RUN chmod +x /entrypoint.sh
 
 # Next.js 개발 포트

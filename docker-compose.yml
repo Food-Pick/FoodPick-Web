@@ -4,8 +4,8 @@ services:
   frontend:
     container_name: foodpick-frontend
     build:
-      context: ./scaffold
-      dockerfile: Dockerfile
+      context: .
+      dockerfile: scaffold/Dockerfile
     volumes:
       - ./foodpick-nextjs-front:/app
     working_dir: /app

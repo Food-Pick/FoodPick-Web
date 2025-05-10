@@ -7,6 +7,7 @@ import RecommendRestaurants from './components/RecommendRestaurants';
 import { trendingHashtags } from './data/hashtags';
 import { videoList } from './data/videoList';
 import SnsVideoSection from './components/SnsVideoSection';
+import LocationModal from './components/LocationModal';
 
 
 // 주소 파싱 함수
@@ -25,7 +26,9 @@ const parseAddress = (data: any): string => {
 
 export default function Home() {
   const [currentLocation, setCurrentLocation] = useState<string>('위치 정보를 가져오는 중...');
+  const [locationType, setLocationType] = useState<'current' | 'manual'>('current');
   const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [showLocationModal, setShowLocationModal] = useState(false);
 
   useEffect(() => {
     // 현재 위치 가져오기
@@ -35,7 +38,6 @@ export default function Home() {
           async (position) => {
             try {
               const { latitude, longitude } = position.coords;
-              console.log(latitude, longitude);
               // 위도, 경도를 주소로 변환
               const response = await fetch(
                 `https://nominatim.openstreetmap.org/reverse?format=json&lat=${latitude}&lon=${longitude}&zoom=18&addressdetails=1`
@@ -43,22 +45,27 @@ export default function Home() {
               const data = await response.json();
               if (data.address) {
                 setCurrentLocation(parseAddress(data));
+                setLocationType('current');
               } else {
                 setCurrentLocation('위치 정보를 가져올 수 없습니다.');
+                setLocationType('current');
               }
             } catch (error) {
               setCurrentLocation('위치 정보를 가져오는데 실패했습니다.');
+              setLocationType('current');
             } finally {
               setIsLoading(false);
             }
           },
           (error) => {
             setCurrentLocation('위치 정보 접근이 거부되었습니다.');
+            setLocationType('current');
             setIsLoading(false);
           }
         );
       } else {
         setCurrentLocation('이 브라우저에서는 위치 정보를 지원하지 않습니다.');
+        setLocationType('current');
         setIsLoading(false);
       }
     };
@@ -84,35 +91,12 @@ export default function Home() {
           <div className={styles.locationRow}>
             <p className={styles.location}>
               <FiCrosshair size={16}/>
-              현재 위치: {isLoading ? '위치 정보를 가져오는 중...' : currentLocation}
+              {locationType === 'current' ? '현재 위치: ' : '지정 위치: '}
+              {isLoading ? '위치 정보를 가져오는 중...' : currentLocation}
             </p>
-            <button className={styles.locationBtn} onClick={() => {
-              setIsLoading(true);
-              navigator.geolocation.getCurrentPosition(
-                async (position) => {
-                  try {
-                    const { latitude, longitude } = position.coords;
-                    const response = await fetch(
-                      `https://nominatim.openstreetmap.org/reverse?format=json&lat=${latitude}&lon=${longitude}&zoom=18&addressdetails=1`
-                    );
-                    const data = await response.json();
-                    if (data.address) {
-                      setCurrentLocation(parseAddress(data));
-                    } else {
-                      setCurrentLocation('위치 정보를 가져올 수 없습니다.');
-                    }
-                  } catch (error) {
-                    setCurrentLocation('위치 정보를 가져오는데 실패했습니다.');
-                  } finally {
-                    setIsLoading(false);
-                  }
-                },
-                (error) => {
-                  setCurrentLocation('위치 정보 접근이 거부되었습니다.');
-                  setIsLoading(false);
-                }
-              );
-            }}>위치 변경하기</button>
+            <button className={styles.locationBtn} onClick={() => setShowLocationModal(true)}>
+              위치 변경하기
+            </button>
           </div>
         </div>  
       </section>
@@ -150,6 +134,17 @@ export default function Home() {
 
       {/* SNS 인기 맛집 영상 */}
       <SnsVideoSection videoList={videoList}/>
+
+      {showLocationModal && (
+        <LocationModal
+          onClose={() => setShowLocationModal(false)}
+          onSelect={(address) => {
+            setCurrentLocation(address);
+            setLocationType('manual');
+            setIsLoading(false);
+          }}
+        />
+      )}
 
     </div>
   );

@@ -30,7 +30,7 @@
   margin: 0 0 8px 0;
   font-size: 1.35rem;
   font-weight: 700;
-  color: #2d3748;
+  color: #ff8a3d;
   letter-spacing: -1px;
   text-align: center;
 }
@@ -53,7 +53,7 @@
 .listTitle {
   font-size: 1.05rem;
   font-weight: 600;
-  color: #3182f6;
+  color: #ff8a3d;
   margin-bottom: 8px;
   letter-spacing: -0.5px;
 }
@@ -67,8 +67,8 @@
   overflow-y: auto;
   border-radius: 10px;
   background: #f8fafc;
-  box-shadow: 0 1px 4px rgba(49,130,246,0.04);
-  border: 1.5px solid #e2e8f0;
+  box-shadow: 0 1px 4px rgba(255,138,61,0.04);
+  border: 1.5px solid #ffe0c2;
 }
 
 .listUl li {
@@ -82,12 +82,12 @@
 }
 
 .listUl li:hover {
-  background: #e6f0ff;
-  color: #2563eb;
+  background: #ffe0c2;
+  color: #ff6b00;
 }
 
 .selected {
-  background: linear-gradient(90deg, #3182f6 60%, #56c4ff 100%);
+  background: linear-gradient(90deg, #ff8a3d 60%, #ff6b00 100%);
   color: #fff !important;
   font-weight: 700;
 }
@@ -103,11 +103,11 @@
   padding: 9px 22px;
   border-radius: 8px;
   border: none;
-  background: linear-gradient(90deg, #3182f6 60%, #56c4ff 100%);
+  background: linear-gradient(90deg, #ff8a3d 60%, #ff6b00 100%);
   color: #fff;
   font-weight: 600;
   font-size: 1rem;
-  box-shadow: 0 2px 8px rgba(49,130,246,0.08);
+  box-shadow: 0 2px 8px rgba(255,138,61,0.08);
   cursor: pointer;
   transition: background 0.18s, box-shadow 0.18s, color 0.18s;
 }

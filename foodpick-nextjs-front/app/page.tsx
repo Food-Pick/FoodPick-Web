@@ -1,9 +1,13 @@
 'use client';
-import { FiUser, FiSearch, FiCrosshair, FiMapPin } from 'react-icons/fi';
+import { FiSearch, FiCrosshair } from 'react-icons/fi';
 import styles from '../styles/home.module.css';
 import { useState, useEffect } from 'react';
 import Header from './components/Header';
 import RecommendRestaurants from './components/RecommendRestaurants';
+import { trendingHashtags } from './data/hashtags';
+import { videoList } from './data/videoList';
+import SnsVideoSection from './components/SnsVideoSection';
+
 
 // 주소 파싱 함수
 const parseAddress = (data: any): string => {
@@ -138,15 +142,15 @@ export default function Home() {
       <section className={styles.recommendSection}>
         <h2 className={styles.sectionTitle}>트렌드 해시태그</h2>
         <div className={styles.hashtagList}>
-          {[
-            '로제 떡볶이', '수제 버거', '이자카야', '한우 육회 비빔밥', 
-            '감성 카페', '티라미수', '텐동', '쫀득 쿠키', '무알콜 칵테일',
-            '비건 피자', '수제 맥주', '스시 뷔페', '프리미엄 초밥',
-          ].map((tag, idx) => (
-            <button className={styles.hashtagTag} key={idx}>#{tag}</button> 
+          {trendingHashtags.map((tag, idx) => (
+            <button key={idx} className={styles.hashtagTag}>#{tag}</button>
           ))}
         </div>
       </section>
+
+      {/* SNS 인기 맛집 영상 */}
+      <SnsVideoSection videoList={videoList}/>
+
     </div>
   );
 }

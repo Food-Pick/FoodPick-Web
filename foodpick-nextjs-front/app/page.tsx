@@ -3,6 +3,7 @@ import Image from 'next/image';
 import { FiUser, FiSearch, FiCrosshair } from 'react-icons/fi';
 import styles from '../styles/home.module.css';
 import { useState, useEffect } from 'react';
+import Header from './components/Header';
 
 // 주소 파싱 함수
 const parseAddress = (data: any): string => {
@@ -30,6 +31,7 @@ export default function Home() {
           async (position) => {
             try {
               const { latitude, longitude } = position.coords;
+              console.log(latitude, longitude);
               // 위도, 경도를 주소로 변환
               const response = await fetch(
                 `https://nominatim.openstreetmap.org/reverse?format=json&lat=${latitude}&lon=${longitude}&zoom=18&addressdetails=1`
@@ -62,15 +64,7 @@ export default function Home() {
 
   return (
     <div className={styles.container}>
-      {/* 헤더 */}
-      <header className={styles.header}> 
-        <div className={styles.logo}>
-          <Image src="/images/logo.png" alt='logo' width={150} height={60}/>
-        </div>
-        <button className={styles.loginBtn}>
-          <FiUser/>로그인
-        </button>
-      </header>
+      <Header /> 
 
       {/* 히어로 섹션 */}
       <section className={styles.hero}>

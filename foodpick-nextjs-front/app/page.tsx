@@ -4,6 +4,7 @@ import styles from '../styles/home.module.css';
 import { useState, useEffect } from 'react';
 import Header from './components/Header';
 import RecommendRestaurants from './components/RecommendRestaurants';
+import NearbyRestaurants from './components/NearbyRestaurants';
 import { trendingHashtags } from './data/hashtags';
 import { videoList } from './data/videoList';
 import SnsVideoSection from './components/SnsVideoSection';
@@ -33,15 +34,16 @@ const parseAddress = (data: any): string => {
 
 export default function Home() {
   const [locationInfo, setLocationInfo] = useState<LocationInfo>({
-    address: '위치 정보를 가져오는 중...',
-    latitude: 0,
-    longitude: 0,
+    address: '서울특별시 중구 태평로1가',
+    latitude: 37.5665,
+    longitude: 126.9780,
     type: 'current'
   });
-  const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
   const [showLocationModal, setShowLocationModal] = useState(false);
 
   useEffect(() => {
+    console.log('초기 locationInfo', locationInfo);
     // 현재 위치 가져오기
     const getCurrentLocation = () => {
       if (navigator.geolocation) {
@@ -63,51 +65,17 @@ export default function Home() {
                 };
                 console.log('현재 위치 정보:', newLocationInfo);
                 setLocationInfo(newLocationInfo);
-              } else {
-                const newLocationInfo: LocationInfo = {
-                  address: '위치 정보를 가져올 수 없습니다.',
-                  latitude: 0,
-                  longitude: 0,
-                  type: 'current' as const
-                };
-                console.log('위치 정보 없음:', newLocationInfo);
-                setLocationInfo(newLocationInfo);
               }
             } catch (error) {
-              const newLocationInfo: LocationInfo = {
-                address: '위치 정보를 가져오는데 실패했습니다.',
-                latitude: 0,
-                longitude: 0,
-                type: 'current' as const
-              };
-              console.log('위치 정보 에러:', newLocationInfo);
-              setLocationInfo(newLocationInfo);
-            } finally {
-              setIsLoading(false);
+              console.log('위치 정보 에러:', error);
             }
           },
           (error) => {
-            const newLocationInfo: LocationInfo = {
-              address: '위치 정보 접근이 거부되었습니다.',
-              latitude: 0,
-              longitude: 0,
-              type: 'current' as const
-            };
-            console.log('위치 정보 접근 거부:', newLocationInfo);
-            setLocationInfo(newLocationInfo);
-            setIsLoading(false);
+            console.log('위치 정보 접근 거부:', error);
           }
         );
       } else {
-        const newLocationInfo: LocationInfo = {
-          address: '이 브라우저에서는 위치 정보를 지원하지 않습니다.',
-          latitude: 0,
-          longitude: 0,
-          type: 'current' as const
-        };
-        console.log('위치 정보 미지원:', newLocationInfo);
-        setLocationInfo(newLocationInfo);
-        setIsLoading(false);
+        console.log('이 브라우저에서는 위치 정보를 지원하지 않습니다.');
       }
     };
 
@@ -118,7 +86,6 @@ export default function Home() {
     <div className={styles.container}>
       {/* 헤더 */}
       <Header /> 
-
       {/* 히어로 섹션 */}
       <section className={styles.hero}>
         <h1><strong>무엇을 먹을지 고민될 땐, FoodPick</strong></h1>
@@ -162,6 +129,12 @@ export default function Home() {
     
       {/* 추천 맛집 */}
       <RecommendRestaurants />
+
+      {/* 주변 맛집 */}
+      <NearbyRestaurants 
+        latitude={locationInfo.latitude} 
+        longitude={locationInfo.longitude} 
+      />
 
       {/* 트렌드 해시태그 */}
       <section className={styles.recommendSection}>

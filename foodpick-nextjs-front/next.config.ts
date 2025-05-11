@@ -1,5 +1,7 @@
 import type { NextConfig } from "next";
 
+const BACKEND_API_INTERNAL_URL = process.env.INTERNAL_BACKEND_URL || 'http://api:3000'; // <--- 이 부분을 다시 확인!
+
 const nextConfig: NextConfig = {
   reactStrictMode: true,
   webpack: (config) => {
@@ -8,7 +10,16 @@ const nextConfig: NextConfig = {
       aggregateTimeout: 300,
     }
     return config;
-  }
+  },
+
+  async rewrites() {
+    return [
+      {
+        source: '/api/nearby/restaurant',
+        destination: `${BACKEND_API_INTERNAL_URL}/restaurant/nearby`,
+      },
+    ];
+  },
 }
 
 export default nextConfig;

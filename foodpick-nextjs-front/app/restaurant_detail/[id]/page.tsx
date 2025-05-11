@@ -6,6 +6,7 @@ import { restaurants } from '../../data/mockRestaurantData';
 import styles from '../../../styles/restaurant_Detail.module.css';
 import Header from '../../components/Header';
 import { notFound } from 'next/navigation';
+import MenuSection from '@/app/components/MenuSection';
 
 export async function generateStaticParams() {
   return restaurants.map((r) => ({
@@ -29,7 +30,9 @@ export default async function RestaurantDetailPage(props: any) {
   return (
     <div>
       <Header />
-      <div className={styles.container} style={{ marginTop: '-2rem' }}>
+
+      <div className={styles.container} style={{ marginTop: '-1rem' }}>
+
         <section className={styles.hero}>
           <div className={styles.heroImageWrapper}>
             <img className={styles.heroImage} src={restaurant.image} alt={restaurant.name} />
@@ -71,7 +74,10 @@ export default async function RestaurantDetailPage(props: any) {
             </div>
           </div>
         </section>
+
+        <MenuSection items={restaurant.menu} />
       </div>
+
     </div>
   );
 }

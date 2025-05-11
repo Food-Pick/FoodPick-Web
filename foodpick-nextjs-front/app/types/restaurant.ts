@@ -2,7 +2,7 @@
 export interface MenuItem {
   name: string;
   price: number;
-  image: string;
+  image: string | null;
 }
 
 export interface Review {

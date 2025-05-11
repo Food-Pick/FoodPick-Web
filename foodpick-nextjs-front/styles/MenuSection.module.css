@@ -1,0 +1,44 @@
+.menuSection {
+  background: white;
+  padding: 1.5rem;
+  border-radius: 12px;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.05);
+  margin-top: 2rem;
+}
+
+.heading {
+  font-size: 1.5rem;
+  font-weight: 700;
+  margin-bottom: 1rem;
+}
+
+.menuCard {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 0;
+  border-top: 1px solid #eee;
+}
+
+.menuInfo {
+  display: flex;
+  flex-direction: column;
+}
+
+.menuName {
+  font-weight: 600;
+  font-size: 1.1rem;
+}
+
+.menuPrice {
+  color: #555;
+  margin-top: 0.3rem;
+}
+
+.menuImage {
+  width: 80px;
+  height: 80px;
+  border-radius: 8px;
+  object-fit: cover;
+  margin-left: 1rem;
+}

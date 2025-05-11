@@ -179,11 +179,11 @@ export default function Home() {
       {showLocationModal && (
         <LocationModal
           onClose={() => setShowLocationModal(false)}
-          onSelect={(address, lat, lng) => {
+          onSelect={(address: string) => {
             const newLocationInfo: LocationInfo = {
               address,
-              latitude: lat,
-              longitude: lng,
+              latitude: 0,
+              longitude: 0,
               type: 'manual' as const
             };
             console.log('수동 선택 위치 정보:', newLocationInfo);

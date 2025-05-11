@@ -54,6 +54,7 @@ export default function NearbyRestaurants({ latitude, longitude }: NearbyRestaur
       isMounted = false;
     };
   }, [latitude, longitude]);
+  
 
   return (
     <section className={styles.recommendSection}>
@@ -77,7 +78,7 @@ export default function NearbyRestaurants({ latitude, longitude }: NearbyRestaur
           ) : (
             restaurants.map((restaurant) => (
               <Link 
-                href={`/restaurant_detail`} 
+                href={`/restaurant/detail/${restaurant.restaurant_id}`} 
                 key={restaurant.restaurant_id} 
                 className={styles.foodCard}
               >

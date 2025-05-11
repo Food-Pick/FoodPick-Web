@@ -105,7 +105,10 @@ export const restaurants: Restaurant[] = [
     services: ['포장', '단체 이용 가능', '무선 인터넷', '예약', '간편결제'],
     image: '/images/tzubo.jpg',
     menu: [
-      { name: '[전국 1등] 오렌지 치킨', price: 15000, image: null},
+      { name: '[전국 1등] 오렌지 치킨', price: 15000, image: '/images/tzubo_menu1.jpg' },
+      { name: '[시그니처] 소고기 볶음면', price: 15000, image: '/images/tzubo_menu2.jpg' },
+      { name: '[미친 맛] 쯔보 볶음밥', price: 15000, image: null },
+      { name: '[통통] 매콤 해산물 볶음면', price: 15000, image: null },
     ],
     photos: [...Array(8)].map((_, i) => '/images/photo${i + 1}.jpg'),
     reviews: []

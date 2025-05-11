@@ -51,9 +51,9 @@ const LocationModal = ({ onClose, onSelect }: LocationModalProps) => {
       ).filter(item => {
         const searchLower = searchQuery.toLowerCase();
         return item.fullAddress.toLowerCase().includes(searchLower) ||
-               item.sido.toLowerCase().includes(searchLower) || 
-               item.gugun.toLowerCase().includes(searchLower) || 
-               item.dong.toLowerCase().includes(searchLower);
+              item.sido.toLowerCase().includes(searchLower) || 
+              item.gugun.toLowerCase().includes(searchLower) || 
+              item.dong.toLowerCase().includes(searchLower);
       });
       setSearchResults(results);
     } else {
@@ -87,6 +87,7 @@ const LocationModal = ({ onClose, onSelect }: LocationModalProps) => {
         if (data && data.length > 0) {
           const { lat, lon } = data[0];
           onSelect(fullAddress, parseFloat(lat), parseFloat(lon));
+          console.log(fullAddress, parseFloat(lat), parseFloat(lon));
         } else {
           onSelect(fullAddress, 37.5665, 126.9780);
         }

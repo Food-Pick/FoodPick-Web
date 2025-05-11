@@ -9,6 +9,13 @@ import { videoList } from './data/videoList';
 import SnsVideoSection from './components/SnsVideoSection';
 import LocationModal from './components/LocationModal';
 
+// 위치 정보 타입 정의
+interface LocationInfo {
+  address: string;
+  latitude: number;
+  longitude: number;
+  type: 'current' | 'manual';
+}
 
 // 주소 파싱 함수
 const parseAddress = (data: any): string => {
@@ -25,8 +32,12 @@ const parseAddress = (data: any): string => {
 };
 
 export default function Home() {
-  const [currentLocation, setCurrentLocation] = useState<string>('위치 정보를 가져오는 중...');
-  const [locationType, setLocationType] = useState<'current' | 'manual'>('current');
+  const [locationInfo, setLocationInfo] = useState<LocationInfo>({
+    address: '위치 정보를 가져오는 중...',
+    latitude: 0,
+    longitude: 0,
+    type: 'current'
+  });
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [showLocationModal, setShowLocationModal] = useState(false);
 
@@ -44,28 +55,58 @@ export default function Home() {
               );
               const data = await response.json();
               if (data.address) {
-                setCurrentLocation(parseAddress(data));
-                setLocationType('current');
+                const newLocationInfo: LocationInfo = {
+                  address: parseAddress(data),
+                  latitude,
+                  longitude,
+                  type: 'current' as const
+                };
+                console.log('현재 위치 정보:', newLocationInfo);
+                setLocationInfo(newLocationInfo);
               } else {
-                setCurrentLocation('위치 정보를 가져올 수 없습니다.');
-                setLocationType('current');
+                const newLocationInfo: LocationInfo = {
+                  address: '위치 정보를 가져올 수 없습니다.',
+                  latitude: 0,
+                  longitude: 0,
+                  type: 'current' as const
+                };
+                console.log('위치 정보 없음:', newLocationInfo);
+                setLocationInfo(newLocationInfo);
               }
             } catch (error) {
-              setCurrentLocation('위치 정보를 가져오는데 실패했습니다.');
-              setLocationType('current');
+              const newLocationInfo: LocationInfo = {
+                address: '위치 정보를 가져오는데 실패했습니다.',
+                latitude: 0,
+                longitude: 0,
+                type: 'current' as const
+              };
+              console.log('위치 정보 에러:', newLocationInfo);
+              setLocationInfo(newLocationInfo);
             } finally {
               setIsLoading(false);
             }
           },
           (error) => {
-            setCurrentLocation('위치 정보 접근이 거부되었습니다.');
-            setLocationType('current');
+            const newLocationInfo: LocationInfo = {
+              address: '위치 정보 접근이 거부되었습니다.',
+              latitude: 0,
+              longitude: 0,
+              type: 'current' as const
+            };
+            console.log('위치 정보 접근 거부:', newLocationInfo);
+            setLocationInfo(newLocationInfo);
             setIsLoading(false);
           }
         );
       } else {
-        setCurrentLocation('이 브라우저에서는 위치 정보를 지원하지 않습니다.');
-        setLocationType('current');
+        const newLocationInfo: LocationInfo = {
+          address: '이 브라우저에서는 위치 정보를 지원하지 않습니다.',
+          latitude: 0,
+          longitude: 0,
+          type: 'current' as const
+        };
+        console.log('위치 정보 미지원:', newLocationInfo);
+        setLocationInfo(newLocationInfo);
         setIsLoading(false);
       }
     };
@@ -91,8 +132,8 @@ export default function Home() {
           <div className={styles.locationRow}>
             <p className={styles.location}>
               <FiCrosshair size={16}/>
-              {locationType === 'current' ? '현재 위치: ' : '지정 위치: '}
-              {isLoading ? '위치 정보를 가져오는 중...' : currentLocation}
+              {locationInfo.type === 'current' ? '현재 위치: ' : '지정 위치: '}
+              {isLoading ? '위치 정보를 가져오는 중...' : locationInfo.address}
             </p>
             <button className={styles.locationBtn} onClick={() => setShowLocationModal(true)}>
               위치 변경하기
@@ -138,9 +179,15 @@ export default function Home() {
       {showLocationModal && (
         <LocationModal
           onClose={() => setShowLocationModal(false)}
-          onSelect={(address) => {
-            setCurrentLocation(address);
-            setLocationType('manual');
+          onSelect={(address, lat, lng) => {
+            const newLocationInfo: LocationInfo = {
+              address,
+              latitude: lat,
+              longitude: lng,
+              type: 'manual' as const
+            };
+            console.log('수동 선택 위치 정보:', newLocationInfo);
+            setLocationInfo(newLocationInfo);
             setIsLoading(false);
           }}
         />

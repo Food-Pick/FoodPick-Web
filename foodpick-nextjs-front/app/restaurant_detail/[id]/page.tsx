@@ -68,6 +68,7 @@ export default async function RestaurantDetailPage(props: any) {
               <p>{restaurant.phone}</p>
             </div>
 
+            
             <div className={styles.infoRow}>
               <FiClock />
               <p>운영시간: {restaurant.hours}</p>

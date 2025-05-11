@@ -28,7 +28,8 @@ async function getRestaurantDetail(id: string) {
 }
 
 export default async function NearbyRestaurantDetailPage({ params }: Props) {
-  const restaurant = await getRestaurantDetail(params.id);
+  const { id } = await params;
+  const restaurant = await getRestaurantDetail(id);
   if (!restaurant) return notFound();
 
   // 메뉴 파싱
@@ -54,6 +55,30 @@ export default async function NearbyRestaurantDetailPage({ params }: Props) {
   } catch {
     placeInfo = {};
   }
+
+  // 네이버 URL에서 ID 추출 함수
+  const extractNaverId = (url: string): string | null => {
+    try {
+      // /restaurant/{number} 형식에서 숫자 추출
+      const match = url.match(/\d+/);
+      if (match && match[0]) {
+        return match[0];
+      }
+      return null;
+    } catch (error) {
+      console.error('URL 파싱 중 오류:', error);
+      return null;
+    }
+  };
+
+  // 네이버 지도 URL 생성 함수
+  const getNaverMapUrl = (url: string): string => {
+    const id = extractNaverId(url);
+    if (id) {
+      return `https://map.naver.com/p/entry/place/${id}`;
+    }
+    return url; // ID를 추출할 수 없는 경우 원본 URL 반환
+  };
 
   return (
     <div>
@@ -85,9 +110,9 @@ export default async function NearbyRestaurantDetailPage({ params }: Props) {
                   </p>
                 )}
               </div>
-              {restaurant.네이버_url && (
+              {restaurant.네이버_place_id_url && (
                 <a
-                  href={restaurant.네이버_url}
+                  href={getNaverMapUrl(restaurant.네이버_place_id_url)}
                   target="_blank"
                   rel="noopener noreferrer"
                   className={styles.mapButton}

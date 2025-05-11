@@ -84,7 +84,6 @@ export default function Home() {
 
   return (
     <div className={styles.container}>
-      {/* 헤더 */}
       <Header /> 
       {/* 히어로 섹션 */}
       <section className={styles.hero}>
@@ -152,11 +151,11 @@ export default function Home() {
       {showLocationModal && (
         <LocationModal
           onClose={() => setShowLocationModal(false)}
-          onSelect={(address, lat, lng) => {
+          onSelect={(address: string) => {
             const newLocationInfo: LocationInfo = {
               address,
-              latitude: lat,
-              longitude: lng,
+              latitude: 0,
+              longitude: 0,
               type: 'manual' as const
             };
             console.log('수동 선택 위치 정보:', newLocationInfo);

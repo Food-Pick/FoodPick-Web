@@ -3,14 +3,18 @@
   color: #333;
 }
 
+/* 헤더 */
+
 .header {
   display: flex;
-  justify-content: space-between;
   align-items: center;
+  justify-content: space-between;
   padding: 1rem 2rem;
-  max-width: 1200px;      
-  margin: 0 auto;         
+  max-width: 1200px;      /* ✅ 모든 페이지에서 일관된 폭 */
+  margin: 0 auto;         /* ✅ 가운데 정렬 */
+  width: 100%;
 }
+
 
 .logo {
   display: flex;
@@ -38,6 +42,40 @@
   background-color: #ea580c;     /* 진한 주황색 */
 }
 
+.searchWrapper {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+}
+
+.searchBox {
+  display: flex;
+  align-items: center;
+  background-color: white;
+  border: 1px solid #ccc;
+  border-radius: 999px;
+  padding: 0.3rem 0.8rem;
+  width: 100%;
+  max-width: 600px;
+  height: 54px; /* ✅ 세로 사이즈 줄임 */
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+.searchInput {
+  flex: 1;
+  border: none;
+  outline: none;
+  font-size: 0.95rem;
+  background: transparent;
+}
+
+.searchIcon {
+  margin-left: 0.5rem;
+  color: #888;
+  font-size: 1.1rem;
+}
+
+/* 히어로 */
 .hero {
   background-image: url('/images/background.png');
   background-size: cover;

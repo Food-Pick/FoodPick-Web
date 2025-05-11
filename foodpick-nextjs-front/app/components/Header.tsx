@@ -17,7 +17,7 @@ export default function Header({ onLoginClick }: HeaderProps) {
 
   return (
     <header className={styles.header}>
-      <div className={styles.logo}>
+      <div className={styles.logo} onClick={() => window.location.href = '/'}>
         <Image src="/images/logo.png" alt="logo" width={150} height={60} />
       </div>
 

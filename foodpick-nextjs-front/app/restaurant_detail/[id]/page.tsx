@@ -7,6 +7,7 @@ import styles from '../../../styles/restaurant_Detail.module.css';
 import Header from '../../components/Header';
 import { notFound } from 'next/navigation';
 import MenuSection from '@/app/components/MenuSection';
+import MergedPhotoGallery from '@/app/components/MergedPhotoGallery';
 
 export async function generateStaticParams() {
   return restaurants.map((r) => ({
@@ -24,8 +25,12 @@ export default async function RestaurantDetailPage(props: any) {
   const params = await props.params;
   const restaurant = restaurants.find(r => r.id === params.id);
 
-
   if (!restaurant) return notFound(); 
+
+  const allPhotos = [
+    ...restaurant.photos,
+    ...restaurant.reviews.flatMap(r => r.images ?? [])
+  ];
 
   return (
     <div>
@@ -76,6 +81,8 @@ export default async function RestaurantDetailPage(props: any) {
         </section>
 
         <MenuSection items={restaurant.menu} />
+
+        <MergedPhotoGallery photos={[...restaurant.photos, ...restaurant.reviews.flatMap(r => r.images)]} />
       </div>
 
     </div>

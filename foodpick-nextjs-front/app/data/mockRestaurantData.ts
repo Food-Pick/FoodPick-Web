@@ -13,12 +13,44 @@ export const restaurants: Restaurant[] = [
     distance: 451,
     hours: '오전 11-00 - 오후 18:00',
     services: ['테이크 아웃', '배달', '예약'],
-    image: '/images/mongshim.jpg',
+    image: `/images/mongshim${1}.jpg`,
     menu: [
       { name: '밀키 연유 마들렌', price: 2500, image: '/images/mongshim_menu1.jpg' },
     ],
-    photos: [...Array(8)].map((_, i) => `/images/photo${i + 1}.jpg`),
-    reviews: []
+    photos: [
+      '/images/mongshim1.jpg',
+      '/images/mongshim2.jpg',
+      '/images/mongshim3.jpg',
+      '/images/mongshim4.jpg',
+      '/images/mongshim5.jpg',
+      '/images/mongshim6.jpg',
+      '/images/mongshim7.jpg',
+    ],
+    reviews: [
+      {
+        id: '1',
+        author: '홍길동',
+        content: '정말 맛있어요! 재구매 의사 100%',
+        images: ['/images/mongshim_review1.jpg', '/images/mongshim_review2.jpg'],
+        createdAt: '2025-05-12T12:00:00Z',
+      },
+      {
+        id: '2',
+        author: '김철수',
+        content: '가격이 조금 비싸지만 맛있어요.',
+        images: ['/images/mongshim_review3.jpg'],
+        createdAt: '2025-05-13T14:30:00Z',
+      },
+      {
+        id: '3',
+        author: '이영',
+        content: '친구와 함께 갔는데 분위기도 좋고 서비스도 훌륭했어요.',
+        images: ['/images/mongshim_review4.jpg', 
+                 '/images/mongshim_review5.jpg',
+                 '/images/mongshim_review6.jpg'],
+        createdAt: '2025-05-14T16:45:00Z',
+      }
+    ]
   },
   {
     id: '2',
@@ -31,11 +63,13 @@ export const restaurants: Restaurant[] = [
     distance: 954,
     hours: '24시간 영업',
     services: ['테이크 아웃', '주차'],
-    image: '/images/omunchang.jpg',
+    image: '/images/omunchang1.jpg',
     menu: [
       { name: '순대국밥 보', price: 7000, image: null},
     ],
-    photos: [...Array(8)].map((_, i) => `/images/photo${i + 1}.jpg`),
+    photos: [
+      '/images/omunchang1.jpg'
+    ],
     reviews: []
   },
   {
@@ -49,11 +83,13 @@ export const restaurants: Restaurant[] = [
     distance: 1700,
     hours: '11:00 - 21:00',
     services: ['주차공간'],
-    image: '/images/oc.jpg',
+    image: '/images/oc1.jpg',
     menu: [
       { name: '손칼국수', price: 14000, image: null},
     ],
-    photos: [...Array(8)].map((_, i) => `/images/photo${i + 1}.jpg`),
+    photos: [
+      '/images/oc1.jpg',
+    ],
     reviews: []
   },
   {
@@ -67,11 +103,13 @@ export const restaurants: Restaurant[] = [
     distance: 828,
     hours: '24시간 영업',
     services: ['배달', '24시간', '드라이브스루'],
-    image: '/images/mcdonalds.jpg',
+    image: '/images/mcdonalds1.jpg',
     menu: [
       { name: '베토디 과카몰레 더블 세트', price: 11200, image: null },
     ],
-    photos: [...Array(8)].map((_, i) => `/images/photo${i + 1}.jpg`),
+    photos: [
+      '/images/mcdonalds1.jpg',
+    ],
     reviews: []
   },
   {
@@ -85,11 +123,13 @@ export const restaurants: Restaurant[] = [
     distance: 519,
     hours: '11:00 - 22:00',
     services: ['배달', '포장', '단체 이용 가능'],
-    image: '/images/cement.jpg',
+    image: '/images/cement1.jpg',
     menu: [
       { name: '살치갈릭오일파스타', price: 14500, image: null },
     ],
-    photos: [...Array(8)].map((_, i) => `/images/photo${i + 1}.jpg`),
+    photos: [
+      '/images/cement1.jpg',
+    ],
     reviews: []
   },
   {
@@ -103,14 +143,16 @@ export const restaurants: Restaurant[] = [
     distance: 361,
     hours: '11:00 - 21:00',
     services: ['포장', '단체 이용 가능', '무선 인터넷', '예약', '간편결제'],
-    image: '/images/tzubo.jpg',
+    image: '/images/tzubo1.jpg',
     menu: [
       { name: '[전국 1등] 오렌지 치킨', price: 15000, image: '/images/tzubo_menu1.jpg' },
       { name: '[시그니처] 소고기 볶음면', price: 15000, image: '/images/tzubo_menu2.jpg' },
       { name: '[미친 맛] 쯔보 볶음밥', price: 15000, image: null },
       { name: '[통통] 매콤 해산물 볶음면', price: 15000, image: null },
     ],
-    photos: [...Array(8)].map((_, i) => '/images/photo${i + 1}.jpg'),
+    photos: [
+      '/images/tzubo1.jpg',
+    ],
     reviews: []
   },
   {
@@ -124,11 +166,13 @@ export const restaurants: Restaurant[] = [
     distance: 693,
     hours: '12:00 - 24:00',
     services: ['단체 이용 가능'],
-    image: '/images/sinsekai.png',
+    image: '/images/sinsekai1.png',
     menu: [
       { name: '신세카이 돈니꾸 무한리필세트', price: 16800, image: null},
     ],
-    photos: [...Array(8)].map((_, i) => '/images/photo${i + 1}.jpg'),
+    photos: [
+      '/images/sinsekai1.png',
+    ],
     reviews: []
   },
   {
@@ -142,11 +186,13 @@ export const restaurants: Restaurant[] = [
     distance: 530,
     hours: '11:00 - 21:30',
     services: ['포장', '무선 인터넷', '남/녀 화장실 구분', '배달'],
-    image: '/images/ramenuniverse.jpg',
+    image: '/images/ramenuniverse1.jpg',
     menu: [
       { name: '지로 라멘', price: 11500, image: null},
     ],
-    photos: [...Array(8)].map((_, i) => '/images/photo${i + 1}.jpg'),
+    photos: [
+      '/images/ramenuniverse1.jpg',
+    ],
     reviews: []
   },
   {
@@ -160,11 +206,13 @@ export const restaurants: Restaurant[] = [
     distance: 518,
     hours: '10:00 - 20:50',
     services: ['포장', '단체 이용 가능', '배달', '예약'],
-    image: '/images/gyoban.jpg',
+    image: '/images/gyoban1.jpg',
     menu: [
       { name: '육회비빔밥', price: 12000, image: null},
     ],
-    photos: [...Array(8)].map((_, i) => '/images/photo${i + 1}.jpg'),
+    photos: [
+      '/images/gyoban1.jpg',
+    ],
     reviews: []
   },
   {
@@ -178,11 +226,13 @@ export const restaurants: Restaurant[] = [
     distance: 353,
     hours: '10:30 - 21:30',
     services: ['포장', '단체 이용 가능', '배달', '주차'],
-    image: '/images/yamimala.jpg',
+    image: '/images/yamimala1.jpg',
     menu: [
       { name: '마라탕 100g(6000원부터)', price: 1500, image: null},
     ],
-    photos: [...Array(8)].map((_, i) => '/images/photo${i + 1}.jpg'),
+    photos: [
+      '/images/yamimala1.jpg',
+    ],
     reviews: []
   },
 ]

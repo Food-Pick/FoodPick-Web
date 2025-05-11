@@ -1,3 +1,5 @@
+export const dynamic = 'auto';
+
 import { AiFillStar } from 'react-icons/ai';
 import { FiMapPin, FiPhone, FiClock, FiCheckCircle } from 'react-icons/fi';
 import { restaurants } from '../../data/mockRestaurantData';
@@ -5,16 +7,24 @@ import styles from '../../../styles/restaurant_Detail.module.css';
 import Header from '../../components/Header';
 import { notFound } from 'next/navigation';
 
+export async function generateStaticParams() {
+  return restaurants.map((r) => ({
+    id: r.id,
+  }));
+}
+
 type Props = {
   params: {
     id: string;
   };
 };
 
-export default function RestaurantDetailPage({ params }: Props) {
+export default async function RestaurantDetailPage(props: any) {
+  const params = await props.params;
   const restaurant = restaurants.find(r => r.id === params.id);
 
-  if (!restaurant) return notFound();
+
+  if (!restaurant) return notFound(); 
 
   return (
     <div>

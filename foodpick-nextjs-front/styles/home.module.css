@@ -4,6 +4,8 @@
   color: #333;
 }
 
+/* 헤더 */
+
 .header {
   display: flex;
   align-items: center;
@@ -74,6 +76,7 @@
   font-size: 1.1rem;
 }
 
+/* 히어로 */
 .hero {
   background-image: url('/images/background.png');
   background-size: cover;

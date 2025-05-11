@@ -26,11 +26,71 @@
 }
 
 .moreButton {
-  margin-top: 1rem;
+  display: block;
+  margin: 1rem auto 0; /* 위 간격 + 가운데 정렬 */
   background-color: #ff6600;
   color: white;
   padding: 0.6rem 1.2rem;
   border: none;
   border-radius: 8px;
   cursor: pointer;
+  font-size: 1rem;
+  
+}
+
+.overlay {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100vw; height: 100vh;
+  background: rgba(0,0,0,0.85);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 999;
+}
+
+.largeImage {
+  max-width: 90%;
+  max-height: 90%;
+  border-radius: 12px;
+  box-shadow: 0 0 20px rgba(0,0,0,0.5);
+}
+
+.closeBtn {
+  position: absolute;
+  top: 2rem;
+  right: 2rem;
+  font-size: 2rem;
+  color: white;
+  background: none;
+  border: none;
+  cursor: pointer;
+  z-index: 1001;
+}
+
+.navBtn {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 3rem;        /* 🔥 더 크게 */
+  color: white;
+  background: none;
+  border: none;
+  cursor: pointer;
+  z-index: 1001;
+  user-select: none;
+  padding: 0.5rem 1rem;    /* 🔥 클릭 영역 확대 */
+  transition: transform 0.2s ease;
+}
+
+.navBtn:hover {
+  transform: translateY(-50%) scale(1.15); /* 🔥 호버 시 살짝 커지게 */
+}
+
+.left {
+  left: 2rem;
+}
+
+.right {
+  right: 2rem;
 }

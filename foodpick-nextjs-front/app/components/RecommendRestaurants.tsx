@@ -12,7 +12,7 @@ export default function RecommendRestaurants() {
         <div className={styles.cardList}>
           {restaurants.map((r) => ( // restaurants 배열에는 Restaurant 타입의 객체들이 들어있음
             // map을 사용하여 각 음식점 정보를 카드 형태로 렌더링
-            <Link href={`/restaurant_detail`} key={r.id} className={styles.foodCard}>
+            <Link href={`/restaurant_detail/${r.id}`} key={r.id} className={styles.foodCard}>
               <img src={r.image} alt={r.name} />
                 <div className={styles.cardContent}>
                   <p className={styles.cardTitle}>{r.name}</p>

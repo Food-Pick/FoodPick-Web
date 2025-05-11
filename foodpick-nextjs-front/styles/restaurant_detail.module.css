@@ -1,7 +1,10 @@
+
 .container {
-  max-width: 960px;
+  max-width: 1200px;
   margin: 0 auto;
-  padding: 2rem 1rem;
+  padding-top: 0.5rem;    /* ✅ 여기 값을 줄이거나 0으로 */
+  padding-left: 1rem;
+  padding-right: 1rem;
 }
 
 /* ---------- Hero Section ---------- */

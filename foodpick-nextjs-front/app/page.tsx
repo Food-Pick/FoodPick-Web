@@ -116,7 +116,6 @@ export default function Home() {
 
   return (
     <div className={styles.container}>
-      {/* 헤더 */}
       <Header /> 
 
       {/* 히어로 섹션 */}

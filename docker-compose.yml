@@ -12,7 +12,7 @@ services:
       - /app/.next
     working_dir: /app
     ports:
-      - "3000:3000"
+      - "2000:3000"
     environment:
       - INTERNAL_BACKEND_URL=http://foodpick-api:3000 # <--- 가장 중요! 또는 http://api:3000
       - NEXT_PUBLIC_API_BASE_PATH=/api # 클라이언트 사이드에서 API 호출 시 사용할 기본 경로 (선택적)
@@ -21,6 +21,7 @@ services:
       - WATCHPACK_POLLING=true
     networks:
       - foodpick-network
+    restart: on-failure
 
 networks:
   foodpick-network:

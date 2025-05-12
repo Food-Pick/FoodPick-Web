@@ -42,6 +42,9 @@
   line-height: 44px;       /* 텍스트 수직 정렬 */
   font-size: 15px;
 }
+.moreButton:hover {
+  background-color: #e65c00; /* 호버 시 색상 변경 */
+}
 
 .overlay {
   position: fixed;

@@ -1,0 +1,126 @@
+.reviewSection {
+  padding: 1.5rem 1rem;
+  background-color: white;
+  border-radius: 12px;
+}
+
+.reviewHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.2rem;
+  padding-bottom: 0.8rem;
+  border-bottom: 1px solid #ddd;  /* ✅ 이 줄 추가 */
+}
+
+.heading {
+  font-size: 1.5rem;
+  font-weight: bold;
+}
+
+.writeBtn {
+  background-color: #ff6600;
+  color: white;
+  border: none;
+  border-radius: 30px;
+  padding: 0.5rem 1.2rem;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.reviewCard {
+  margin-bottom: 1.5rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid #eee;
+}
+
+.author {
+  font-weight: bold;
+  margin-bottom: 0.3rem;
+}
+
+.content {
+  margin-bottom: 0.5rem;
+}
+
+.imageList {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin-bottom: 0.5rem;
+}
+
+.image {
+  width: 100px;
+  height: 100px;
+  object-fit: cover;
+  border-radius: 8px;
+}
+
+.date {
+  font-size: 0.85rem;
+  color: gray;
+}
+
+.rating {
+  margin: 0.3rem 0 0.6rem;
+  font-size: 1.2rem;
+  color: #ffcc00;
+}
+
+.starFilled {
+  color: #ffcc00; /* 채워진 별 */
+}
+
+.starEmpty {
+  color: #ddd; /* 빈 별 */
+}
+
+.toggleBtn {
+  width: 160px;           /* 원하는 너비 */
+  height: 44px;           /* 원하는 높이 */
+  margin-top: 1rem;
+  background-color: #ff6600;
+  color: white;
+  font-weight: bold;
+  border: none;
+  border-radius: 30px;
+  cursor: pointer;
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  text-align: center;
+  line-height: 44px;       /* 텍스트 수직 정렬 */
+  font-size: 15px;
+}
+.toggleBtn:hover {
+  background-color: #e65c00; /* 호버 시 색상 변경 */
+}
+
+.sortBar {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+  padding-bottom: 0.5rem;
+}
+
+.sortBar button {
+  background-color: #f3f3f3;
+  color: #555;
+  border: none;
+  border-radius: 999px;     /* ✅ pill형 둥글기 */
+  padding: 0.4rem 1rem;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.sortBar button:hover {
+  background-color: #e0e0e0;
+}
+
+.activeSort {
+  background-color: #ff6600 !important;
+  color: white !important;
+}

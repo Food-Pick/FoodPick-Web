@@ -11,6 +11,7 @@ export interface Review {
   content: string;
   images: string[];
   createdAt: string;
+  rating: number;
 }
 
 // 음식점 데이터 타입 정의

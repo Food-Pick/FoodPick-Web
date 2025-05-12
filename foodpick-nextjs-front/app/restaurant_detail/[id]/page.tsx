@@ -8,6 +8,7 @@ import Header from '../../components/Header';
 import { notFound } from 'next/navigation';
 import MenuSection from '@/app/components/MenuSection';
 import MergedPhotoGallery from '@/app/components/MergedPhotoGallery';
+import ReviewSection from '@/app/components/ReviewSection';
 
 export async function generateStaticParams() {
   return restaurants.map((r) => ({
@@ -84,6 +85,8 @@ export default async function RestaurantDetailPage(props: any) {
         <MenuSection items={restaurant.menu} />
 
         <MergedPhotoGallery photos={[...restaurant.photos, ...restaurant.reviews.flatMap(r => r.images)]} />
+
+        <ReviewSection reviews={restaurant.reviews} isLoggedIn={true} />
       </div>
 
     </div>

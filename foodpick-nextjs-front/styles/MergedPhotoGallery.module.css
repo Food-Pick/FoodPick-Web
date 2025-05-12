@@ -26,16 +26,21 @@
 }
 
 .moreButton {
-  display: block;
-  margin: 1rem auto 0; /* 위 간격 + 가운데 정렬 */
+  width: 160px;           /* 원하는 너비 */
+  height: 44px;           /* 원하는 높이 */
+  margin-top: 1rem;
   background-color: #ff6600;
   color: white;
-  padding: 0.6rem 1.2rem;
+  font-weight: bold;
   border: none;
-  border-radius: 8px;
+  border-radius: 30px;
   cursor: pointer;
-  font-size: 1rem;
-  
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  text-align: center;
+  line-height: 44px;       /* 텍스트 수직 정렬 */
+  font-size: 15px;
 }
 
 .overlay {

@@ -42,3 +42,21 @@
   object-fit: cover;
   margin-left: 1rem;
 }
+
+.toggleButton {
+  width: 160px;           /* 원하는 너비 */
+  height: 44px;           /* 원하는 높이 */
+  margin-top: 1rem;
+  background-color: #ff6600;
+  color: white;
+  font-weight: bold;
+  border: none;
+  border-radius: 30px;
+  cursor: pointer;
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  text-align: center;
+  line-height: 44px;       /* 텍스트 수직 정렬 */
+  font-size: 15px;
+}

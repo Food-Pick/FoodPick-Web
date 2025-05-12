@@ -16,6 +16,11 @@ export const restaurants: Restaurant[] = [
     image: `/images/mongshim${1}.jpg`,
     menu: [
       { name: '밀키 연유 마들렌', price: 2500, image: '/images/mongshim_menu1.jpg' },
+      { name: '밀키 연유 마들렌', price: 2500, image: '/images/mongshim_menu1.jpg' },
+      { name: '밀키 연유 마들렌', price: 2500, image: '/images/mongshim_menu1.jpg' },
+      { name: '밀키 연유 마들렌', price: 2500, image: '/images/mongshim_menu1.jpg' },
+      { name: '밀키 연유 마들렌', price: 2500, image: '/images/mongshim_menu1.jpg' },
+      { name: '밀키 연유 마들렌', price: 2500, image: '/images/mongshim_menu1.jpg' },
     ],
     photos: [
       '/images/mongshim1.jpg',

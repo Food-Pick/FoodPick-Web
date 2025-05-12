@@ -1,3 +1,5 @@
+'use client';
+import React, { useState } from 'react';
 import styles from '../../styles/MenuSection.module.css';
 
 type MenuItem = {
@@ -11,16 +13,20 @@ type Props = {
 }
 
 export default function MenuSection({ items }: Props) {
+  const [showAll, setShowAll] = useState(false);
+  const visibleItems = showAll ? items : items.slice(0, 3);
+
   return (
     <section className={styles.menuSection}>
       <h2 className={styles.heading}>메뉴</h2>
-      {items.map((item, idx) => (
+      
+      
+      {visibleItems.map((item, idx) => (
         <div className={styles.menuCard} key={idx}>
           <div className={styles.menuInfo}>
             <p className={styles.menuName}>{item.name}</p>
             <p className={styles.menuPrice}>{item.price.toLocaleString()}원</p>
           </div>
-          {/* 이미지가 있는 경우에만 렌더링 */}
           {item.image && (
             <img
               src={item.image}
@@ -30,6 +36,15 @@ export default function MenuSection({ items }: Props) {
           )}
         </div>
       ))}
+
+      {items.length > 5 && (
+        <button
+          className={styles.toggleButton}
+          onClick={() => setShowAll((prev) => !prev)}
+        >
+          {showAll ? '접기' : '메뉴 더보기'}
+        </button>
+      )}
     </section>
   )
 }

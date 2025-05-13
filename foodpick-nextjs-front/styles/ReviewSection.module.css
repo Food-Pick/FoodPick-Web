@@ -78,7 +78,7 @@
   color: #ddd; /* 빈 별 */
 }
 
-.toggleBtn {
+.loadMoreBtn {
   width: 160px;           /* 원하는 너비 */
   height: 44px;           /* 원하는 높이 */
   margin-top: 1rem;
@@ -95,7 +95,7 @@
   line-height: 44px;       /* 텍스트 수직 정렬 */
   font-size: 15px;
 }
-.toggleBtn:hover {
+.loadMoreBtn:hover {
   background-color: #e65c00; /* 호버 시 색상 변경 */
 }
 

@@ -20,6 +20,7 @@ type Props = {
 
 export default function ReviewSection({ reviews, isLoggedIn }: Props) {
   const [showAll, setShowAll] = useState(false);
+  const [visibleCount, setVisibleCount] = useState(3);
   const [sortBy, setSortBy] = useState<'recommend' | 'latest' | 'ratingHigh' | 'ratingLow'>('recommend');
 
   {/* 추천 순 알고리즘 */}
@@ -53,7 +54,7 @@ export default function ReviewSection({ reviews, isLoggedIn }: Props) {
     }
   });
 
-  const visibleReviews = showAll ? sortedReviews : sortedReviews.slice(0, 3);
+  const visibleReviews = sortedReviews.slice(0, visibleCount);
 
   return (
     <section className={styles.reviewSection}>
@@ -124,12 +125,12 @@ export default function ReviewSection({ reviews, isLoggedIn }: Props) {
         </div>
       ))}
 
-      {reviews.length > 3 && (
-        <button
-          className={styles.toggleBtn}
-          onClick={() => setShowAll((prev) => !prev)}
+      {visibleCount < sortedReviews.length && (
+        <button 
+          className={styles.loadMoreBtn}
+          onClick={() => setVisibleCount(prev => prev + 5)}
         >
-          {showAll ? '접기' : '리뷰 더보기'}
+          리뷰 더보기
         </button>
       )}
     </section>

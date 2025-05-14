@@ -86,7 +86,7 @@ export default async function RestaurantDetailPage(props: any) {
 
         <MergedPhotoGallery photos={[...restaurant.photos, ...restaurant.reviews.flatMap(r => r.images)]} />
 
-        <ReviewSection reviews={restaurant.reviews} isLoggedIn={true} />
+        <ReviewSection reviews={restaurant.reviews} isLoggedIn={true} restaurantName={restaurant.name}/>
       </div>
 
     </div>

@@ -1,9 +1,11 @@
-'use client';
+// 🔹 1. components/ReviewSection/ReviewSection.tsx
 
+'use client';
 import React, { useState } from 'react';
 import styles from '../../styles/ReviewSection.module.css';
+import ReviewModal from './ReviewModal';
 
-type Review = {
+export type Review = {
   id: string;
   author: string;
   content: string;
@@ -12,45 +14,37 @@ type Review = {
   rating: number;
 };
 
-{/* isLoggedIn: 추후 개발할 로그인을 위해 만든 간이 로그인 bool값*/}
 type Props = {
   reviews: Review[];
   isLoggedIn: boolean;
-}
+  restaurantName: string;
+};
 
-export default function ReviewSection({ reviews, isLoggedIn }: Props) {
+export default function ReviewSection({ reviews, isLoggedIn, restaurantName }: Props) {
+  const [reviewList, setReviewList] = useState<Review[]>(reviews);
   const [showAll, setShowAll] = useState(false);
   const [visibleCount, setVisibleCount] = useState(3);
   const [sortBy, setSortBy] = useState<'recommend' | 'latest' | 'ratingHigh' | 'ratingLow'>('recommend');
+  const [showModal, setShowModal] = useState(false);
 
-  {/* 추천 순 알고리즘 */}
   const WEIGHTS = {
-  rating: 10,
-  image: 3,
-  timePenaltyPerDay: 0.5,
+    rating: 10,
+    image: 3,
+    timePenaltyPerDay: 0.5,
   };
 
   const getReviewScore = (review: Review) => {
     const daysAgo = (Date.now() - new Date(review.createdAt).getTime()) / (1000 * 60 * 60 * 24);
-    return (
-      review.rating * WEIGHTS.rating +
-      review.images.length * WEIGHTS.image -
-      daysAgo * WEIGHTS.timePenaltyPerDay
-    );
+    return review.rating * WEIGHTS.rating + review.images.length * WEIGHTS.image - daysAgo * WEIGHTS.timePenaltyPerDay;
   };
-  
-  const sortedReviews = [...reviews].sort((a, b) => {
+
+  const sortedReviews = [...reviewList].sort((a, b) => {
     switch (sortBy) {
-      case 'recommend':
-        return getReviewScore(b) - getReviewScore(a);
-      case 'latest':
-        return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
-      case 'ratingHigh':
-        return b.rating - a.rating; 
-      case 'ratingLow':
-        return a.rating - b.rating;
-      default:
-        return 0;
+      case 'recommend': return getReviewScore(b) - getReviewScore(a);
+      case 'latest': return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
+      case 'ratingHigh': return b.rating - a.rating;
+      case 'ratingLow': return a.rating - b.rating;
+      default: return 0;
     }
   });
 
@@ -63,11 +57,8 @@ export default function ReviewSection({ reviews, isLoggedIn }: Props) {
         <button
           className={styles.writeBtn}
           onClick={() => {
-            if (isLoggedIn) {
-              alert('리뷰 작성하기');
-            } else {
-              alert('리뷰를 작성하려면 로그인이 필요합니다.');
-            }
+            if (isLoggedIn) setShowModal(true);
+            else alert('리뷰를 작성하려면 로그인이 필요합니다.');
           }}
         >
           리뷰 작성하기
@@ -75,63 +66,74 @@ export default function ReviewSection({ reviews, isLoggedIn }: Props) {
       </div>
 
       <div className={styles.sortBar}>
-        <button
-          className={`${styles.sortBtn} ${sortBy === 'recommend' ? styles.activeSort : ''}`}
-          onClick={() => setSortBy('recommend')}
-        >
-          추천순
-        </button>
-        <button
-          className={`${styles.sortBtn} ${sortBy === 'latest' ? styles.activeSort : ''}`}
-          onClick={() => setSortBy('latest')}
-        >
-          최신순
-        </button>
-        <button
-          className={`${styles.sortBtn} ${sortBy === 'ratingHigh' ? styles.activeSort : ''}`}
-          onClick={() => setSortBy('ratingHigh')}
-        >
-          평점 높은 순
-        </button>
-        <button
-          className={`${styles.sortBtn} ${sortBy === 'ratingLow' ? styles.activeSort : ''}`}
-          onClick={() => setSortBy('ratingLow')}
-        >
-          평점 낮은 순
-        </button>
+        {['recommend', 'latest', 'ratingHigh', 'ratingLow'].map((key) => (
+          <button
+            key={key}
+            className={`${styles.sortBtn} ${sortBy === key ? styles.activeSort : ''}`}
+            onClick={() => setSortBy(key as any)}
+          >
+            {key === 'recommend' ? '추천순' :
+             key === 'latest' ? '최신순' :
+             key === 'ratingHigh' ? '평점 높은 순' : '평점 낮은 순'}
+          </button>
+        ))}
       </div>
 
       {visibleReviews.map((review) => (
         <div key={review.id} className={styles.reviewCard}>
           <p className={styles.author}>{review.author}</p>
-
           <div className={styles.rating}>
             {Array.from({ length: 5 }).map((_, i) => (
-              <span key={i} className={i < review.rating ? styles.starFilled : styles.starEmpty}>
-                ★
-              </span>
+              <span key={i} className={i < review.rating ? styles.starFilled : styles.starEmpty}>★</span>
             ))}
           </div>
-
           <p className={styles.content}>{review.content}</p>
-
           <div className={styles.imageList}>
             {review.images.map((src, idx) => (
               <img key={idx} src={src} alt="리뷰 이미지" className={styles.image} />
             ))}
           </div>
-
           <p className={styles.date}>{review.createdAt.slice(0, 10)}</p>
         </div>
       ))}
 
       {visibleCount < sortedReviews.length && (
-        <button 
-          className={styles.loadMoreBtn}
-          onClick={() => setVisibleCount(prev => prev + 5)}
-        >
+        <button className={styles.loadMoreBtn} onClick={() => setVisibleCount(prev => prev + 5)}>
           리뷰 더보기
         </button>
+      )}
+
+      {/* 모달 코드 및 css */}
+      {/* {showModal && (
+        <ReviewModal
+          restaurantName={restaurantName}
+          onClose={() => setShowModal(false)}
+          onSubmit={(rating, content, images) => {
+            // TODO: 등록 처리 로직
+            console.log('제출됨', { rating, content, images});
+          }}
+        />
+      )} */}
+
+      {/* 모달 코드 및 css - 작성 시 리뷰 등록 됌. 다만 임시로 작성된 코드라 새로고침 시 삭제됨*/}
+      {/* 필요하면 loaclStorage에 저장하는 로직 추가 */}
+      {showModal && (
+        <ReviewModal
+          restaurantName={restaurantName}
+          onClose={() => setShowModal(false)}
+          onSubmit={(rating, content, images) => {
+            const newReview: Review = {
+              id: Date.now().toString(),
+              author: '익명 사용자',
+              content,
+              rating,
+              createdAt: new Date().toISOString(),
+              images: images.map(file => URL.createObjectURL(file)),
+            };
+            setReviewList(prev => [newReview, ...prev]);
+            setShowModal(false);
+          }}
+        />
       )}
     </section>
   );

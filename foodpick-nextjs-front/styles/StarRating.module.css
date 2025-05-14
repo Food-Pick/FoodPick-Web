@@ -1,0 +1,24 @@
+.starContainer {
+  display: flex;
+  justify-content: center;     /* ⭐ 가운데 정렬 */
+  gap: 0.6rem;
+  font-size: 3.5rem;           /* ⭐ 별 크기 키움 */
+  margin-bottom: 1.5rem;
+}
+
+.filledStar {
+  color: #facc15; /* 노란 별 */
+  cursor: pointer;
+  transition: transform 0.2s;
+}
+
+.emptyStar {
+  color: #ddd; /* 회색 별 */
+  cursor: pointer;
+  transition: transform 0.2s;
+}
+
+.filledStar:hover,
+.emptyStar:hover {
+  transform: scale(1.2);
+}

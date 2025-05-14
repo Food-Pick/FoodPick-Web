@@ -4,6 +4,7 @@
 import React, { useState } from 'react';
 import styles from '../../styles/ReviewSection.module.css';
 import ReviewModal from './ReviewModal';
+import LoginRequiredModal from './LoginRequiredModal';
 
 export type Review = {
   id: string;
@@ -26,6 +27,7 @@ export default function ReviewSection({ reviews, isLoggedIn, restaurantName }: P
   const [visibleCount, setVisibleCount] = useState(3);
   const [sortBy, setSortBy] = useState<'recommend' | 'latest' | 'ratingHigh' | 'ratingLow'>('recommend');
   const [showModal, setShowModal] = useState(false);
+  const [showLoginModal, setShowLoginModal] = useState(false);
 
   const WEIGHTS = {
     rating: 10,
@@ -58,7 +60,7 @@ export default function ReviewSection({ reviews, isLoggedIn, restaurantName }: P
           className={styles.writeBtn}
           onClick={() => {
             if (isLoggedIn) setShowModal(true);
-            else alert('리뷰를 작성하려면 로그인이 필요합니다.');
+            else setShowLoginModal(true);
           }}
         >
           리뷰 작성하기
@@ -135,6 +137,9 @@ export default function ReviewSection({ reviews, isLoggedIn, restaurantName }: P
           }}
         />
       )}
+
+      {/* 로그안 요청 모달*/}
+      {showLoginModal && <LoginRequiredModal onClose={() => setShowLoginModal(false)} />}
     </section>
   );
 }

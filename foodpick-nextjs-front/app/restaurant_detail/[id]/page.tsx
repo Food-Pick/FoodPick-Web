@@ -87,7 +87,7 @@ export default async function RestaurantDetailPage(props: any) {
         <MergedPhotoGallery photos={[...restaurant.photos, ...restaurant.reviews.flatMap(r => r.images)]} />
 
         {/* isLoggedIn boolean 값에 따라 모달 달라짐*/}
-        <ReviewSection reviews={restaurant.reviews} isLoggedIn={false} restaurantName={restaurant.name}/>
+        <ReviewSection reviews={restaurant.reviews} isLoggedIn={true} restaurantName={restaurant.name}/>
       </div>
 
     </div>

@@ -126,3 +126,26 @@
   background-color: #ff6600 !important;
   color: white !important;
 }
+
+.reviewActions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.5rem;
+  margin-top: 0.5rem;
+}
+
+.reviewActions button {
+  background: none;
+  border: none;
+  color: #888;             /* ✅ 기본 회색 */
+  font-weight: 500;
+  cursor: pointer;
+  font-size: 0.95rem;
+  padding: 0.2rem 0.5rem;
+  transition: color 0.2s ease;
+}
+
+.reviewActions button:hover {
+  color: #ff6600;          /* ✅ hover 시 주황색으로 변경 */
+}
+

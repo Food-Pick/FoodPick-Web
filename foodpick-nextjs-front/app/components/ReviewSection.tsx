@@ -28,6 +28,7 @@ export default function ReviewSection({ reviews, isLoggedIn, restaurantName }: P
   const [sortBy, setSortBy] = useState<'recommend' | 'latest' | 'ratingHigh' | 'ratingLow'>('recommend');
   const [showModal, setShowModal] = useState(false);
   const [showLoginModal, setShowLoginModal] = useState(false);
+  const currentUserName = '익명 사용자';
 
   const WEIGHTS = {
     rating: 10,
@@ -49,6 +50,12 @@ export default function ReviewSection({ reviews, isLoggedIn, restaurantName }: P
       default: return 0;
     }
   });
+
+  const handleDeleteReview = (id: string) => {
+    if (confirm('정말 삭제하시겠습니까?')) {
+      setReviewList(prev => prev.filter(r => r.id !== id));
+    }
+  };
 
   const visibleReviews = sortedReviews.slice(0, visibleCount);
 
@@ -96,6 +103,14 @@ export default function ReviewSection({ reviews, isLoggedIn, restaurantName }: P
             ))}
           </div>
           <p className={styles.date}>{review.createdAt.slice(0, 10)}</p>
+
+          {/* 👇 작성자 본인만 수정/삭제 가능 */}
+          {isLoggedIn && review.author === currentUserName && (
+            <div className={styles.reviewActions}>
+              <button onClick={() => alert('수정')}>수정</button>
+              <button onClick={() => handleDeleteReview(review.id)}>삭제</button>
+            </div>
+          )}
         </div>
       ))}
 

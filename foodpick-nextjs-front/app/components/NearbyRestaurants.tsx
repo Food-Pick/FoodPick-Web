@@ -25,41 +25,52 @@ interface NearbyRestaurantsProps {
 export default function NearbyRestaurants({ latitude, longitude }: NearbyRestaurantsProps) {
   const [restaurants, setRestaurants] = useState<Restaurant[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     let isMounted = true;
 
     const fetchNearbyRestaurants = async () => {
+      if (!latitude || !longitude) {
+        if (isMounted) {
+          setError('위치 정보가 없습니다.');
+          setIsLoading(false);
+        }
+        return;
+      }
+
       try {
         const response = await fetch(
           `/api/nearby/restaurant?lat=${latitude}&lng=${longitude}`
         );
+        
+        if (!response.ok) {
+          throw new Error(`API 응답 에러: ${response.status}`);
+        }
+        
         const data = await response.json();
+        
         if (isMounted) {
-          setRestaurants(data.raw);
-          console.log(restaurants);
+          setRestaurants(data.raw || []);
           setIsLoading(false);
         }
       } catch (error) {
         console.error('주변 음식점 정보를 가져오는데 실패했습니다:', error);
         if (isMounted) {
+          setError('주변 음식점 정보를 가져오는데 실패했습니다.');
           setIsLoading(false);
         }
       }
     };
 
-    if (latitude && longitude) {
-      fetchNearbyRestaurants();
-    }
+    setIsLoading(true);
+    setError(null);
+    fetchNearbyRestaurants();
 
     return () => {
       isMounted = false;
     };
   }, [latitude, longitude]);
-  
-  useEffect(() => {
-    console.log(restaurants);
-  }, [restaurants]);
 
   return (
     <section className={styles.recommendSection}>
@@ -80,7 +91,9 @@ export default function NearbyRestaurants({ latitude, longitude }: NearbyRestaur
                 </div>
               </div>
             ))
-          ) : (
+          ) : error ? (
+            <div className={styles.errorMessage}>{error}</div>
+          ) : restaurants && restaurants.length > 0 ? (
             restaurants.map((restaurant) => (
               <Link 
                 href={`/restaurant/detail/${restaurant.restaurant_id}`} 
@@ -107,6 +120,8 @@ export default function NearbyRestaurants({ latitude, longitude }: NearbyRestaur
                 </div>
               </Link>
             ))
+          ) : (
+            <div className={styles.emptyMessage}>주변에 음식점이 없습니다.</div>
           )}
         </div>
       </div>

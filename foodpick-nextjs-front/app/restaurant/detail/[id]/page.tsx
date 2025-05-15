@@ -16,7 +16,7 @@ const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://api:3000';
 
 async function getRestaurantDetail(id: string) {
     try {
-      console.log('api url', API_URL);
+    console.log('api url', API_URL);
     const response = await fetch(`${API_URL}/restaurant/search?id=${id}`);
     if (!response.ok) throw new Error('Failed to fetch restaurant detail');
     const data = await response.json();
@@ -32,6 +32,8 @@ export default async function NearbyRestaurantDetailPage({ params }: Props) {
   const restaurant = await getRestaurantDetail(id);
   if (!restaurant) return notFound();
 
+  console.log(restaurant);
+
   // 메뉴 파싱
   let menu: any[] = [];
   try {
@@ -40,13 +42,22 @@ export default async function NearbyRestaurantDetailPage({ params }: Props) {
     menu = [];
   }
 
+  let photo: any[] = [];
+  try {
+    photo = restaurant.photo ? JSON.parse(restaurant.photo) : [];
+  } catch {
+    photo = [];
+  }
+
   // 대표 이미지
   const mainImage =
-    menu[0]?.images?.[0] ||
+    photo?.[0] ||
     '/images/background.png';
 
   // 모든 사진 모으기
-  const allPhotos = menu.flatMap((m) => m.images || []);
+  const allPhotos = photo;
+
+  console.log('allPhotos', allPhotos);
 
   // 네이버 place info 파싱
   let placeInfo: any = {};

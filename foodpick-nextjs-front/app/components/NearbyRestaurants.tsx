@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { use, useEffect, useState } from 'react';
 import { FiMapPin } from 'react-icons/fi';
 import styles from '../../styles/home.module.css';
 import Link from 'next/link';
@@ -13,6 +13,7 @@ interface Restaurant {
   restaurant_네이버_전화번호: string;
   restaurant_네이버_url: string;
   restaurant_menu: string | null;
+  restaraunt_photo: string | null;
   dist: number;
 }
 
@@ -36,6 +37,7 @@ export default function NearbyRestaurants({ latitude, longitude }: NearbyRestaur
         const data = await response.json();
         if (isMounted) {
           setRestaurants(data.raw);
+          console.log(restaurants);
           setIsLoading(false);
         }
       } catch (error) {
@@ -55,6 +57,9 @@ export default function NearbyRestaurants({ latitude, longitude }: NearbyRestaur
     };
   }, [latitude, longitude]);
   
+  useEffect(() => {
+    console.log(restaurants);
+  }, [restaurants]);
 
   return (
     <section className={styles.recommendSection}>
@@ -63,7 +68,7 @@ export default function NearbyRestaurants({ latitude, longitude }: NearbyRestaur
         <div className={styles.cardList}>
           {isLoading ? (
             // 스켈레톤 UI
-            Array.from({ length: 5 }).map((_, index) => (
+            Array.from({ length: 6 }).map((_, index) => (
               <div key={index} className={`${styles.foodCard} ${styles.skeleton}`}>
                 <div className={styles.skeletonImage} />
                 <div className={styles.cardContent}>

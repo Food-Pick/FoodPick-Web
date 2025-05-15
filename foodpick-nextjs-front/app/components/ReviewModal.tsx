@@ -5,16 +5,31 @@ import styles from '../../styles/ReviewModal.module.css';
 import StarRating from './StarRating';
 import { FiCamera } from 'react-icons/fi';
 
+{/* 수정 모드가 없는 모달 */}
+// type Props = {
+//   restaurantName: string;
+//   onClose: () => void;
+//   onSubmit: (rating: number, content: string, images: File[]) => void;
+// };
+
 type Props = {
   restaurantName: string;
   onClose: () => void;
-  onSubmit: (rating: number, content: string, images: File[]) => void;
+  onSubmit: (rating: number, content: string, images: (File | string)[]) => void;
+  isEditMode?: boolean; // ✅ 선택적 prop으로 추가
+  initialData?: {
+    rating: number;
+    content: string;
+    images: string[];
+  };
 };
 
-export default function ReviewModal({ restaurantName, onClose, onSubmit }: Props) {
-  const [rating, setRating] = useState(0);
-  const [content, setContent] = useState('');
+export default function ReviewModal({ restaurantName, onClose, onSubmit, initialData, isEditMode }: Props) {
+  const [rating, setRating] = useState(initialData?.rating ?? 0);
+  const [content, setContent] = useState(initialData?.content ?? '');
   const [imageFiles, setImageFiles] = useState<File[]>([]);
+  const [existingImages, setExistingImages] = useState<string[]>(initialData?.images ?? []);
+
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files) {
@@ -24,7 +39,7 @@ export default function ReviewModal({ restaurantName, onClose, onSubmit }: Props
   };
 
   const handleSubmit = () => {
-    onSubmit(rating, content, imageFiles);
+    onSubmit(rating, content, [...existingImages, ...imageFiles]);
     onClose();
   };
   
@@ -32,7 +47,10 @@ export default function ReviewModal({ restaurantName, onClose, onSubmit }: Props
     <div className={styles.modalOverlay}>
       <div className={styles.modalContent} onClick={(e) => e.stopPropagation()}>
         <button className={styles.closeBtn} onClick={onClose}>×</button>
-        <h3 className={styles.title}><strong>{restaurantName}</strong><br />방문리뷰를 적어주세요.</h3>
+        <h3 className={styles.title}>
+          <strong>{restaurantName}</strong><br />
+          방문리뷰를 적어주세요.
+        </h3>
 
         <hr className={styles.divider} />
 
@@ -47,7 +65,7 @@ export default function ReviewModal({ restaurantName, onClose, onSubmit }: Props
           onChange={(e) => setContent(e.target.value)}
         />
 
-         <div className={styles.uploadBtnWrapper}>
+        <div className={styles.uploadBtnWrapper}>
           <label className={styles.uploadBtn}>
             <FiCamera size={20} />
             사진첨부하기
@@ -55,13 +73,33 @@ export default function ReviewModal({ restaurantName, onClose, onSubmit }: Props
           </label>
         </div>
 
-        {imageFiles.length > 0 && (
+        {(existingImages.length > 0 || imageFiles.length > 0) && (
           <div className={styles.imagePreview}>
+            {/* 기존 이미지 미리보기 */}
+            {existingImages.map((src, idx) => (
+              <div key={`existing-${idx}`} className={styles.previewWrapper}>
+                <img
+                  src={src}
+                  alt={`기존 이미지 ${idx}`}
+                  className={styles.previewImg}
+                />
+                <button
+                  className={styles.deleteImgBtn}
+                  onClick={() => {
+                    setExistingImages(prev => prev.filter((_, i) => i !== idx));
+                  }}
+                >
+                  ×
+                </button>
+              </div>
+            ))}
+
+            {/* 새로 업로드한 이미지 미리보기 */}
             {imageFiles.map((file, idx) => (
-              <div key={idx} className={styles.previewWrapper}>
+              <div key={`file-${idx}`} className={styles.previewWrapper}>
                 <img
                   src={URL.createObjectURL(file)}
-                  alt={`preview-${idx}`}
+                  alt={`업로드 이미지 ${idx}`}
                   className={styles.previewImg}
                 />
                 <button
@@ -88,10 +126,10 @@ export default function ReviewModal({ restaurantName, onClose, onSubmit }: Props
             onClick={handleSubmit}
             disabled={rating === 0 || content.trim() === ''}
           >
-            등록하기
+            {isEditMode ? '수정하기' : '등록하기'}
           </button>
         </div>
       </div>
     </div>
-  )
+  );
 }

@@ -1,8 +1,9 @@
 'use client';
 
 import { useEffect, useState, Suspense } from 'react';
-import { useSearchParams } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import dynamic from 'next/dynamic';
+import Link from 'next/link';
 import Header from '../../components/Header';
 import styles from './SearchResult.module.css';
 
@@ -25,7 +26,8 @@ function SearchResultContent() {
     const [loading, setLoading] = useState(true);
     const [hoveredRestaurant, setHoveredRestaurant] = useState<Restaurant | null>(null);
     const searchParams = useSearchParams();
-
+    const router = useRouter();
+    
     useEffect(() => {
         const fetchData = async () => {
             try {
@@ -34,7 +36,17 @@ function SearchResultContent() {
                 const lng = searchParams.get('lng') || '';
                 const res = await fetch(`/api/restaurant/search_food?food=${food}&lat=${lat}&lng=${lng}`);
                 const data = await res.json();
-                setResults(data);
+                
+                // 유사도 계산 및 정렬
+                const sortedResults = data.map((item: Restaurant) => {
+                    let menu = [];
+                    try { menu = JSON.parse(item.menu); } catch {}
+                    const menuNames = menu.map((m: any) => m.name).join(' ');
+                    const similarity = calculateSimilarity(food, menuNames);
+                    return { ...item, similarity };
+                }).sort((a: any, b: any) => b.similarity - a.similarity);
+
+                setResults(sortedResults);
             } catch (error) {
                 console.error('Error fetching data:', error);
             } finally {
@@ -44,6 +56,21 @@ function SearchResultContent() {
 
         fetchData();
     }, [searchParams]);
+
+    // 유사도 계산 함수
+    const calculateSimilarity = (searchTerm: string, menuText: string) => {
+        const searchWords = searchTerm.toLowerCase().split(' ');
+        const menuWords = menuText.toLowerCase().split(' ');
+        
+        let matchCount = 0;
+        for (const searchWord of searchWords) {
+            if (menuWords.some(menuWord => menuWord.includes(searchWord))) {
+                matchCount++;
+            }
+        }
+        
+        return matchCount / searchWords.length;
+    };
 
     // 마커용 데이터
     const markers = results.map((item) => {
@@ -110,22 +137,41 @@ function SearchResultContent() {
                             try { menu = JSON.parse(item.menu); } catch {}
                             const image = menu[0]?.images?.[0] || '/images/background.png';
                             const isHovered = hoveredRestaurant?.id === item.id;
+
+                            // 검색어와 관련된 메뉴 찾기
+                            const searchTerm = searchParams.get('food')?.toLowerCase() || '';
+                            const relevantMenus = menu
+                                .filter((m: any) => m.name.toLowerCase().includes(searchTerm))
+                                .slice(0, 2);
+                            
+                            // 관련 메뉴가 2개 미만이면 나머지 메뉴로 채우기
+                            const remainingMenus = menu
+                                .filter((m: any) => !m.name.toLowerCase().includes(searchTerm))
+                                .slice(0, 2 - relevantMenus.length);
+                            
+                            const displayMenus = [...relevantMenus, ...remainingMenus];
+
                             return (
-                                <li 
-                                    key={item.id} 
-                                    className={`${styles.resultItem} ${isHovered ? styles.resultItemHovered : ''}`}
-                                    onMouseEnter={() => setHoveredRestaurant(item)}
-                                    onMouseLeave={() => setHoveredRestaurant(null)}
+                                <Link 
+                                    key={item.id}
+                                    href={`/restaurant/detail/${item.id}`}
+                                    className={styles.resultLink}
                                 >
-                                    <img src={image} alt={item.사업장명} className={styles.resultImg} />
-                                    <div className={styles.resultInfo}>
-                                        <div className={styles.resultName}>{item.사업장명}</div>
-                                        <div className={styles.resultMeta}>{item.도로명전체주소}</div>
-                                        <div className={styles.resultDesc}>
-                                            {menu.slice(0, 2).map((m: any) => m.name).join(', ')}
+                                    <li 
+                                        className={`${styles.resultItem} ${isHovered ? styles.resultItemHovered : ''}`}
+                                        onMouseEnter={() => setHoveredRestaurant(item)}
+                                        onMouseLeave={() => setHoveredRestaurant(null)}
+                                    >
+                                        <img src={image} alt={item.사업장명} className={styles.resultImg} />
+                                        <div className={styles.resultInfo}>
+                                            <div className={styles.resultName}>{item.사업장명}</div>
+                                            <div className={styles.resultMeta}>{item.도로명전체주소}</div>
+                                            <div className={styles.resultDesc}>
+                                                {displayMenus.map((m: any) => m.name).join(', ')}
+                                            </div>
                                         </div>
-                                    </div>
-                                </li>
+                                    </li>
+                                </Link>
                             );
                         })}
                     </ul>

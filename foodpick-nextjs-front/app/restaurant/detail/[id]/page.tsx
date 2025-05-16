@@ -5,6 +5,8 @@ import Header from '../../../components/Header';
 import { notFound } from 'next/navigation';
 import MenuSection from '@/app/components/MenuSection';
 import MergedPhotoGallery from '@/app/components/MergedPhotoGallery';
+import ReviewSection from '@/app/components/ReviewSection';
+import { Review } from '@/app/components/ReviewSection';
 
 type Props = {
   params: {
@@ -56,6 +58,34 @@ export default async function NearbyRestaurantDetailPage({ params }: Props) {
 
   // 모든 사진 모으기
   const allPhotos = photo;
+
+  // 가상 리뷰 데이터 생성
+  const dummyReviews: Review[] = [
+    {
+      id: '1',
+      author: '홍길동',
+      content: '음식이 정말 맛있었어요! 다음에 또 방문할 예정입니다.',
+      rating: 5,
+      images: allPhotos.length > 0 ? [allPhotos[0]] : [],
+      createdAt: '2023-04-15T09:30:00Z',
+    },
+    {
+      id: '2',
+      author: '김철수',
+      content: '맛은 좋았지만 서비스가 조금 아쉬웠어요.',
+      rating: 4,
+      images: [],
+      createdAt: '2023-04-10T15:45:00Z',
+    },
+    {
+      id: '3',
+      author: '이영희',
+      content: '분위기도 좋고 음식도 맛있어요.',
+      rating: 4,
+      images: allPhotos.length > 1 ? [allPhotos[1]] : [],
+      createdAt: '2023-04-05T12:20:00Z',
+    },
+  ];
 
   console.log('allPhotos', allPhotos);
 
@@ -163,6 +193,12 @@ export default async function NearbyRestaurantDetailPage({ params }: Props) {
         {allPhotos.length > 0 && (
           <MergedPhotoGallery photos={allPhotos} />
         )}
+
+        <ReviewSection 
+          reviews={dummyReviews} 
+          isLoggedIn={true} 
+          restaurantName={restaurant.네이버_상호명 || restaurant.사업장명}
+        />
       </div>
     </div>
   );

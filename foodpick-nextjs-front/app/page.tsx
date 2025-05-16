@@ -9,6 +9,7 @@ import { trendingHashtags } from './data/hashtags';
 import { videoList } from './data/videoList';
 import SnsVideoSection from './components/SnsVideoSection';
 import LocationModal from './components/LocationModal';
+import { useRouter } from 'next/navigation';
 
 // 위치 정보 타입 정의
 interface LocationInfo {
@@ -41,6 +42,8 @@ export default function Home() {
   });
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [showLocationModal, setShowLocationModal] = useState(false);
+  const [searchQuery, setSearchQuery] = useState('');
+  const router = useRouter();
 
   useEffect(() => {
     console.log('초기 locationInfo', locationInfo);
@@ -82,6 +85,18 @@ export default function Home() {
     getCurrentLocation();
   }, []);
 
+  useEffect(() => {
+    console.log('searchQuery', searchQuery);
+  }, [searchQuery]);
+
+  const handleSearch = () => {
+    if (searchQuery.trim() === '') {
+      alert('검색어를 입력해주세요.');
+      return;
+    }
+    router.push(`/search/result?food=${encodeURIComponent(searchQuery)}&lat=${locationInfo.latitude}&lng=${locationInfo.longitude}`);
+  };
+
   return (
     <div className={styles.container}>
       <Header /> 
@@ -91,8 +106,8 @@ export default function Home() {
 
         <div className={styles.serachArea}>
           <div className={styles.searchBox}>
-            <input type='text' placeholder='지금 먹고 싶은 음식은?'/>
-            <button><FiSearch/></button>
+            <input type='text' placeholder='지금 먹고 싶은 음식은?' value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)}/>
+            <button onClick={handleSearch}><FiSearch/></button>
           </div>
 
           <div className={styles.locationRow}>

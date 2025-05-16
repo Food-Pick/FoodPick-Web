@@ -1,0 +1,130 @@
+.container {
+  display: flex;
+  flex-direction: row;
+  width: 100vw;
+  min-height: 80vh;
+  background: #fff;
+  border-radius: 0;
+  box-shadow: none;
+  margin: 0;
+  max-width: 100vw;
+  overflow: hidden;
+}
+
+.leftPanel {
+  flex: 1.1;
+  padding: 2rem 1.5rem 2rem 2rem;
+  background: #fff;
+  border-right: 1px solid #eee;
+  min-width: 340px;
+  height: 100vh;
+  overflow-y: auto;
+}
+
+.rightPanel {
+  flex: 1.7;
+  min-width: 400px;
+  height: 100vh;
+  background: #f7f8fa;
+  position: relative;
+}
+
+.title {
+  font-size: 1.5rem;
+  font-weight: bold;
+  margin-bottom: 1.5rem;
+  color: #222;
+}
+
+.tabBar {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.tab {
+  background: #f2f2f2;
+  border: none;
+  border-radius: 20px;
+  padding: 0.5rem 1.2rem;
+  font-size: 1rem;
+  color: #666;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+.tab.active {
+  background: #ff6600;
+  color: #fff;
+  font-weight: bold;
+}
+
+.resultList {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.resultItem {
+  display: flex;
+  padding: 1rem;
+  border-bottom: 1px solid #eee;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.resultItem:hover {
+  background-color: #f8f8f8;
+  transform: translateX(4px);
+  box-shadow: -2px 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.resultItem:last-child {
+  border-bottom: none;
+}
+
+.resultImg {
+  width: 100px;
+  height: 80px;
+  object-fit: cover;
+  border-radius: 8px;
+  background: #eee;
+}
+
+.resultInfo {
+  flex: 1;
+}
+
+.resultName {
+  font-size: 1.1rem;
+  font-weight: bold;
+  margin-bottom: 0.3rem;
+  color: #222;
+}
+
+.resultMeta {
+  font-size: 0.95rem;
+  color: #888;
+  margin-bottom: 0.2rem;
+}
+
+.resultDesc {
+  font-size: 0.95rem;
+  color: #555;
+}
+
+@media (max-width: 900px) {
+  .container {
+    flex-direction: column;
+    max-width: 100vw;
+    min-width: 0;
+  }
+  .leftPanel, .rightPanel {
+    min-width: 0;
+    width: 100vw;
+    padding: 1rem;
+    height: 350px;
+  }
+  .rightPanel {
+    height: 350px;
+  }
+} 

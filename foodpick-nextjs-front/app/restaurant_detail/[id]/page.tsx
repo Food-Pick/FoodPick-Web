@@ -6,9 +6,9 @@ import { restaurants } from '../../data/mockRestaurantData';
 import styles from '../../../styles/restaurant_Detail.module.css';
 import Header from '../../components/Header';
 import { notFound } from 'next/navigation';
-import MenuSection from '@/app/components/MenuSection';
-import MergedPhotoGallery from '@/app/components/MergedPhotoGallery';
-import ReviewSection from '@/app/components/ReviewSection';
+import MenuSection from '../../components/MenuSection';
+import MergedPhotoGallery from '../../components/MergedPhotoGallery';
+import ReviewSection from '../../components/ReviewSection';
 
 export async function generateStaticParams() {
   return restaurants.map((r) => ({

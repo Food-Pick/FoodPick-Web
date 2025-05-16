@@ -8,15 +8,15 @@ services:
       dockerfile: scaffold/Dockerfile
     volumes:
       - ./foodpick-nextjs-front:/app
-      - /app/node_modules
-      - /app/.next
+      - frontend-node-modules:/app/node_modules
+      - frontend-next-cache:/app/.next
     working_dir: /app
     ports:
       - "2000:3000"
     environment:
       - INTERNAL_BACKEND_URL=http://foodpick-api:3000 # <--- 가장 중요! 또는 http://api:3000
       - NEXT_PUBLIC_API_BASE_PATH=/api # 클라이언트 사이드에서 API 호출 시 사용할 기본 경로 (선택적)
-      - NODE_ENV=development
+      - NODE_ENV=${NODE_ENV:-environment}
       - CHOKIDAR_USEPOLLING=true
       - WATCHPACK_POLLING=true
     networks:
@@ -26,3 +26,7 @@ services:
 networks:
   foodpick-network:
     external: true
+
+volumes:
+  frontend-node-modules:
+  frontend-next-cache:

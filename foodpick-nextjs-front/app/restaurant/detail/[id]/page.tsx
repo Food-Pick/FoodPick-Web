@@ -3,15 +3,16 @@ import { FiMapPin, FiPhone, FiClock, FiCheckCircle } from 'react-icons/fi';
 import styles from '../../../../styles/restaurant_Detail.module.css';
 import Header from '../../../components/Header';
 import { notFound } from 'next/navigation';
-import MenuSection from '@/app/components/MenuSection';
-import MergedPhotoGallery from '@/app/components/MergedPhotoGallery';
-import ReviewSection from '@/app/components/ReviewSection';
-import { Review } from '@/app/components/ReviewSection';
+import MenuSection from '../../../components/MenuSection';
+import MergedPhotoGallery from '../../../components/MergedPhotoGallery';
+import ReviewSection from '../../../components/ReviewSection';
+import { Review } from '../../../components/ReviewSection';
 
 type Props = {
-  params: {
+  params: Promise<{
     id: string;
-  };
+  }>;
+  searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
 };
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://api:3000';
@@ -29,8 +30,8 @@ async function getRestaurantDetail(id: string) {
   }
 }
 
-export default async function NearbyRestaurantDetailPage({ params }: Props) {
-  const { id } = await params;
+export default async function NearbyRestaurantDetailPage({ params, searchParams }: Props) {
+  const [{ id }, search] = await Promise.all([params, searchParams]);
   const restaurant = await getRestaurantDetail(id);
   if (!restaurant) return notFound();
 

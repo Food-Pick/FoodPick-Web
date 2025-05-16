@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import MergedPhotoGallery from '@/app/components/MergedPhotoGallery';
+import MergedPhotoGallery from '../../components/MergedPhotoGallery';
 
 export default function LoadingTestPage() {
   const [galleryKey, setGalleryKey] = useState(0);

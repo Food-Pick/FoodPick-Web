@@ -1,13 +1,13 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
 import dynamic from 'next/dynamic';
-import Header from '@/app/components/Header';
-import styles from '@/styles/SearchResult.module.css';
+import Header from '../../components/Header';
+import styles from './SearchResult.module.css';
 
 const SearchResultMap = dynamic(
-  () => import('@/app/components/SearchResultMap'),
+  () => import('../../components/SearchResultMap'),
   { ssr: false }
 );
 
@@ -20,7 +20,7 @@ interface Restaurant {
     menu: string;
 }
 
-export default function SearchResultPage() {
+function SearchResultContent() {
     const [results, setResults] = useState<Restaurant[]>([]);
     const [loading, setLoading] = useState(true);
     const [hoveredRestaurant, setHoveredRestaurant] = useState<Restaurant | null>(null);
@@ -62,8 +62,93 @@ export default function SearchResultPage() {
 
     if (loading) {
         return (
-            <div>
-                <Header />
+            <div className={styles.container}>
+                <div className={styles.leftPanel}>
+                    <div style={{ color: '#888', fontSize: '1.1rem', padding: '2rem 0', textAlign: 'center' }}>
+                        로딩 중...
+                    </div>
+                </div>
+                <div className={styles.rightPanel}>
+                    <div style={{
+                        width: '100%',
+                        height: '100%',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        color: '#bbb',
+                        fontSize: '1.2rem'
+                    }}>
+                        지도를 불러오는 중...
+                    </div>
+                </div>
+            </div>
+        );
+    }
+
+    return (
+        <div className={styles.container}>
+            <div className={styles.leftPanel}>
+                <h2 className={styles.title}>'{searchParams.get('food')}'에 대한 검색 결과</h2>
+                {results.length === 0 ? (
+                    <div style={{ color: '#888', fontSize: '1.1rem', padding: '2rem 0', textAlign: 'center' }}>
+                        검색 결과가 없습니다.
+                    </div>
+                ) : (
+                    <ul className={styles.resultList}>
+                        {results.map((item) => {
+                            let menu = [];
+                            try { menu = JSON.parse(item.menu); } catch {}
+                            const image = menu[0]?.images?.[0] || '/images/background.png';
+                            return (
+                                <li 
+                                    key={item.id} 
+                                    className={styles.resultItem}
+                                    onMouseEnter={() => setHoveredRestaurant(item)}
+                                    onMouseLeave={() => setHoveredRestaurant(null)}
+                                >
+                                    <img src={image} alt={item.사업장명} className={styles.resultImg} />
+                                    <div className={styles.resultInfo}>
+                                        <div className={styles.resultName}>{item.사업장명}</div>
+                                        <div className={styles.resultMeta}>{item.도로명전체주소}</div>
+                                        <div className={styles.resultDesc}>
+                                            {menu.slice(0, 2).map((m: any) => m.name).join(', ')}
+                                        </div>
+                                    </div>
+                                </li>
+                            );
+                        })}
+                    </ul>
+                )}
+            </div>
+            <div className={styles.rightPanel}>
+                {results.length === 0 ? (
+                    <div style={{
+                        width: '100%',
+                        height: '100%',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        color: '#bbb',
+                        fontSize: '1.2rem'
+                    }}>
+                        지도에 표시할 결과가 없습니다.
+                    </div>
+                ) : (
+                    <SearchResultMap 
+                        markers={markers} 
+                        highlightedMarker={highlightedMarker}
+                    />
+                )}
+            </div>
+        </div>
+    );
+}
+
+export default function SearchResultPage() {
+    return (
+        <div>
+            <Header />
+            <Suspense fallback={
                 <div className={styles.container}>
                     <div className={styles.leftPanel}>
                         <div style={{ color: '#888', fontSize: '1.1rem', padding: '2rem 0', textAlign: 'center' }}>
@@ -84,68 +169,9 @@ export default function SearchResultPage() {
                         </div>
                     </div>
                 </div>
-            </div>
-        );
-    }
-
-    return (
-        <div>
-            <Header />
-            <div className={styles.container}>
-                <div className={styles.leftPanel}>
-                    <h2 className={styles.title}>'{searchParams.get('food')}'에 대한 검색 결과</h2>
-                    {results.length === 0 ? (
-                        <div style={{ color: '#888', fontSize: '1.1rem', padding: '2rem 0', textAlign: 'center' }}>
-                            검색 결과가 없습니다.
-                        </div>
-                    ) : (
-                        <ul className={styles.resultList}>
-                            {results.map((item) => {
-                                let menu = [];
-                                try { menu = JSON.parse(item.menu); } catch {}
-                                const image = menu[0]?.images?.[0] || '/images/background.png';
-                                return (
-                                    <li 
-                                        key={item.id} 
-                                        className={styles.resultItem}
-                                        onMouseEnter={() => setHoveredRestaurant(item)}
-                                        onMouseLeave={() => setHoveredRestaurant(null)}
-                                    >
-                                        <img src={image} alt={item.사업장명} className={styles.resultImg} />
-                                        <div className={styles.resultInfo}>
-                                            <div className={styles.resultName}>{item.사업장명}</div>
-                                            <div className={styles.resultMeta}>{item.도로명전체주소}</div>
-                                            <div className={styles.resultDesc}>
-                                                {menu.slice(0, 2).map((m: any) => m.name).join(', ')}
-                                            </div>
-                                        </div>
-                                    </li>
-                                );
-                            })}
-                        </ul>
-                    )}
-                </div>
-                <div className={styles.rightPanel}>
-                    {results.length === 0 ? (
-                        <div style={{
-                            width: '100%',
-                            height: '100%',
-                            display: 'flex',
-                            alignItems: 'center',
-                            justifyContent: 'center',
-                            color: '#bbb',
-                            fontSize: '1.2rem'
-                        }}>
-                            지도에 표시할 결과가 없습니다.
-                        </div>
-                    ) : (
-                        <SearchResultMap 
-                            markers={markers} 
-                            highlightedMarker={highlightedMarker}
-                        />
-                    )}
-                </div>
-            </div>
+            }>
+                <SearchResultContent />
+            </Suspense>
         </div>
     );
 }

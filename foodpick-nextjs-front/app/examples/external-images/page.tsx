@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import ProxiedImage from '@/app/components/ProxiedImage';
+import ProxiedImage from '../../components/ProxiedImage';
 
 export default function ExternalImagesExample() {
   const [imageUrl, setImageUrl] = useState('');

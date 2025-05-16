@@ -20,6 +20,11 @@ echo "🔍 Verifying POLLING environment variables:"
 echo "WATCHPACK_POLLING=${WATCHPACK_POLLING}"
 echo "CHOKIDAR_USEPOLLING=${CHOKIDAR_USEPOLLING}"
 
-# 개발 서버 실행
-echo "🚀 개발 서버 시작 중..."
-npm run dev
+if [ "$NODE_ENV" = "production" ]; then
+    echo "Production mode: Building and starting Next.js..."
+    npm run build
+    npm run start
+else
+    echo "Development mode: Starting Next.js..."
+    npm run dev
+fi 

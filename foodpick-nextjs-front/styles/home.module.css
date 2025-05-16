@@ -19,8 +19,16 @@
 .logo {
   display: flex;
   align-items: center;
-  padding: 0.5rem 0;
   cursor: pointer;
+}
+
+.logoContainer {
+  width: 130px;
+  height: 50px;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .loginBtn {

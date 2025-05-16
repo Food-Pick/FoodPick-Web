@@ -32,7 +32,6 @@ function SearchResultContent() {
                 const food = searchParams.get('food') || '';
                 const lat = searchParams.get('lat') || '';
                 const lng = searchParams.get('lng') || '';
-
                 const res = await fetch(`/api/restaurant/search_food?food=${food}&lat=${lat}&lng=${lng}`);
                 const data = await res.json();
                 setResults(data);
@@ -47,17 +46,28 @@ function SearchResultContent() {
     }, [searchParams]);
 
     // 마커용 데이터
-    const markers = results.map((item) => ({
-        lat: parseFloat(item.latitude),
-        lng: parseFloat(item.longitude),
-        name: item.사업장명,
-    }));
+    const markers = results.map((item) => {
+        let menu = [];
+        try { menu = JSON.parse(item.menu); } catch {}
+        const image = menu[0]?.images?.[0] || '/images/background.png';
+        return {
+            lat: parseFloat(item.latitude),
+            lng: parseFloat(item.longitude),
+            name: item.사업장명,
+            imageUrl: image
+        };
+    });
 
     // 현재 호버된 음식점의 마커 데이터
     const highlightedMarker = hoveredRestaurant ? {
         lat: parseFloat(hoveredRestaurant.latitude),
         lng: parseFloat(hoveredRestaurant.longitude),
         name: hoveredRestaurant.사업장명,
+        imageUrl: (() => {
+            let menu = [];
+            try { menu = JSON.parse(hoveredRestaurant.menu); } catch {}
+            return menu[0]?.images?.[0] || '/images/background.png';
+        })()
     } : undefined;
 
     if (loading) {
@@ -99,10 +109,11 @@ function SearchResultContent() {
                             let menu = [];
                             try { menu = JSON.parse(item.menu); } catch {}
                             const image = menu[0]?.images?.[0] || '/images/background.png';
+                            const isHovered = hoveredRestaurant?.id === item.id;
                             return (
                                 <li 
                                     key={item.id} 
-                                    className={styles.resultItem}
+                                    className={`${styles.resultItem} ${isHovered ? styles.resultItemHovered : ''}`}
                                     onMouseEnter={() => setHoveredRestaurant(item)}
                                     onMouseLeave={() => setHoveredRestaurant(null)}
                                 >
@@ -137,6 +148,17 @@ function SearchResultContent() {
                     <SearchResultMap 
                         markers={markers} 
                         highlightedMarker={highlightedMarker}
+                        onMarkerHover={(marker) => {
+                            if (marker) {
+                                const restaurant = results.find(r => 
+                                    parseFloat(r.latitude) === marker.lat && 
+                                    parseFloat(r.longitude) === marker.lng
+                                );
+                                setHoveredRestaurant(restaurant || null);
+                            } else {
+                                setHoveredRestaurant(null);
+                            }
+                        }}
                     />
                 )}
             </div>

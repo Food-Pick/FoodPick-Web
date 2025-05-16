@@ -18,7 +18,16 @@ export default function Header({ onLoginClick }: HeaderProps) {
   return (
     <header className={styles.header}>
       <div className={styles.logo} onClick={() => window.location.href = '/'}>
-        <Image src="/images/logo.png" alt="logo" width={150} height={60} />
+        <div className={styles.logoContainer}>
+          <Image 
+            src="/images/logo.png" 
+            alt="logo" 
+            width={130} 
+            height={50} 
+            priority
+            style={{ objectFit: 'contain' }}
+          />
+        </div>
       </div>
 
       {showSearch && (
@@ -29,7 +38,7 @@ export default function Header({ onLoginClick }: HeaderProps) {
               placeholder="지역, 가게명을 검색해보세요"
               className={styles.searchInput}
             />
-            <FiSearch className={styles.searchIcon} />
+            <FiSearch size={20} color="#888" />
           </div>
         </div>
       )}

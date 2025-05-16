@@ -21,7 +21,11 @@ const nextConfig: NextConfig = {
       {
         source: '/api/restaurant/search',
         destination: `${BACKEND_API_INTERNAL_URL}/restaurant/search`,
-      }
+      },
+      {
+        source: '/api/restaurant/search_food',
+        destination: `${BACKEND_API_INTERNAL_URL}/restaurant/search_food`,
+      },
     ];
   },
 }

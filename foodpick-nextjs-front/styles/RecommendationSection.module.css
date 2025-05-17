@@ -1,0 +1,45 @@
+.section {
+  background: white;
+  padding: 1.5rem;
+  border-radius: 12px;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.05);
+  margin-top: 2rem;
+}
+
+.heading {
+  font-size: 1.5rem;
+  font-weight: 700;
+  margin-bottom: 1rem;
+}
+
+.highlight {
+  color: #ff6600;
+  font-weight: 700;
+}
+
+.cardGrid {
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+}
+
+.loadMoreBtn {
+  width: 160px;           /* 원하는 너비 */
+  height: 44px;           /* 원하는 높이 */
+  margin-top: 1rem;
+  background-color: #ff6600;
+  color: white;
+  font-weight: bold;
+  border: none;
+  border-radius: 30px;
+  cursor: pointer;
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  text-align: center;
+  line-height: 44px;       /* 텍스트 수직 정렬 */
+  font-size: 15px;
+}
+.loadMoreBtn:hover {
+  background-color: #e65c00; /* 호버 시 색상 변경 */
+}

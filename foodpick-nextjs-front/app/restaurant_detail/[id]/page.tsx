@@ -9,6 +9,7 @@ import { notFound } from 'next/navigation';
 import MenuSection from '../../components/MenuSection';
 import MergedPhotoGallery from '../../components/MergedPhotoGallery';
 import ReviewSection from '../../components/ReviewSection';
+import RecommedationSection from '../../components/RecommendationSection';
 
 export async function generateStaticParams() {
   return restaurants.map((r) => ({
@@ -25,6 +26,7 @@ type Props = {
 export default async function RestaurantDetailPage(props: any) {
   const params = await props.params;
   const restaurant = restaurants.find(r => r.id === params.id);
+  const otherRestaurants = restaurants.filter(r => r.id !== params.id);
 
   if (!restaurant) return notFound(); 
 
@@ -32,6 +34,16 @@ export default async function RestaurantDetailPage(props: any) {
     ...restaurant.photos,
     ...restaurant.reviews.flatMap(r => r.images ?? [])
   ];
+
+  // 태그 검색
+  const similarRestaurants = otherRestaurants.filter(r => 
+    r.tags.some(tag => restaurant.tags.includes(tag)) 
+  );
+
+  // 거리 검색 -> 현재 보고 있는 가게에서 다음 가게까지에 거리 계산 알고리즘 필요요
+  const nearbyRestaurants = otherRestaurants.filter(r =>
+    r.distance < 2000
+  );
 
   return (
     <div>
@@ -88,6 +100,16 @@ export default async function RestaurantDetailPage(props: any) {
 
         {/* isLoggedIn boolean 값에 따라 모달 달라짐*/}
         <ReviewSection reviews={restaurant.reviews} isLoggedIn={true} restaurantName={restaurant.name}/>
+
+        <RecommedationSection
+          title={`${restaurant.name}과 비슷한 맛집`}
+          restaurants={similarRestaurants}
+        />
+
+        <RecommedationSection
+          title={`${restaurant.name}과 가까운 맛집`}
+          restaurants={nearbyRestaurants}
+        />  
       </div>
 
     </div>

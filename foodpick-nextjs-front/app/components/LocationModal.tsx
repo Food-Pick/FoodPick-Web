@@ -16,15 +16,48 @@ const LocationModal = ({ onClose, onSelect }: LocationModalProps) => {
   const [searchQuery, setSearchQuery] = useState('');
   const [searchResults, setSearchResults] = useState<any[]>([]);
   const [tempSelectedLocation, setTempSelectedLocation] = useState<any>(null);
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    // 모바일 환경 체크
+    const checkMobile = () => {
+      const wasMobile = isMobile;
+      const isNowMobile = window.innerWidth <= 767;
+      setIsMobile(isNowMobile);
+      
+      // PC에서 모바일로 전환될 때
+      if (!wasMobile && isNowMobile && selectedSido && selectedGugun && selectedDong) {
+        setSearchQuery(`${selectedSido} ${selectedGugun} ${selectedDong}`);
+      }
+      // 모바일에서 PC로 전환될 때
+      else if (wasMobile && !isNowMobile && searchQuery) {
+        setSearchQuery('');
+      }
+    };
+    
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    
+    return () => {
+      window.removeEventListener('resize', checkMobile);
+    };
+  }, [isMobile, selectedSido, selectedGugun, selectedDong, searchQuery]);
 
   useEffect(() => {
     // 모달 열릴 때 body 스크롤 잠금
-    const scrollBarWidth = window.innerWidth - document.documentElement.clientWidth;
     document.body.style.overflow = 'hidden';
-    document.body.style.paddingRight = `${scrollBarWidth}px`;
+    document.body.style.position = 'fixed';
+    document.body.style.width = '100%';
+    document.body.style.top = `-${window.scrollY}px`;
+
     return () => {
+      // 모달 닫힐 때 body 스크롤 복원
+      const scrollY = document.body.style.top;
       document.body.style.overflow = '';
-      document.body.style.paddingRight = '';
+      document.body.style.position = '';
+      document.body.style.width = '';
+      document.body.style.top = '';
+      window.scrollTo(0, parseInt(scrollY || '0') * -1);
     };
   }, []);
 
@@ -72,7 +105,7 @@ const LocationModal = ({ onClose, onSelect }: LocationModalProps) => {
     setSelectedSido(result.sido);
     setSelectedGugun(result.gugun);
     setSelectedDong(result.dong);
-    setSearchQuery('');
+    setSearchQuery(`${result.sido} ${result.gugun} ${result.dong}`);
   };
 
   const handleSelect = async () => {
@@ -87,7 +120,6 @@ const LocationModal = ({ onClose, onSelect }: LocationModalProps) => {
         if (data && data.length > 0) {
           const { lat, lon } = data[0];
           onSelect(fullAddress, parseFloat(lat), parseFloat(lon));
-          console.log(fullAddress, parseFloat(lat), parseFloat(lon));
         } else {
           onSelect(fullAddress, 37.5665, 126.9780);
         }
@@ -96,6 +128,18 @@ const LocationModal = ({ onClose, onSelect }: LocationModalProps) => {
         onSelect(fullAddress, 37.5665, 126.9780);
         onClose();
       }
+    }
+  };
+
+  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const newValue = e.target.value;
+    setSearchQuery(newValue);
+    
+    // 검색창이 수정되면 선택된 지역 정보 초기화
+    if (selectedSido && selectedGugun && selectedDong) {
+      setSelectedSido('');
+      setSelectedGugun('');
+      setSelectedDong('');
     }
   };
 
@@ -111,10 +155,10 @@ const LocationModal = ({ onClose, onSelect }: LocationModalProps) => {
             type="text"
             placeholder="시/도, 구/군, 동 검색"
             value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
+            onChange={handleSearchChange}
           />
         </div>
-        {searchQuery.trim() ? (
+        {searchQuery.trim() && !selectedSido ? (
           <div className={styles.searchResults}>
             {searchResults.map((result, index) => (
               <div
@@ -134,7 +178,7 @@ const LocationModal = ({ onClose, onSelect }: LocationModalProps) => {
         ) : (
           loading ? (
             <div style={{textAlign: 'center', padding: '40px 0'}}>지역 데이터를 불러오는 중...</div>
-          ) : (
+          ) : !isMobile ? (
             <div className={styles.listSelectRow}>
               <div className={styles.listCol}>
                 <div className={styles.listTitle}>시/도</div>
@@ -191,6 +235,18 @@ const LocationModal = ({ onClose, onSelect }: LocationModalProps) => {
                   ))}
                 </ul>
               </div>
+            </div>
+          ) : (
+            <div className={styles.searchResults}>
+              {selectedSido && selectedGugun && selectedDong ? (
+                <div className={styles.searchResultItem}>
+                  <span className={styles.resultSido}>{selectedSido}</span>
+                  <span className={styles.resultGugun}>{selectedGugun}</span>
+                  <span className={styles.resultDong}>{selectedDong}</span>
+                </div>
+              ) : (
+                <div className={styles.noResults}>지역을 검색해주세요</div>
+              )}
             </div>
           )
         )}

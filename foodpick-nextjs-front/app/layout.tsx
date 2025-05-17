@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
+import { LocationProvider } from './contexts/LocationContext';
 
 const inter = Inter({
   subsets: ["latin"],
@@ -20,7 +21,9 @@ export default function RootLayout({
   return (
     <html lang="ko">
       <body className={`${inter.variable} antialiased`}>
-        {children}
+        <LocationProvider>
+          {children}
+        </LocationProvider>
       </body>
     </html>
   );

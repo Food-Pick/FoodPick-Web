@@ -86,6 +86,12 @@ export default function SearchResultMap({ markers, highlightedMarker, onMarkerHo
     const [isMounted, setIsMounted] = useState(false);
     const markerRefs = useRef<{ [key: string]: any }>({});
 
+    // 한반도 주변의 경계 설정
+    const maxBounds: [number, number][] = [
+        [32.0, 122.0],  // 남서쪽 경계 (제주도 남쪽, 동해 서쪽)
+        [43.0, 132.0]   // 북동쪽 경계 (백두산 북쪽, 동해 동쪽)
+    ] as [number, number][];
+
     useEffect(() => {
         setIsMounted(true);
     }, []);
@@ -107,7 +113,15 @@ export default function SearchResultMap({ markers, highlightedMarker, onMarkerHo
     const center: [number, number] = markers[0] ? [markers[0].lat, markers[0].lng] : [36.35, 127.38];
 
     return (
-        <MapContainer center={center} zoom={16} style={{ height: '100%', width: '100%' }}>
+        <MapContainer 
+            center={center} 
+            zoom={16} 
+            minZoom={6}
+            maxZoom={18}
+            maxBounds={maxBounds}  // 이동 범위 제한
+            maxBoundsViscosity={1.0}  // 경계를 벗어나지 않도록 강제
+            style={{ height: '100%', width: '100%' }}
+        >
             <TileLayer
                 attribution='&copy; OpenStreetMap contributors'
                 url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"

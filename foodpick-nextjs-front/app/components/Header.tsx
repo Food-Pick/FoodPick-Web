@@ -85,7 +85,7 @@ export default function Header({ onLoginClick }: HeaderProps) {
         </div>
       )}
 
-      <button className={styles.loginBtn} onClick={onLoginClick}>
+      <button className={styles.loginBtn} onClick={() => router.push('/login')}>
         <FiUser /> 로그인
       </button>
     </header>

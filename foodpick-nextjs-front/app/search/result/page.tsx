@@ -25,6 +25,7 @@ function SearchResultContent() {
     const [results, setResults] = useState<Restaurant[]>([]);
     const [loading, setLoading] = useState(true);
     const [hoveredRestaurant, setHoveredRestaurant] = useState<Restaurant | null>(null);
+    const [isFromMap, setIsFromMap] = useState(false);  // 지도에서 hover된 것인지 구분
     const searchParams = useSearchParams();
     const router = useRouter();
     
@@ -97,6 +98,19 @@ function SearchResultContent() {
         })()
     } : undefined;
 
+    // hoveredRestaurant가 변경될 때마다 스크롤 처리 (지도에서 hover된 경우에만)
+    useEffect(() => {
+        if (hoveredRestaurant && isFromMap) {
+            const element = document.getElementById(`restaurant-${hoveredRestaurant.id}`);
+            if (element) {
+                element.scrollIntoView({
+                    behavior: 'smooth',
+                    block: 'center'
+                });
+            }
+        }
+    }, [hoveredRestaurant, isFromMap]);
+
     if (loading) {
         return (
             <div className={styles.container}>
@@ -144,7 +158,6 @@ function SearchResultContent() {
                                 .filter((m: any) => m.name.toLowerCase().includes(searchTerm))
                                 .slice(0, 2);
                             
-                            // 관련 메뉴가 2개 미만이면 나머지 메뉴로 채우기
                             const remainingMenus = menu
                                 .filter((m: any) => !m.name.toLowerCase().includes(searchTerm))
                                 .slice(0, 2 - relevantMenus.length);
@@ -152,15 +165,22 @@ function SearchResultContent() {
                             const displayMenus = [...relevantMenus, ...remainingMenus];
 
                             return (
-                                <Link 
+                                <li 
                                     key={item.id}
-                                    href={`/restaurant/detail/${item.id}`}
-                                    className={styles.resultLink}
+                                    id={`restaurant-${item.id}`}
+                                    className={`${styles.resultItem} ${isHovered ? styles.resultItemHovered : ''}`}
+                                    onMouseEnter={() => {
+                                        setHoveredRestaurant(item);
+                                        setIsFromMap(false);  // 리스트에서 hover된 경우
+                                    }}
+                                    onMouseLeave={() => {
+                                        setHoveredRestaurant(null);
+                                        setIsFromMap(false);
+                                    }}
                                 >
-                                    <li 
-                                        className={`${styles.resultItem} ${isHovered ? styles.resultItemHovered : ''}`}
-                                        onMouseEnter={() => setHoveredRestaurant(item)}
-                                        onMouseLeave={() => setHoveredRestaurant(null)}
+                                    <Link 
+                                        href={`/restaurant/detail/${item.id}`}
+                                        className={styles.resultLink}
                                     >
                                         <img src={image} alt={item.사업장명} className={styles.resultImg} />
                                         <div className={styles.resultInfo}>
@@ -170,8 +190,8 @@ function SearchResultContent() {
                                                 {displayMenus.map((m: any) => m.name).join(', ')}
                                             </div>
                                         </div>
-                                    </li>
-                                </Link>
+                                    </Link>
+                                </li>
                             );
                         })}
                     </ul>
@@ -201,8 +221,10 @@ function SearchResultContent() {
                                     parseFloat(r.longitude) === marker.lng
                                 );
                                 setHoveredRestaurant(restaurant || null);
+                                setIsFromMap(true);  // 지도에서 hover된 경우
                             } else {
                                 setHoveredRestaurant(null);
+                                setIsFromMap(false);
                             }
                         }}
                     />

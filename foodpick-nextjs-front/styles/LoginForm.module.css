@@ -1,0 +1,114 @@
+.container {
+  margin: 0;
+  padding: 0;
+  background: #f9f9f9;
+  font-family: 'Pretendard', sans-serif;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+
+.logo {
+  width: 220px;
+  margin-bottom: 3rem;
+  transform: translateX(-6px);
+  cursor: pointer;
+}
+
+/* ✅ 박스 전체 크기 키움 */
+.loginBox {
+  background: white;
+  padding: 3rem;
+  border-radius: 20px;
+  width: 480px;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 1.5rem;
+  box-sizing: border-box;
+  border: 1px solid #ddd;
+}
+
+/* ✅ 입력창 컨테이너 */
+.inputWrapper {
+  display: flex;
+  flex-direction: column;
+  border-radius: 16px;
+  overflow: hidden;
+}
+
+/* ✅ input 폰트 및 높이 확대 */
+.inputTop,
+.inputBottom {
+  padding: 1.3rem 1.2rem;
+  font-size: 1.2rem;
+  border: 1px solid #ccc;
+  outline: none;
+  background: white;
+  box-sizing: border-box;
+  border-radius: 0;
+}
+
+/* ✅ 모서리 둥글게 */
+.inputTop {
+  border-radius: 16px 16px 0 0;
+}
+.inputBottom {
+  border-radius: 0 0 16px 16px;
+}
+
+/* ✅ 포커스 시 테두리 강조 */
+.inputTop:focus,
+.inputBottom:focus {
+  border: 2px solid #ff7a3e;
+  z-index: 1;
+  position: relative;
+}
+
+/* ✅ 버튼 크기 확대 */
+.loginBtn {
+  background-color: #ff6600;
+  color: white;
+  padding: 1.1rem;
+  border: none;
+  border-radius: 14px;
+  font-size: 1.2rem;
+  font-weight: 600;
+  width: 100%;
+  cursor: pointer;
+  box-sizing: border-box;
+  transition: background-color 0.2s ease;
+}
+
+.loginBtn:hover {
+  background-color: #e55a00;
+}
+
+/* ✅ 하단 링크도 전체 너비 맞춤 */
+.footerLinks {
+  display: flex;
+  justify-content: space-between;
+  font-size: 1rem;
+  font-weight: 500;
+  color: #666;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  width: 100%;
+}
+
+.footerLinks a {
+  text-decoration: none;
+  color: #666;
+  cursor: pointer;
+}
+
+.footerLinks a.create {
+  color: #ff7a3e;
+  font-weight: 600;
+}
+
+.footerLinks a:hover {
+  text-decoration: underline;
+}

@@ -11,7 +11,7 @@ export const restaurants: Restaurant[] = [
     rating: 5.0,
     reviewCount: 23,
     distance: 451,
-    hours: '오전 11-00 - 오후 18:00',
+    hours: '11-00 - 18:00',
     services: ['테이크 아웃', '배달', '예약'],
     image: `/images/mongshim${1}.jpg`,
     menu: [

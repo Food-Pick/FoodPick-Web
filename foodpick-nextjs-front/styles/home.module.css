@@ -388,6 +388,14 @@
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
 }
 
+/* 비디오 카드 이미지 정해진 영역에 맞추기 */
+.videoCard img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
 /* ✅ 어두운 오버레이 추가 */
 .videoCard::after {
   content: '';

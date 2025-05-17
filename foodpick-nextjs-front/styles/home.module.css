@@ -82,6 +82,7 @@
   margin-left: 0.5rem;
   color: #888;
   font-size: 1.1rem;
+  cursor: pointer;
 }
 
 /* 히어로 */
@@ -92,12 +93,16 @@
   color: white;
   text-align: center;
   padding: 6rem 2rem;
+  position: relative;
 }
 
 .hero h1 {
   font-size: 3.5rem;
   line-height: 1.3;
   margin: 0;
+  position: relative;
+  z-index: 2;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
 }
 
 .serachArea {
@@ -106,7 +111,8 @@
   align-items: center;
   gap: 1rem;
   margin-top: 2rem;
-
+  position: relative;
+  z-index: 2;
 }
 
 .searchBox {
@@ -136,44 +142,68 @@
   color: #999;
 }
 
-.location {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  font-size: 0.9rem;
-  color: #555;
-}
-
 .locationRow {
   display: flex;
-  justify-content: space-between;
-  align-items: center;
+  flex-direction: column;
+  gap: 0.75rem;
   width: 100%;
   max-width: 600px;
   font-size: 0.9rem;
   color: white;
+  background: rgba(0, 0, 0, 0.6);
+  padding: 0.75rem 1.25rem;
+  border-radius: 12px;
+  margin-top: 0.5rem;
 }
 
 .location {
   display: flex;
   align-items: center;
-  gap: 6px;
-  color: white; /* ✅ 텍스트와 아이콘 모두 흰색 */
+  gap: 8px;
+  color: white;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+  word-break: keep-all;
+  line-height: 1.4;
 }
 
 .locationBtn {
-  background: rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.2);
   color: white;
-  border: 1px solid white;
-  padding: 0.3rem 0.75rem;
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  padding: 0.4rem 1rem;
   border-radius: 9999px;
-  font-size: 0.8rem;
+  font-size: 0.85rem;
   cursor: pointer;
-  transition: background 0.3s;
+  transition: all 0.3s ease;
+  width: 100%;
+  text-align: center;
 }
 
 .locationBtn:hover {
-  background: rgba(255, 255, 255, 0.2);
+  background: rgba(255, 255, 255, 0.3);
+  border-color: rgba(255, 255, 255, 0.5);
+}
+
+.locationBtn:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+  background: rgba(255, 255, 255, 0.1);
+  border-color: rgba(255, 255, 255, 0.2);
+}
+
+/* 태블릿 이상 화면에서 가로 배치로 변경 */
+@media (min-width: 768px) {
+  .locationRow {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+  }
+
+  .locationBtn {
+    width: auto;
+    min-width: 120px;
+  }
 }
 
 .categories {
@@ -478,4 +508,150 @@
 .mapIcon {
   margin-left: 0.75rem;
   color: #666;
+}
+
+.searchInputDisabled {
+  background-color: #f5f5f5;
+  cursor: not-allowed;
+}
+
+.searchButtonDisabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+/* 모바일 환경 스타일 */
+@media (max-width: 767px) {
+  .hero {
+    padding: 4rem 1rem;
+  }
+
+  .hero h1 {
+    font-size: 2rem;
+    line-height: 1.4;
+  }
+
+  .serachArea {
+    margin-top: 1.5rem;
+  }
+
+  .searchBox {
+    height: 48px;
+  }
+
+  .searchBox input {
+    font-size: 0.9rem;
+    padding: 0.6rem 0.8rem;
+  }
+
+  .searchBox button {
+    padding: 0.8rem;
+  }
+
+  .categories {
+    gap: 1rem;
+    padding: 2rem 0.5rem;
+  }
+
+  .categoryBtn {
+    width: 100px;
+    height: 100px;
+  }
+
+  .categoryIcon {
+    width: 36px;
+    height: 36px;
+    margin-bottom: 6px;
+  }
+
+  .categoryLabel {
+    font-size: 0.8rem;
+  }
+
+  .recommendSection {
+    margin: 1.5rem auto;
+    padding: 1.5rem 1rem;
+  }
+
+  .sectionTitle {
+    font-size: 1.3rem;
+    margin-bottom: 1rem;
+  }
+
+  .hashtagList {
+    gap: 0.5rem;
+  }
+
+  .hashtagTag {
+    padding: 0.4rem 0.8rem;
+    font-size: 0.85rem;
+  }
+
+  .foodCard {
+    width: 160px;
+    height: 220px;
+  }
+
+  .foodCard img {
+    height: 120px;
+  }
+
+  .cardContent {
+    padding: 0.4rem 0.6rem 0.6rem;
+  }
+
+  .cardTitle {
+    font-size: 0.9rem;
+  }
+
+  .cardMeta {
+    font-size: 0.75rem;
+  }
+
+  .videoCard {
+    width: 180px;
+    height: 100px;
+  }
+
+  /* 모바일 환경의 모달 스타일 */
+  .modalOverlay {
+    padding: 0;
+  }
+
+  .modalContent {
+    width: 100%;
+    height: 100%;
+    max-width: none;
+    max-height: none;
+    margin: 0;
+    border-radius: 0;
+    padding: 1rem;
+  }
+
+  .modalHeader {
+    padding: 1rem 0;
+  }
+
+  .modalTitle {
+    font-size: 1.2rem;
+  }
+
+  .closeButton {
+    top: 1rem;
+    right: 1rem;
+  }
+
+  .searchInput {
+    height: 48px;
+    font-size: 0.9rem;
+  }
+
+  .locationList {
+    margin-top: 1rem;
+  }
+
+  .locationItem {
+    padding: 0.8rem;
+    font-size: 0.9rem;
+  }
 }

@@ -10,6 +10,7 @@ import { videoList } from './data/videoList';
 import SnsVideoSection from './components/SnsVideoSection';
 import LocationModal from './components/LocationModal';
 import { useRouter } from 'next/navigation';
+import { useLocation } from './contexts/LocationContext';
 
 // 위치 정보 타입 정의
 interface LocationInfo {
@@ -34,67 +35,78 @@ const parseAddress = (data: any): string => {
 };
 
 export default function Home() {
-  const [locationInfo, setLocationInfo] = useState<LocationInfo>({
-    address: '서울특별시 중구 태평로1가',
-    latitude: 37.5665,
-    longitude: 126.9780,
-    type: 'current'
-  });
+  const { locationInfo, setLocationInfo, isFirstVisit, lastSearchQuery, setLastSearchQuery, isLocationLoading } = useLocation();
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [showLocationModal, setShowLocationModal] = useState(false);
-  const [searchQuery, setSearchQuery] = useState('');
+  const [searchQuery, setSearchQuery] = useState(lastSearchQuery);
   const router = useRouter();
 
+  // 검색어가 변경될 때마다 Context에 저장
   useEffect(() => {
-    console.log('초기 locationInfo', locationInfo);
-    // 현재 위치 가져오기
-    const getCurrentLocation = () => {
-      if (navigator.geolocation) {
-        navigator.geolocation.getCurrentPosition(
-          async (position) => {
-            try {
-              const { latitude, longitude } = position.coords;
-              // 위도, 경도를 주소로 변환
-              const response = await fetch(
-                `https://nominatim.openstreetmap.org/reverse?format=json&lat=${latitude}&lon=${longitude}&zoom=18&addressdetails=1`
-              );
-              const data = await response.json();
-              if (data.address) {
-                const newLocationInfo: LocationInfo = {
-                  address: parseAddress(data),
-                  latitude,
-                  longitude,
-                  type: 'current' as const
-                };
-                console.log('현재 위치 정보:', newLocationInfo);
-                setLocationInfo(newLocationInfo);
-              }
-            } catch (error) {
-              console.log('위치 정보 에러:', error);
-            }
-          },
-          (error) => {
-            console.log('위치 정보 접근 거부:', error);
-          }
-        );
-      } else {
-        console.log('이 브라우저에서는 위치 정보를 지원하지 않습니다.');
-      }
-    };
+    setLastSearchQuery(searchQuery);
+  }, [searchQuery, setLastSearchQuery]);
 
-    getCurrentLocation();
-  }, []);
+  useEffect(() => {
+    // 첫 방문 시에만 현재 위치 가져오기
+    if (isFirstVisit) {
+      const getCurrentLocation = () => {
+        if (navigator.geolocation) {
+          navigator.geolocation.getCurrentPosition(
+            async (position) => {
+              try {
+                const { latitude, longitude } = position.coords;
+                const response = await fetch(
+                  `https://nominatim.openstreetmap.org/reverse?format=json&lat=${latitude}&lon=${longitude}&zoom=18&addressdetails=1`
+                );
+                const data = await response.json();
+                if (data.address) {
+                  const newLocationInfo = {
+                    address: parseAddress(data),
+                    latitude,
+                    longitude,
+                    type: 'current' as const
+                  };
+                  console.log('현재 위치 정보:', newLocationInfo);
+                  setLocationInfo(newLocationInfo);
+                }
+              } catch (error) {
+                console.log('위치 정보 에러:', error);
+              }
+            },
+            (error) => {
+              console.log('위치 정보 접근 거부:', error);
+            }
+          );
+        } else {
+          console.log('이 브라우저에서는 위치 정보를 지원하지 않습니다.');
+        }
+      };
+
+      getCurrentLocation();
+    }
+  }, [isFirstVisit, setLocationInfo]);
 
   useEffect(() => {
     console.log('searchQuery', searchQuery);
   }, [searchQuery]);
 
   const handleSearch = () => {
+    if (isLocationLoading) {
+      alert('위치 정보를 가져오는 중입니다. 잠시만 기다려주세요.');
+      return;
+    }
     if (searchQuery.trim() === '') {
       alert('검색어를 입력해주세요.');
       return;
     }
+    setLastSearchQuery(searchQuery);
     router.push(`/search/result?food=${encodeURIComponent(searchQuery)}&lat=${locationInfo.latitude}&lng=${locationInfo.longitude}`);
+  };
+
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'Enter') {
+      handleSearch();
+    }
   };
 
   return (
@@ -106,8 +118,22 @@ export default function Home() {
 
         <div className={styles.serachArea}>
           <div className={styles.searchBox}>
-            <input type='text' placeholder='지금 먹고 싶은 음식은?' value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)}/>
-            <button onClick={handleSearch}><FiSearch/></button>
+            <input 
+              type='text' 
+              placeholder={isLocationLoading ? "위치 정보를 가져오는 중..." : "지금 먹고 싶은 음식은?"} 
+              value={searchQuery} 
+              onChange={(e) => setSearchQuery(e.target.value)}
+              onKeyDown={handleKeyDown}
+              disabled={isLocationLoading}
+              className={isLocationLoading ? styles.searchInputDisabled : ''}
+            />
+            <button 
+              onClick={handleSearch}
+              className={isLocationLoading ? styles.searchButtonDisabled : ''}
+              disabled={isLocationLoading}
+            >
+              <FiSearch size={20} color={isLocationLoading ? "#ccc" : "#888"} />
+            </button>
           </div>
 
           <div className={styles.locationRow}>
@@ -116,7 +142,11 @@ export default function Home() {
               {locationInfo.type === 'current' ? '현재 위치: ' : '지정 위치: '}
               {isLoading ? '위치 정보를 가져오는 중...' : locationInfo.address}
             </p>
-            <button className={styles.locationBtn} onClick={() => setShowLocationModal(true)}>
+            <button 
+              className={styles.locationBtn} 
+              onClick={() => setShowLocationModal(true)}
+              disabled={isLocationLoading}
+            >
               위치 변경하기
             </button>
           </div>

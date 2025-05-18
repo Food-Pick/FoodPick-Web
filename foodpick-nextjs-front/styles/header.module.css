@@ -6,4 +6,84 @@
 .searchIconDisabled {
   cursor: not-allowed;
   opacity: 0.5;
+}
+
+.header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 82px;
+  background-color: #fff;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 24px;
+}
+
+.logo {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #ff6b00;
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.loginBtn {
+  padding: 8px 16px;
+  background-color: #ff6b00;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  font-weight: 500;
+  transition: background-color 0.2s;
+}
+
+.loginBtn:hover {
+  background-color: #ff8533;
+}
+
+@media screen and (max-width: 768px) {
+  .header {
+    height: 56px;
+    padding: 0 16px;
+    position: relative;
+  }
+
+  .logo {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 1.2rem;
+  }
+
+  .loginBtn {
+    position: absolute;
+    right: 16px;
+    padding: 6px 12px;
+    font-size: 0.85rem;
+  }
+}
+
+@media screen and (max-width: 480px) {
+  .header {
+    height: 48px;
+    padding: 0 12px;
+  }
+
+  .logo {
+    font-size: 1.1rem;
+  }
+
+  .loginBtn {
+    right: 12px;
+    padding: 5px 10px;
+    font-size: 0.8rem;
+  }
 } 

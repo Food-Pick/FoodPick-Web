@@ -35,6 +35,7 @@ export default function Header({ onLoginClick }: HeaderProps) {
       return;
     }
     setLastSearchQuery(searchQuery);
+    //window.location.href = `/search/result?food=${encodeURIComponent(searchQuery)}&lat=${locationInfo.latitude}&lng=${locationInfo.longitude}`;
     router.push(`/search/result?food=${encodeURIComponent(searchQuery)}&lat=${locationInfo.latitude}&lng=${locationInfo.longitude}`);
   };
 
@@ -50,8 +51,8 @@ export default function Header({ onLoginClick }: HeaderProps) {
 
   return (
     <header className={styles.header}>
-      <div className={styles.logo} onClick={() => window.location.href = '/'}>
-        <div className={styles.logoContainer}>
+      <div className={styles.logo}>
+        <div className={styles.logoContainer} onClick={() => window.location.href = '/'}>
           <Image 
             src="/images/logo.png" 
             alt="logo" 
@@ -61,6 +62,9 @@ export default function Header({ onLoginClick }: HeaderProps) {
             style={{ objectFit: 'contain' }}
           />
         </div>
+      <button className={styles.loginBtn_mobile} onClick={() => router.push('/login')}>
+        <FiUser /> 로그인
+      </button>
       </div>
 
       {showSearch && (

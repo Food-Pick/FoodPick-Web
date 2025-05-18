@@ -13,13 +13,12 @@
   max-width: 1200px;      /* ✅ 모든 페이지에서 일관된 폭 */
   margin: 0 auto;         /* ✅ 가운데 정렬 */
   width: 100%;
+  gap: 10px;
 }
-
 
 .logo {
   display: flex;
   align-items: center;
-  cursor: pointer;
 }
 
 .logoContainer {
@@ -29,6 +28,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
+  cursor: pointer;
 }
 
 .loginBtn {
@@ -49,6 +49,10 @@
 
 .loginBtn:hover {
   background-color: #ea580c;     /* 진한 주황색 */
+}
+
+.loginBtn_mobile{
+  display: none;
 }
 
 .searchWrapper {
@@ -519,6 +523,41 @@
 
 /* 모바일 환경 스타일 */
 @media (max-width: 767px) {
+  .header {
+    flex-direction: column;
+    align-items: center;
+    gap: 3px;
+  }
+
+  .logo {
+    width: 100%;
+    justify-content: space-between;
+  }
+
+  .loginBtn{
+    display: none;
+  }
+
+  .loginBtn_mobile {
+  display: flex;
+  align-items: center;
+  justify-content: right;
+  gap: 2px;
+  background-color: #f97316;     /* 기본 주황색 */
+  color: white;                  /* 텍스트는 흰색 */
+  padding: 0.5rem 1rem;          /* 내부 여백 */
+  border: none;                  /* 테두리 제거 */
+  border-radius: 9999px;         /* 둥근 버튼 */
+  min-width: 80px;              /* 가로 크기 확보 */
+  font-size: 1rem;               /* 적당한 글자 크기 */
+  cursor: pointer;              /* 포인터 표시 */
+  transition: background-color 0.3s; /* 호버 부드럽게 */
+  }
+
+  .loginBtn_mobile:hover {
+  background-color: #ea580c;     /* 진한 주황색 */
+  }
+
   .hero {
     padding: 4rem 1rem;
   }
@@ -528,12 +567,18 @@
     line-height: 1.4;
   }
 
+  .searchWrapper {
+    width: 100%;
+  }
+
   .serachArea {
     margin-top: 1.5rem;
   }
 
   .searchBox {
     height: 48px;
+    width: 100%;
+    max-width: none;
   }
 
   .searchBox input {

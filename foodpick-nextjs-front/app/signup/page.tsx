@@ -4,12 +4,14 @@ import React, { useState } from 'react';
 import styles from '../styles/SignupForm.module.css';
 import Link from 'next/link';
 import Image from 'next/image';
+import { useRouter } from 'next/navigation';
 
 export default function SignupStep1() {
   const [id, setId] = useState('');
   const [password, setPassword] = useState('');
   const [passwordCheck, setPasswordCheck] = useState('');
   const [error, setError] = useState('');
+  const router = useRouter();
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -23,7 +25,7 @@ export default function SignupStep1() {
     }
     setError('');
     // TODO: 2단계로 이동 (라우팅 또는 상태 변경)
-    alert('2단계로 이동! (추후 구현)');
+    router.push('/signup/step2');
   };
 
   return (

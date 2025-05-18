@@ -1,0 +1,148 @@
+/* SignupForm.module.css */
+.container {
+  margin: 0;
+  padding: 0;
+  background: #fafafa;
+  font-family: 'Pretendard', sans-serif;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+
+.logo {
+  width: 220px;
+  margin-bottom: 2.5rem;
+  transform: none;
+  cursor: pointer;
+}
+
+.signupBox {
+  background: #fff;
+  padding: 2.5rem 2.2rem 2.2rem 2.2rem;
+  border-radius: 28px;
+  width: 420px;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 1.2rem;
+  box-sizing: border-box;
+  border: 1px solid #ddd;
+  box-shadow: none;
+}
+
+.inputWrapper {
+  display: flex;
+  flex-direction: column;
+  border-radius: 16px;
+  overflow: visible;
+  gap: 0.7rem;
+}
+
+.inputLabel {
+  font-size: 1.08rem;
+  font-weight: 700;
+  margin-bottom: 0.2rem;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.inputTop,
+.inputBottom {
+  padding: 1.1rem 1.1rem;
+  font-size: 1.08rem;
+  border: 2px solid #ccc;
+  outline: none;
+  background: #fff;
+  box-sizing: border-box;
+  border-radius: 12px;
+  transition: border-color 0.3s;
+  margin-bottom: 0.2rem;
+  color: #222;
+  font-weight: 500;
+}
+.inputTop:focus,
+.inputBottom:focus {
+  border-color: #ff7a3e;
+}
+
+.inputTop::placeholder,
+.inputBottom::placeholder {
+  color: #d2d2d2;
+  font-weight: 400;
+}
+
+.inputDesc {
+  font-size: 0.93rem;
+  color: #888;
+  margin-bottom: 0.5rem;
+  margin-left: 2px;
+  font-weight: 400;
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+}
+
+.signupBtn {
+  background-color: #ff7a3e;
+  color: #fff;
+  padding: 1.15rem 0;
+  border: none;
+  border-radius: 13px;
+  font-size: 1.15rem;
+  font-weight: 600;
+  width: 100%;
+  cursor: pointer;
+  box-sizing: border-box;
+  margin-top: 1.2rem;
+  transition: background-color 0.2s;
+  letter-spacing: 0.02em;
+}
+.signupBtn:hover {
+  background-color: #e55a00;
+}
+
+@media screen and (max-width: 768px) {
+  .container {
+    padding: 0 1rem;
+    justify-content: flex-start;
+    padding-top: 10vh;
+  }
+  .logo {
+    width: 160px;
+    margin-bottom: 1.5rem;
+  }
+  .signupBox {
+    width: 100%;
+    padding: 1.5rem 0.7rem;
+    border-radius: 16px;
+  }
+  .inputTop,
+  .inputBottom {
+    padding: 0.9rem;
+    font-size: 1rem;
+    border-radius: 9px;
+  }
+  .signupBtn {
+    padding: 0.9rem 0;
+    font-size: 1rem;
+    border-radius: 10px;
+  }
+}
+
+@media screen and (max-width: 360px) {
+  .signupBox {
+    padding: 1rem 0.2rem;
+  }
+  .inputTop,
+  .inputBottom {
+    padding: 0.7rem;
+    font-size: 0.92rem;
+  }
+  .signupBtn {
+    padding: 0.7rem 0;
+    font-size: 0.95rem;
+  }
+} 

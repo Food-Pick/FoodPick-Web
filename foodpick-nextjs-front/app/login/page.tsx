@@ -31,7 +31,7 @@ export default function LoginForm() {
             type="text"
             placeholder="아이디"
             value={id}
-            onChange={(e) => setId(e.target.value)}
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) => setId(e.target.value)}
             className={styles.inputTop}
           />
           
@@ -39,15 +39,15 @@ export default function LoginForm() {
             type="password"
             placeholder="비밀번호"
             value={password}
-            onChange={(e) => setPassword(e.target.value)}
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) => setPassword(e.target.value)}
             className={styles.inputBottom}
           />
         </div>
         <button type='submit' className={styles.loginBtn}>
-        로그인 하기
+          로그인 하기
         </button>
         <div className={styles.footerLinks}>
-          <a className={styles.create}>계정 생성하기</a>
+          <Link href="/signup" className={styles.create}>계정 생성하기</Link>
           <a>아이디 찾기</a>
           <a>비밀번호 찾기</a>
         </div>

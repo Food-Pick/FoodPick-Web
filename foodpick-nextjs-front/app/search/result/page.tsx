@@ -25,12 +25,13 @@ function SearchResultContent() {
     const [results, setResults] = useState<Restaurant[]>([]);
     const [loading, setLoading] = useState(true);
     const [hoveredRestaurant, setHoveredRestaurant] = useState<Restaurant | null>(null);
-    const [isFromMap, setIsFromMap] = useState(false);  // 지도에서 hover된 것인지 구분
+    const [isFromMap, setIsFromMap] = useState(false);
     const searchParams = useSearchParams();
     const router = useRouter();
     
     useEffect(() => {
         const fetchData = async () => {
+            setLoading(true); // 검색 시작할 때 로딩 상태로 변경
             try {
                 const food = searchParams.get('food') || '';
                 const lat = searchParams.get('lat') || '';
@@ -56,7 +57,7 @@ function SearchResultContent() {
         };
 
         fetchData();
-    }, [searchParams]);
+    }, [searchParams]); // searchParams가 변경될 때마다 실행
 
     // 유사도 계산 함수
     const calculateSimilarity = (searchTerm: string, menuText: string) => {

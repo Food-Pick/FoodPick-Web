@@ -1,0 +1,73 @@
+.container {
+  min-height: 100vh;
+  background: #fafafa;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding-top: 6vh;
+  font-family: 'Pretendard', sans-serif;
+}
+
+.logoWrapper {
+  position: relative;
+  width: 220px;
+  aspect-ratio: 220 / 55;  /* ✅ 실제 로고 비율 */
+  margin-bottom: 2.5rem;
+}
+
+.logoImage {
+  object-fit: contain;
+}
+
+.logo {
+  margin-bottom: 2.5rem;
+}
+
+.box {
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 20px;
+  padding: 3rem 2.5rem;
+  width: 420px;
+  text-align: center;
+  box-shadow: none;
+}
+
+.iconCircle {
+  background-color: transparent;  /* ✅ 또는 white, 필요 시 */
+  border-radius: 50%;
+  width: 100px;
+  height: 100px;
+  margin: 0 auto 1.5rem auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.checkIcon {
+  color: white;
+  font-size: 3rem;
+}
+
+.message {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #222;
+  margin-bottom: 2rem;
+}
+
+.homeButton {
+  background-color: #ff7a3e;
+  color: #fff;
+  border: none;
+  border-radius: 12px;
+  font-size: 1.05rem;
+  font-weight: 600;
+  padding: 1rem 0;
+  width: 100%;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+.homeButton:hover {
+  background-color: #e55a00;
+}

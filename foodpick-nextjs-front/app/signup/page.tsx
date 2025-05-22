@@ -5,6 +5,7 @@ import styles from '../styles/SignupForm.module.css';
 import Link from 'next/link';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
+import { useSignup } from '../contexts/SignupContext';
 
 export default function SignupStep1() {
   const [id, setId] = useState('');
@@ -14,10 +15,11 @@ export default function SignupStep1() {
   const [passwordError, setPasswordError] = useState('');
   const [passwordCheckError, setPasswordCheckError] = useState('');
   const router = useRouter();
+  const { updateSignupData } = useSignup();
 
   // 아이디 유효성 검사
   const validateId = (id: string) => {
-    if (id.length <= 4) {
+    if (id.length < 4) {
       setIdError('아이디는 4자 이상이어야 합니다.');
       return false;
     }
@@ -31,7 +33,7 @@ export default function SignupStep1() {
 
   // 비밀번호 유효성 검사
   const validatePassword = (password: string) => {
-    if (password.length <= 4) {
+    if (password.length < 4) {
       setPasswordError('비밀번호는 4자 이상이어야 합니다.');
       return false;
     }
@@ -61,7 +63,7 @@ export default function SignupStep1() {
     return true;
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
     const isIdValid = validateId(id);
@@ -72,8 +74,27 @@ export default function SignupStep1() {
       return;
     }
 
-    // TODO: 2단계로 이동 (라우팅 또는 상태 변경)
-    router.push('/signup/step2');
+    // Context에 데이터 저장
+    updateSignupData({ id, password });
+    
+    // 아이디 중복 체크
+    const response = await fetch(`/api/auth/register-check-id`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ id }),
+    });
+
+    console.log(response);
+
+    if (response.ok) {
+      // 아이디 중복 체크 성공
+      router.push('/signup/step2');
+    } else {
+      // 아이디 중복 체크 실패
+      alert('이미 사용중인 아이디입니다.');
+    }
   };
 
   const handleIdChange = (e: React.ChangeEvent<HTMLInputElement>) => {

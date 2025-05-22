@@ -26,6 +26,14 @@ const nextConfig: NextConfig = {
         source: '/api/restaurant/search_food',
         destination: `${BACKEND_API_INTERNAL_URL}/restaurant/search_food`,
       },
+      {
+        source: '/api/auth/register-check-id',
+        destination: `${BACKEND_API_INTERNAL_URL}/auth/register-check-id`,
+      },
+      {
+        source: '/api/auth/register',
+        destination: `${BACKEND_API_INTERNAL_URL}/auth/register`,
+      }
     ];
   },
 }

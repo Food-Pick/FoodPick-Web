@@ -6,6 +6,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { FiUser, FiEdit3 } from 'react-icons/fi';
 import { useRouter } from 'next/navigation';
+import { useSignup, genderToNumber, ageGroupToNumber } from '../../contexts/SignupContext';
 
 export default function SignupStep2() {
   const [nickname, setNickname] = useState('');
@@ -13,6 +14,7 @@ export default function SignupStep2() {
   const [ageGroup, setAgeGroup] = useState<string | null>(null);
   const [preferredFoods, setPreferredFoods] = useState<string[]>([]);
   const router = useRouter();
+  const { signupData, updateSignupData } = useSignup();
 
   const toggleFood = (food: string) => {
     setPreferredFoods(prev =>
@@ -22,13 +24,47 @@ export default function SignupStep2() {
     );
   };
 
-  const handleComplete = () => {
+  const handleComplete = async () => {
     if (!nickname || !gender || !ageGroup || preferredFoods.length === 0) {
       alert('모든 항목을 입력해주세요.');
       return;
     }
-    // TODO: 백엔드 전달 또는 라우팅
-    router.push('/signup/success');
+
+    // Context에 데이터 저장 (숫자로 변환)
+    updateSignupData({
+      nickname,
+      gender: genderToNumber(gender),
+      age: ageGroupToNumber(ageGroup),
+      favorite_food: preferredFoods
+    });
+
+    try {
+      const response = await fetch(`/api/auth/register`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          ...signupData,
+          nickname,
+          gender: genderToNumber(gender),
+          age: ageGroupToNumber(ageGroup),
+          favorite_food: preferredFoods
+        }),
+      });
+
+      if (response.ok) {
+        // 회원가입 성공
+        router.push('/signup/success');
+      } else {
+        // 회원가입 실패
+        const errorData = await response.json();
+        alert(errorData.message || '회원가입에 실패했습니다.');
+      }
+    } catch (error) {
+      console.error('회원가입 중 오류 발생:', error);
+      alert('회원가입 중 오류가 발생했습니다.');
+    }
   };
 
   return (

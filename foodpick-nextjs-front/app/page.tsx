@@ -47,46 +47,6 @@ export default function Home() {
   }, [searchQuery, setLastSearchQuery]);
 
   useEffect(() => {
-    // 첫 방문 시에만 현재 위치 가져오기
-    if (isFirstVisit) {
-      const getCurrentLocation = () => {
-        if (navigator.geolocation) {
-          navigator.geolocation.getCurrentPosition(
-            async (position) => {
-              try {
-                const { latitude, longitude } = position.coords;
-                const response = await fetch(
-                  `https://nominatim.openstreetmap.org/reverse?format=json&lat=${latitude}&lon=${longitude}&zoom=18&addressdetails=1`
-                );
-                const data = await response.json();
-                if (data.address) {
-                  const newLocationInfo = {
-                    address: parseAddress(data),
-                    latitude,
-                    longitude,
-                    type: 'current' as const
-                  };
-                  console.log('현재 위치 정보:', newLocationInfo);
-                  setLocationInfo(newLocationInfo);
-                }
-              } catch (error) {
-                console.log('위치 정보 에러:', error);
-              }
-            },
-            (error) => {
-              console.log('위치 정보 접근 거부:', error);
-            }
-          );
-        } else {
-          console.log('이 브라우저에서는 위치 정보를 지원하지 않습니다.');
-        }
-      };
-
-      getCurrentLocation();
-    }
-  }, [isFirstVisit, setLocationInfo]);
-
-  useEffect(() => {
     console.log('searchQuery', searchQuery);
   }, [searchQuery]);
 

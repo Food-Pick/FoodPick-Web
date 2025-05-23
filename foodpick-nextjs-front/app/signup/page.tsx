@@ -14,6 +14,8 @@ export default function SignupStep1() {
   const [idError, setIdError] = useState('');
   const [passwordError, setPasswordError] = useState('');
   const [passwordCheckError, setPasswordCheckError] = useState('');
+  const [email, setEmail] = useState('');
+  const [emailError, setEmailError] = useState('');
   const router = useRouter();
   const { updateSignupData } = useSignup();
 
@@ -28,6 +30,17 @@ export default function SignupStep1() {
       return false;
     }
     setIdError('');
+    return true;
+  };
+
+  // 이메일 유효성 검사
+  const validateEmail = (email: string) => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      setEmailError('올바른 이메일 형식을 입력해주세요.');
+      return false;
+    }
+    setEmailError('');
     return true;
   };
 
@@ -67,10 +80,11 @@ export default function SignupStep1() {
     e.preventDefault();
     
     const isIdValid = validateId(id);
+    const isEmailValid = validateEmail(email);
     const isPasswordValid = validatePassword(password);
     const isPasswordCheckValid = validatePasswordCheck(password, passwordCheck);
 
-    if (!isIdValid || !isPasswordValid || !isPasswordCheckValid) {
+    if (!isIdValid || !isEmailValid|| !isPasswordValid || !isPasswordCheckValid) {
       return;
     }
 
@@ -104,6 +118,16 @@ export default function SignupStep1() {
       validateId(newId);
     } else {
       setIdError('');
+    }
+  };
+
+  const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const newEmail = e.target.value;
+    setEmail(newEmail);
+    if (newEmail) {
+      validateEmail(newEmail);
+    } else {
+      setEmailError('');
     }
   };
 
@@ -166,6 +190,30 @@ export default function SignupStep1() {
             textOverflow: 'ellipsis'
           }}>
             {idError || '아이디는 4자 이상의 영문자와 숫자만 허용합니다'}
+          </span>
+          
+          <div className={styles.inputLabel} style={{ marginTop: '1.2rem' }}>
+            <span>이메일을 입력해주세요.</span>
+          </div>
+          <input
+            type="text"
+            placeholder="이메일"
+            value={email}
+            onChange={handleEmailChange}
+            className={styles.inputTop}
+          />
+          <span style={{
+            display: 'block',
+            fontSize: '0.8rem',
+            color: emailError ? 'red' : '#666',
+            marginTop: '4px',
+            marginBottom: '10px',
+            height: '16px',
+            whiteSpace: 'nowrap',
+            overflow: 'hidden',
+            textOverflow: 'ellipsis'
+          }}>
+            {emailError || '비밀번호 분실 시 사용됩니다.'}
           </span>
 
           <div className={styles.inputLabel} style={{marginTop: '1.2rem'}}>

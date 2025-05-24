@@ -33,6 +33,10 @@ const nextConfig: NextConfig = {
       {
         source: '/api/auth/register',
         destination: `${BACKEND_API_INTERNAL_URL}/auth/register`,
+      },
+      {
+        source: '/api/auth/login',
+        destination: `${BACKEND_API_INTERNAL_URL}/auth/login`,
       }
     ];
   },

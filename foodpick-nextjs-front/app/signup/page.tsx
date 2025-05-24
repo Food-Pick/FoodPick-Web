@@ -89,7 +89,7 @@ export default function SignupStep1() {
     }
 
     // Context에 데이터 저장
-    updateSignupData({ id, password });
+    updateSignupData({ id, password, email });
     
     // 아이디 중복 체크
     const response = await fetch(`/api/auth/register-check-id`, {
@@ -97,7 +97,7 @@ export default function SignupStep1() {
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ id }),
+      body: JSON.stringify({ id, email }),
     });
 
     console.log(response);

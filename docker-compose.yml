@@ -19,6 +19,8 @@ services:
       - NODE_ENV=${NODE_ENV:-environment}
       - CHOKIDAR_USEPOLLING=true
       - WATCHPACK_POLLING=true
+      - NEXTAUTH_SECRET=secret
+      - NEXTAUTH_URL=http://localhost:2000
     networks:
       - foodpick-network
     restart: on-failure

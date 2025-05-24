@@ -5,6 +5,7 @@ import React, { createContext, useContext, useState, ReactNode } from 'react';
 interface SignupData {
   id: string;
   password: string;
+  email: string;
   // step2에서 추가될 데이터들
   nickname?: string;
   gender?: number; // 0: 남성, 1: 여성
@@ -41,6 +42,7 @@ export function SignupProvider({ children }: { children: ReactNode }) {
   const [signupData, setSignupData] = useState<SignupData>({
     id: '',
     password: '',
+    email: '',
   });
 
   console.log(signupData);

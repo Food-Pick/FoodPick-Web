@@ -34,6 +34,7 @@ export const authOptions: AuthOptions = {
                         console.log(data);
                         return {
                             id: data.id,
+                            name: data.nickname || null,
                             nickname: data.nickname,
                             email: data.email,
                             gender: data.gender,

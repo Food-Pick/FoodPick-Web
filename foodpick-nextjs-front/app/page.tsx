@@ -11,6 +11,7 @@ import SnsVideoSection from './components/SnsVideoSection';
 import LocationModal from './components/LocationModal';
 import { useRouter } from 'next/navigation';
 import { useLocation } from './contexts/LocationContext';
+import RecommendRestaurant from './components/RecommendRestaurants_active';
 
 // 위치 정보 타입 정의
 interface LocationInfo {
@@ -71,7 +72,7 @@ export default function Home() {
 
   return (
     <div className={styles.container}>
-      <Header /> 
+      <Header/> 
       {/* 히어로 섹션 */}
       <section className={styles.hero}>
         <h1><strong>무엇을 먹을지 고민될 땐, FoodPick</strong></h1>
@@ -132,7 +133,12 @@ export default function Home() {
       </section>
     
       {/* 추천 맛집 */}
-      <RecommendRestaurants />
+      {/* <RecommendRestaurants /> */}
+
+      <RecommendRestaurant
+        latitude={locationInfo.latitude} 
+        longitude={locationInfo.longitude} 
+      />
 
       {/* 주변 맛집 */}
       <NearbyRestaurants 

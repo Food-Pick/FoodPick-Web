@@ -12,6 +12,7 @@ export default function SignupStep2() {
   const [nickname, setNickname] = useState('');
   const [gender, setGender] = useState<'남성' | '여성' | null>(null);
   const [ageGroup, setAgeGroup] = useState<string | null>(null);
+  const [price, setPrice] = useState<string | null>(null);
   const [preferredFoods, setPreferredFoods] = useState<string[]>([]);
   const router = useRouter();
   const { signupData, updateSignupData } = useSignup();
@@ -149,6 +150,48 @@ export default function SignupStep2() {
                     onClick={() => setAgeGroup(age)}
                   >
                     {age}
+                  </button>
+                ))}
+                 </div>
+              </div>
+            </div>
+
+          <div className={styles.section}>
+            <span className={styles.sectionTitle}>선호하는 가격대를 선택해주세요.</span>
+            <div className={styles.ageGrid}>
+              <div className={styles.ageRow}>
+                {['10,000원 이하', '15,000원 이하'].map(p => (
+                  <button
+                    key={p}
+                    type="button"
+                    className={`${styles.selectButton} ${price === p ? styles.active : ''}`}
+                    onClick={() => setPrice(p)}
+                  >
+                    {p}
+                  </button>
+                ))}
+              </div>
+              <div className={styles.ageRow}>
+                {['20,000원 이하', '25,000원 이하'].map(p => (
+                  <button
+                    key={p}
+                    type="button"
+                    className={`${styles.selectButton} ${price === p ? styles.active : ''}`}
+                    onClick={() => setPrice(p)}
+                  >
+                    {p}
+                  </button>
+                ))}
+              </div>
+              <div className={styles.ageRow}>
+                {['30,000원 이하', '30,000원 이상'].map(p => (
+                  <button
+                    key={p}
+                    type="button"
+                    className={`${styles.selectButton} ${price === p ? styles.active : ''}`}
+                    onClick={() => setPrice(p)}
+                  >
+                    {p}
                   </button>
                 ))}
               </div>

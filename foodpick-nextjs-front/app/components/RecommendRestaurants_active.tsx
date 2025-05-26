@@ -68,11 +68,19 @@ const getTimeBasedMessage = (mealTime: string) => {
     if (hour < 9) return '상쾌한 아침을 위한';
     return '아침의 여유를 즐기는';
   }
+
+  if (mealTime === '아점') {
+    return '아침과 점심 사이, 든든한';
+  }
   
   if (mealTime === '점심') {
-    if (hour < 12) return '오늘 점심은';
+    if (hour < 12) return '오늘 점심의';
     if (hour < 14) return '바쁜 하루의 중간, 맛있는';
     return '점심 시간의 여유를 즐기는';
+  }
+
+  if (mealTime === '점저') {
+    return '점심과 저녁 사이, 든든한';
   }
   
   if (mealTime === '저녁') {
@@ -214,7 +222,7 @@ export default function RecommendRestaurant({ latitude, longitude }: RecommendRe
 
     }, [latitude, longitude]);
 
-    const timeMessage = getTimeBasedMessage(data?.mealTime || '야식');
+    const timeMessage = getTimeBasedMessage(data?.mealTime || '');
     const weatherMessage = getWeatherMessage(data?.weather || {
         temperature: '20',
         precipitation: '0',
@@ -257,7 +265,7 @@ export default function RecommendRestaurant({ latitude, longitude }: RecommendRe
                     <div className="weather-info">
                         <div className="weather-message">
                             <h2 className="recommend-title">
-                                {timeMessage} {weatherMessage} 추천 음식
+                                {weatherMessage} {timeMessage} 추천 음식
                             </h2>
                             <p className="subtitle">지금은 {data?.mealTime || '야식'} 시간이에요</p>
                         </div>

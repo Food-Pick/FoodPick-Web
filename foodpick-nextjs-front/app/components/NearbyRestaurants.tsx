@@ -1,4 +1,4 @@
-import { use, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { FiMapPin } from 'react-icons/fi';
 import styles from '../../styles/home.module.css';
 import Link from 'next/link';
@@ -74,7 +74,7 @@ export default function NearbyRestaurants({ latitude, longitude }: NearbyRestaur
 
   return (
     <section className={styles.recommendSection}>
-      <h2 className={styles.sectionTitle}>주변 맛집</h2>
+      <h2 className={styles.sectionTitle}>주변 음식점</h2>
       <div className={styles.scrollWrapper}>
         <div className={styles.cardList}>
           {isLoading ? (

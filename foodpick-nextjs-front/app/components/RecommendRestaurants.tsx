@@ -7,7 +7,7 @@ import Link from 'next/link';
 export default function RecommendRestaurants() {
   return (
     <section className={styles.recommendSection}>
-      <h2 className={styles.sectionTitle}>추천 맛집</h2>
+      <h2 className={styles.sectionTitle}>추천 음식점</h2>
       <div className={styles.scrollWrapper}>
         <div className={styles.cardList}>
           {restaurants.map((r) => ( // restaurants 배열에는 Restaurant 타입의 객체들이 들어있음

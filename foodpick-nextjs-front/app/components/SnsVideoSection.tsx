@@ -10,7 +10,7 @@ interface Props {
 export default function SnsVideoSection({ videoList }: Props) {
   return (
     <section className={styles.recommendSection}>
-      <h2 className={styles.sectionTitle}>SNS 인기 맛집 영상</h2>
+      <h2 className={styles.sectionTitle}>🔥 SNS 인기 맛집 영상</h2>
       <div className={styles.scrollWrapper}>
         <div className={styles.videoScroll}>
           {videoList.map((video) => (

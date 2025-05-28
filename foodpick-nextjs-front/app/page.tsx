@@ -12,6 +12,7 @@ import LocationModal from './components/LocationModal';
 import { useRouter } from 'next/navigation';
 import { useLocation } from './contexts/LocationContext';
 import RecommendRestaurant from './components/RecommendRestaurants_active';
+import RandomPick from './components/RandomPick';
 
 // 위치 정보 타입 정의
 interface LocationInfo {
@@ -148,7 +149,7 @@ export default function Home() {
 
       {/* 트렌드 해시태그 */}
       <section className={styles.recommendSection}>
-        <h2 className={styles.sectionTitle}>트렌드 해시태그</h2>
+        <h2 className={styles.sectionTitle}>🏷️ 트렌드 해시태그</h2>
         <div className={styles.hashtagList}>
           {trendingHashtags.map((tag, idx) => (
             <button key={idx} className={styles.hashtagTag}>#{tag}</button>
@@ -159,6 +160,9 @@ export default function Home() {
       {/* SNS 인기 맛집 영상 */}
       <SnsVideoSection videoList={videoList}/>
 
+      {/* 랜덤 음식점 추천 */}
+      <RandomPick />
+      
       {showLocationModal && (
         <LocationModal
           onClose={() => setShowLocationModal(false)}

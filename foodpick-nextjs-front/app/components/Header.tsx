@@ -23,7 +23,10 @@ export default function Header() {
   const dropdownRef = useRef<HTMLDivElement>(null);
   const pathname = usePathname();
   const showSearch = 
-    pathname.startsWith('/restaurant_detail') || pathname.startsWith('/restaurant/detail') || pathname.startsWith('/search/result');
+    pathname.startsWith('/restaurant_detail') || 
+    pathname.startsWith('/restaurant/detail') || 
+    pathname.startsWith('/search/result') ||
+    pathname.startsWith('/search/category');
   const { data: session } = useSession();
 
   // 메뉴 상태 추적 Ref

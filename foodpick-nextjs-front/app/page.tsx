@@ -1,5 +1,5 @@
 'use client';
-import { FiSearch, FiCrosshair } from 'react-icons/fi';
+import { FiSearch, FiCrosshair, FiRefreshCw } from 'react-icons/fi';
 import styles from '../styles/home.module.css';
 import { useState, useEffect } from 'react';
 import Header from './components/Header';
@@ -42,6 +42,76 @@ export default function Home() {
   const [showLocationModal, setShowLocationModal] = useState(false);
   const [searchQuery, setSearchQuery] = useState(lastSearchQuery);
   const router = useRouter();
+
+  // 위치 갱신 함수
+  const handleRefreshLocation = async () => {
+    setIsLoading(true);
+    try {
+      // 1. 현재 위치 가져오기
+      const position = await new Promise<GeolocationPosition>((resolve, reject) => {
+        navigator.geolocation.getCurrentPosition(
+          resolve,
+          (error) => {
+            switch (error.code) {
+              case error.PERMISSION_DENIED:
+                reject(new Error('위치 정보 접근이 거부되었습니다. 브라우저 설정을 확인해주세요.'));
+                break;
+              case error.POSITION_UNAVAILABLE:
+                reject(new Error('위치 정보를 사용할 수 없습니다.'));
+                break;
+              case error.TIMEOUT:
+                reject(new Error('위치 정보 요청 시간이 초과되었습니다.'));
+                break;
+              default:
+                reject(new Error('위치 정보를 가져오는데 실패했습니다.'));
+            }
+          },
+          {
+            enableHighAccuracy: true,
+            timeout: 5000,
+            maximumAge: 0
+          }
+        );
+      });
+
+      const { latitude, longitude } = position.coords;
+      
+      // 2. 위도/경도로 주소 정보 가져오기
+      const response = await fetch(
+        `https://nominatim.openstreetmap.org/reverse?format=json&lat=${latitude}&lon=${longitude}&zoom=18&addressdetails=1`,
+        {
+          headers: {
+            'User-Agent': 'FoodPick-Web/1.0' // OpenStreetMap API 정책 준수
+          }
+        }
+      );
+      
+      if (!response.ok) {
+        throw new Error('위치 정보를 가져오는데 실패했습니다.');
+      }
+      
+      const data = await response.json();
+      
+      // 3. 주소 정보가 있으면 상태 업데이트
+      if (data.address) {
+        const newLocationInfo = {
+          address: parseAddress(data),
+          latitude,
+          longitude,
+          type: 'current' as const,
+          timestamp: Date.now()
+        };
+        setLocationInfo(newLocationInfo);
+      } else {
+        throw new Error('주소 정보를 찾을 수 없습니다.');
+      }
+    } catch (error) {
+      console.error('위치 정보 갱신 중 오류:', error instanceof Error ? error.message : '알 수 없는 오류가 발생했습니다.');
+      alert(error instanceof Error ? error.message : '위치 정보를 갱신하는데 실패했습니다. 다시 시도해주세요.');
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   // 검색어가 변경될 때마다 Context에 저장
   useEffect(() => {
@@ -86,7 +156,6 @@ export default function Home() {
               value={searchQuery} 
               onChange={(e) => setSearchQuery(e.target.value)}
               onKeyDown={handleKeyDown}
-              disabled={isLocationLoading}
               className={isLocationLoading ? styles.searchInputDisabled : ''}
             />
             <button 
@@ -104,13 +173,23 @@ export default function Home() {
               {locationInfo.type === 'current' ? '현재 위치: ' : '지정 위치: '}
               {isLoading ? '위치 정보를 가져오는 중...' : locationInfo.address}
             </p>
-            <button 
-              className={styles.locationBtn} 
-              onClick={() => setShowLocationModal(true)}
-              disabled={isLocationLoading}
-            >
-              위치 변경하기
-            </button>
+            <div className={styles.locationButtons}>
+              <button 
+                className={styles.refreshLocationBtn} 
+                onClick={handleRefreshLocation}
+                disabled={isLocationLoading}
+                title="위치 갱신"
+              >
+                <FiRefreshCw size={16} color="white" className={isLoading ? styles.rotating : ''} />
+              </button>
+              <button 
+                className={styles.locationBtn} 
+                onClick={() => setShowLocationModal(true)}
+                disabled={isLocationLoading}
+              >
+                위치 변경하기
+              </button>
+            </div>
           </div>
         </div>  
       </section>

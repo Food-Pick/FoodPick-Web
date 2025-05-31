@@ -28,6 +28,11 @@ export default function RandomPick({ latitude, longitude }: RandomPickProps) {
   const [isAnimating, setIsAnimating] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [isSpinning, setIsSpinning] = useState(false);
+  const [tempRestaurants, setTempRestaurants] = useState<Restaurant[]>([]);
+  const [slotPosition, setSlotPosition] = useState(0);
+  const [isRetrySpinning, setIsRetrySpinning] = useState(false);
+  const [showResult, setShowResult] = useState(false);
   const router = useRouter();
 
   // useEffect(() => {
@@ -61,7 +66,7 @@ export default function RandomPick({ latitude, longitude }: RandomPickProps) {
 
     try {
       const response = await fetch(
-        `/api/nearby/restaurant?lat=${latitude}&lng=${longitude}`
+        `/api/nearby/randompick?lat=${latitude}&lng=${longitude}`
       );
 
       if (!response.ok) {
@@ -92,32 +97,79 @@ export default function RandomPick({ latitude, longitude }: RandomPickProps) {
   };
 }, [latitude, longitude]);
 
+  const spinSlot = (restaurants: Restaurant[]) => {
+    // console.log('restaurnts length', restaurants.length);
+    let count = 0;
+    const maxCount = Math.min(20, restaurants.length * 2);
+    const interval = 100;
+    const itemHeight = 60;
+    const totalHeight = itemHeight * 10;
+
+    const spinInterval = setInterval(() => {
+      const randomIndex = Math.floor(Math.random() * restaurants.length);
+      const slots = Array(10).fill(restaurants[randomIndex]);
+      setTempRestaurants(slots);
+      
+      const newPosition = -count * itemHeight;
+      setSlotPosition(newPosition % totalHeight);
+      
+      count++;
+
+      if (count >= maxCount) {
+        clearInterval(spinInterval);
+        const finalIndex = Math.floor(Math.random() * restaurants.length);
+        const finalRestaurant = restaurants[finalIndex];
+        setSelected(finalRestaurant);
+        setTempRestaurants(Array(10).fill(finalRestaurant));
+        setIsSpinning(false);
+        setIsRetrySpinning(false);
+        setSlotPosition(0);
+        
+        setTimeout(() => {
+          setShowResult(true);
+          setIsAnimating(true);
+        }, 1000);
+      }
+    }, interval);
+  };
+
   const handlePick = () => {
     if (restaurants.length === 0) return;
     setIsAnimating(false);
-
-    let newIndex = Math.floor(Math.random() * restaurants.length);
-
-    if (restaurants.length > 1 && selected) {
-      while (restaurants[newIndex].restaurant_id === selected.restaurant_id) {
-        newIndex = Math.floor(Math.random() * restaurants.length);
-      }
-    }
-
-    setSelected(restaurants[newIndex]);
+    setIsSpinning(true);
+    setShowResult(false);
     setIsOpen(true);
-    setTimeout(() => setIsAnimating(true), 50);
+
+    const restaurantsWithMenu = restaurants.filter(r => r.restaurant_menu);
+    const targetRestaurants = restaurantsWithMenu.length > 0 ? restaurantsWithMenu : restaurants;
+    
+    spinSlot(targetRestaurants);
   };
 
   const handleClose = () => {
     setIsOpen(false);
     setIsAnimating(false);
+    setShowResult(false);
+    setTempRestaurants([]);
   };
 
   const handleNavigate = () => {
     if (selected) {
       router.push(`/restaurant/detail/${selected.restaurant_id}`);
     }
+  };
+
+  const handleRetry = () => {
+    setIsAnimating(false);
+    setIsSpinning(true);
+    setShowResult(false);
+    setIsRetrySpinning(true);
+    setSelected(null);
+
+    const restaurantsWithMenu = restaurants.filter(r => r.restaurant_menu);
+    const targetRestaurants = restaurantsWithMenu.length > 0 ? restaurantsWithMenu : restaurants;
+    
+    spinSlot(targetRestaurants);
   };
 
   const getFirstImage = (menuStr: string | null): string => {
@@ -137,55 +189,124 @@ export default function RandomPick({ latitude, longitude }: RandomPickProps) {
       </p>
 
       <div style={{ display: 'flex', justifyContent: 'center' }}>
-        {/* <button
-          className={styles.randomPickButton}
-          onClick={handlePick}
-          disabled={isLoading || restaurants.length === 0}
-        >
-          {isLoading ? '로딩 중...' : '랜덤 음식점 뽑기!'}
-        </button> */}
         <button
           className={styles.randomPickButton}
           onClick={handlePick}
-          disabled={isLoading || restaurants.length === 0}
+          disabled={isLoading || restaurants.length === 0 || isSpinning || restaurants.length < 20}
         >
           {isLoading ? (
             <span className={styles.spinnerWrapper}>
               <span className={styles.spinner} /> 로딩 중...
             </span>
+          ) : isSpinning ? (
+            <span className={styles.spinnerWrapper}>
+              <span className={styles.spinner} /> 뽑는 중...
+            </span>
+          ) : restaurants.length < 20 ? (
+            '주변 음식점이 부족합니다 (20개 이상 필요)'
           ) : (
-            '랜덤 음식점 뽑기!'
+            '랜덤 음식 뽑기!'
           )}
         </button>
       </div>
 
-      {isOpen && selected && (
+      {isOpen && (selected || tempRestaurants.length > 0) && (
         <div className={styles.modalOverlay} onClick={handleClose}>
           <div className={styles.modalContent} onClick={(e) => e.stopPropagation()}>
             <button className={styles.closeButton} onClick={handleClose}>✖</button>
 
+            {(selected || tempRestaurants[0]) && (
+              <div className={styles.menuInfo}>
+                <div className={styles.menuHeader}>
+                  {isSpinning || !showResult ? (
+                    <>
+                      <div className={styles.slotMachine}>
+                        <div 
+                          className={styles.slotMachineContent}
+                          style={{ 
+                            transform: `translateY(${slotPosition}px)`,
+                            transition: isSpinning ? 'transform 0.05s linear' : 'transform 0.3s ease-out'
+                          }}
+                        >
+                          {tempRestaurants.map((r, index) => (
+                            <div key={index} className={`${styles.slotMachineItem} ${styles.menu}`}>
+                              {JSON.parse(r.restaurant_menu || '[]')[0]?.name || '메뉴 정보 없음'}
+                            </div>
+                          ))}
+                        </div>
+                        <div className={styles.slotMachineOverlay} />
+                        <div className={styles.slotMachineHighlight} />
+                      </div>
+
+                      <div className={styles.slotMachine}>
+                        <div 
+                          className={styles.slotMachineContent}
+                          style={{ 
+                            transform: `translateY(${slotPosition}px)`,
+                            transition: isSpinning ? 'transform 0.05s linear' : 'transform 0.3s ease-out'
+                          }}
+                        >
+                          {tempRestaurants.map((r, index) => (
+                            <div key={index} className={`${styles.slotMachineItem} ${styles.price}`}>
+                              {JSON.parse(r.restaurant_menu || '[]')[0]?.price ? 
+                                `${JSON.parse(r.restaurant_menu || '[]')[0].price.toLocaleString()}원` : 
+                                '가격 정보 없음'}
+                            </div>
+                          ))}
+                        </div>
+                        <div className={styles.slotMachineOverlay} />
+                        <div className={styles.slotMachineHighlight} />
+                      </div>
+                    </>
+                  ) : (
+                    <div className={styles.selectedMenu}>
+                      <h3 className={styles.selectedMenuName}>
+                        {JSON.parse((selected || tempRestaurants[0]).restaurant_menu || '[]')[0]?.name || '메뉴 정보 없음'}
+                      </h3>
+                      <p className={styles.selectedMenuPrice}>
+                        {JSON.parse((selected || tempRestaurants[0]).restaurant_menu || '[]')[0]?.price ? 
+                          `${JSON.parse((selected || tempRestaurants[0]).restaurant_menu || '[]')[0].price.toLocaleString()}원` : 
+                          '가격 정보 없음'}
+                      </p>
+                    </div>
+                  )}
+                </div>
+              </div>
+            )}
+
             <img
-              src={getFirstImage(selected.restaurant_menu)}
-              alt={selected.restaurant_네이버_상호명 || selected.restaurant_사업장명}
-              className={`${styles.image} ${isAnimating ? styles.imageAnimate : ''}`}
+              src={getFirstImage((selected || tempRestaurants[0]).restaurant_menu)}
+              alt={(selected || tempRestaurants[0]).restaurant_네이버_상호명 || (selected || tempRestaurants[0]).restaurant_사업장명}
+              className={`${styles.image} ${isAnimating ? styles.imageAnimate : ''} ${isSpinning ? styles.spinning : ''}`}
             />
-            <h3 className={styles.name}>
-              {selected.restaurant_네이버_상호명 || selected.restaurant_사업장명}
+            <h3 className={`${styles.name} ${isSpinning ? styles.spinning : ''}`}>
+              {(selected || tempRestaurants[0]).restaurant_네이버_상호명 || (selected || tempRestaurants[0]).restaurant_사업장명}
             </h3>
-            <p className={styles.address}>{selected.restaurant_도로명전체주소}</p>
-            <p className={styles.services}>
-              거리: 약 {Math.round(selected.dist)}m
+            <p className={`${styles.address} ${isSpinning ? styles.spinning : ''}`}>
+              {(selected || tempRestaurants[0]).restaurant_도로명전체주소}
+            </p>
+            <p className={`${styles.services} ${isSpinning ? styles.spinning : ''}`}>
+              거리: 약 {Math.round((selected || tempRestaurants[0]).dist)}m
             </p>
 
-            <button onClick={handleNavigate} className={styles.detailButton}>
-              상세 페이지로 이동 →
-            </button>
+            {!isSpinning && (
+              <>
+                <button onClick={handleNavigate} className={styles.detailButton}>
+                  상세 페이지로 이동 →
+                </button>
 
-            <div className={styles.retryBottomWrapper}>
-              <button onClick={handlePick} className={styles.retryIconButton} title="다시 뽑기">
-                <FiRefreshCw size={20} />
-              </button>
-            </div>
+                <div className={styles.retryBottomWrapper}>
+                  <button 
+                    onClick={handleRetry} 
+                    className={styles.retryIconButton} 
+                    title="다시 뽑기"
+                    disabled={isRetrySpinning}
+                  >
+                    <FiRefreshCw size={20} className={isRetrySpinning ? styles.spinning : ''} />
+                  </button>
+                </div>
+              </>
+            )}
           </div>
         </div>
       )}

@@ -31,6 +31,10 @@ const nextConfig: NextConfig = {
         destination: `${BACKEND_API_INTERNAL_URL}/recommend`,
       },
       {
+        source: '/api/nearby/randompick',
+        destination: `${BACKEND_API_INTERNAL_URL}/restaurant/randompick`,
+      },
+      {
         source: '/api/auth/register-check-id',
         destination: `${BACKEND_API_INTERNAL_URL}/auth/register-check-id`,
       },

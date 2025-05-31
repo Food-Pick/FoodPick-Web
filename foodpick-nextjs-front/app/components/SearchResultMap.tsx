@@ -4,7 +4,8 @@
 import { useEffect, useState, useRef } from 'react';
 import { MapContainer, TileLayer, Marker, Popup, useMap } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
-import { Icon, divIcon, LatLng } from 'leaflet';
+import { divIcon, LatLng } from 'leaflet';
+import styles from './SearchResultMap.module.css';
 
 interface MarkerData {
     lat: number;
@@ -17,6 +18,8 @@ interface SearchResultMapProps {
     markers: MarkerData[];
     highlightedMarker?: MarkerData;
     onMarkerHover: (marker: MarkerData | null) => void;
+    onSearchAtLocation?: (lat: number, lng: number) => void;
+    isReloading?: boolean;
 }
 
 const createCircleIcon = (isHighlighted: boolean) => {
@@ -37,8 +40,9 @@ const createCircleIcon = (isHighlighted: boolean) => {
 };
 
 // 지도 이동을 위한 컴포넌트
-function MapController({ highlightedMarker }: { highlightedMarker?: MarkerData }) {
+function MapController({ highlightedMarker, onSearchAtLocation }: { highlightedMarker?: MarkerData; onSearchAtLocation?: (lat: number, lng: number) => void }) {
     const map = useMap();
+    const [showSearchButton, setShowSearchButton] = useState(false);
 
     useEffect(() => {
         if (highlightedMarker) {
@@ -79,10 +83,46 @@ function MapController({ highlightedMarker }: { highlightedMarker?: MarkerData }
         }
     }, [highlightedMarker, map]);
 
-    return null;
+    // 지도 이동이 끝난 후 검색 버튼 표시
+    useEffect(() => {
+        const handleMoveEnd = () => {
+            setShowSearchButton(true);
+        };
+
+        map.on('moveend', handleMoveEnd);
+        return () => {
+            map.off('moveend', handleMoveEnd);
+        };
+    }, [map]);
+
+    const handleSearchClick = () => {
+        const center = map.getCenter();
+        console.log('지도 중앙 좌표:', {
+            위도: center.lat,
+            경도: center.lng,
+            줌레벨: map.getZoom()
+        });
+        onSearchAtLocation?.(center.lat, center.lng);
+        setShowSearchButton(false);
+    };
+
+    return (
+        <>
+            {showSearchButton && onSearchAtLocation && (
+                <div className={styles.searchButtonContainer}>
+                    <button 
+                        className={styles.searchButton}
+                        onClick={handleSearchClick}
+                    >
+                        이 위치에서 다시 검색하기
+                    </button>
+                </div>
+            )}
+        </>
+    );
 }
 
-export default function SearchResultMap({ markers, highlightedMarker, onMarkerHover }: SearchResultMapProps) {
+export default function SearchResultMap({ markers, highlightedMarker, onMarkerHover, onSearchAtLocation, isReloading = false }: SearchResultMapProps) {
     const [isMounted, setIsMounted] = useState(false);
     const markerRefs = useRef<{ [key: string]: any }>({});
 
@@ -106,7 +146,7 @@ export default function SearchResultMap({ markers, highlightedMarker, onMarkerHo
         }
     }, [highlightedMarker]);
 
-    if (!isMounted) {
+    if (!isMounted || isReloading) {
         return <div style={{ height: '100%', width: '100%', backgroundColor: '#f0f0f0' }} />;
     }
 
@@ -126,7 +166,10 @@ export default function SearchResultMap({ markers, highlightedMarker, onMarkerHo
                 attribution='&copy; OpenStreetMap contributors'
                 url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
             />
-            <MapController highlightedMarker={highlightedMarker} />
+            <MapController 
+                highlightedMarker={highlightedMarker} 
+                onSearchAtLocation={onSearchAtLocation}
+            />
             {markers.map((marker, index) => {
                 const markerKey = `${marker.lat}-${marker.lng}`;
                 return (

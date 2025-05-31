@@ -1,0 +1,29 @@
+.searchButtonContainer {
+    position: absolute;
+    top: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 1000;
+    pointer-events: auto;
+}
+
+.searchButton {
+    background-color: #ff6b00;
+    color: white;
+    border: none;
+    border-radius: 20px;
+    padding: 8px 16px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    transition: background-color 0.2s ease;
+}
+
+.searchButton:hover {
+    background-color: #ff8533;
+}
+
+.searchButton:active {
+    background-color: #e65c00;
+} 

@@ -46,8 +46,10 @@ interface Restaurant {
 function CategorySearchContent() {
     const [results, setResults] = useState<Restaurant[]>([]);
     const [loading, setLoading] = useState(true);
+    const [isReloading, setIsReloading] = useState(false);
     const [hoveredRestaurant, setHoveredRestaurant] = useState<Restaurant | null>(null);
     const [isFromMap, setIsFromMap] = useState(false);
+    const [currentAddress, setCurrentAddress] = useState('');
     const searchParams = useSearchParams();
     const router = useRouter();
     const { locationInfo } = useLocation();
@@ -67,19 +69,74 @@ function CategorySearchContent() {
         'etc': '기타'
     };
 
+    // 위도/경도로 주소 가져오기
+    const getAddressFromCoordinates = async (lat: number, lng: number) => {
+        try {
+            const response = await fetch(
+                `https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}&zoom=18`,
+                {
+                    headers: {
+                        'User-Agent': 'FoodPick-Web/1.0'
+                    }
+                }
+            );
+            const data = await response.json();
+            if (data.display_name) {
+                const addressParts = data.display_name.split(', ');
+                const koreanAddress = addressParts.slice(0, 3).join(' ');
+                setCurrentAddress(koreanAddress);
+            }
+        } catch (error) {
+            console.error('Error fetching address:', error);
+            setCurrentAddress(locationInfo.address);
+        }
+    };
+
+    useEffect(() => {
+        if (lat && lng) {
+            getAddressFromCoordinates(parseFloat(lat), parseFloat(lng));
+        } else {
+            setCurrentAddress(locationInfo.address);
+        }
+    }, [lat, lng, locationInfo.address]);
+
+    const handleSearchAtLocation = async (lat: number, lng: number) => {
+        console.log('카테고리 검색 페이지 - 새로운 검색 좌표:', {
+            위도: lat,
+            경도: lng,
+            카테고리: searchParams.get('category') || ''
+        });
+        
+        // 현재 선택된 음식점 하이라이트 해제
+        setHoveredRestaurant(null);
+        setIsFromMap(false);
+        
+        // 새로운 위치의 주소 가져오기
+        await getAddressFromCoordinates(lat, lng);
+        
+        try {
+            const res = await fetch(`/api/restaurant/search_category?category=${category}&lat=${lat}&lng=${lng}`);
+            const data = await res.json();
+            setResults(Array.isArray(data.raw) ? data.raw : []);
+        } catch (error) {
+            console.error('Error fetching data:', error);
+            setResults([]);
+        }
+    };
+
     useEffect(() => {
         const fetchData = async () => {
             setLoading(true);
             try {
                 const res = await fetch(`/api/restaurant/search_category?category=${category}&lat=${lat}&lng=${lng}`);
                 const data = await res.json();
-                // API 응답의 raw 배열을 처리
                 setResults(Array.isArray(data.raw) ? data.raw : []);
             } catch (error) {
                 console.error('Error fetching data:', error);
                 setResults([]);
             } finally {
                 setLoading(false);
+                setIsReloading(false);
             }
         };
 
@@ -157,7 +214,7 @@ function CategorySearchContent() {
                         {categoryNames[category || '']} 카테고리
                     </h2>
                     <p className={styles.searchSubtitle}>
-                        {locationInfo.address} 주변 검색 결과입니다.
+                        {currentAddress} 주변 검색 결과입니다.
                     </p>
                 </div>
                 {results.length === 0 ? (
@@ -206,37 +263,25 @@ function CategorySearchContent() {
                 )}
             </div>
             <div className={styles.rightPanel}>
-                {results.length === 0 ? (
-                    <div style={{
-                        width: '100%',
-                        height: '100%',
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        color: '#bbb',
-                        fontSize: '1.2rem'
-                    }}>
-                        지도에 표시할 결과가 없습니다.
-                    </div>
-                ) : (
-                    <SearchResultMap 
-                        markers={markers} 
-                        highlightedMarker={highlightedMarker}
-                        onMarkerHover={(marker) => {
-                            if (marker) {
-                                const restaurant = results.find(r => 
-                                    parseFloat(r.restaurant_latitude) === marker.lat && 
-                                    parseFloat(r.restaurant_longitude) === marker.lng
-                                );
-                                setHoveredRestaurant(restaurant || null);
-                                setIsFromMap(true);
-                            } else {
-                                setHoveredRestaurant(null);
-                                setIsFromMap(false);
-                            }
-                        }}
-                    />
-                )}
+                <SearchResultMap 
+                    markers={markers} 
+                    highlightedMarker={highlightedMarker}
+                    onMarkerHover={(marker) => {
+                        if (marker) {
+                            const restaurant = results.find(r => 
+                                parseFloat(r.restaurant_latitude) === marker.lat && 
+                                parseFloat(r.restaurant_longitude) === marker.lng
+                            );
+                            setHoveredRestaurant(restaurant || null);
+                            setIsFromMap(true);
+                        } else {
+                            setHoveredRestaurant(null);
+                            setIsFromMap(false);
+                        }
+                    }}
+                    onSearchAtLocation={handleSearchAtLocation}
+                    isReloading={isReloading}
+                />
             </div>
         </div>
     );

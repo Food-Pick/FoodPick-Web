@@ -203,7 +203,7 @@ export default function RandomPick({ latitude, longitude }: RandomPickProps) {
               <span className={styles.spinner} /> 뽑는 중...
             </span>
           ) : restaurants.length < 20 ? (
-            '주변 음식점이 부족합니다 (20개 이상 필요)'
+            '주변 음식점이 부족합니다'
           ) : (
             '랜덤 음식 뽑기!'
           )}

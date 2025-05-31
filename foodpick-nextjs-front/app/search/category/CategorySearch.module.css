@@ -1,0 +1,237 @@
+.container {
+    display: flex;
+    height: calc(100vh - 82px);
+    overflow: hidden;
+    position: absolute;
+    top: 82px;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #fff;
+}
+
+.leftPanel {
+    flex: 0.25;
+    padding: 24px;
+    overflow-y: auto;
+    border-right: 1px solid #e5e5e5;
+    background-color: #f8f9fa;
+    min-width: 550px;
+    height: 100%;
+}
+
+.rightPanel {
+    flex: 0.75;
+    position: relative;
+    height: 100%;
+}
+
+.searchHeader {
+    margin-bottom: 2rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid #eee;
+}
+
+.searchTitle {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: #333;
+    margin-bottom: 0.5rem;
+}
+
+.searchSubtitle {
+    font-size: 0.9rem;
+    color: #666;
+}
+
+.resultList {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.resultItem {
+    display: flex;
+    gap: 16px;
+    padding: 16px;
+    border: 1px solid #e5e5e5;
+    border-radius: 12px;
+    background-color: #fff;
+    cursor: pointer;
+    transition: all 0.2s ease-in-out;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.resultItem:hover,
+.resultItemHovered {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    border-color: #ff6b00;
+    background-color: #fff8f3;
+}
+
+.resultImg {
+    width: 120px;
+    height: 120px;
+    object-fit: cover;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.resultInfo {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.resultName {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: #333;
+    margin-bottom: 4px;
+}
+
+.resultMeta {
+    font-size: 0.9rem;
+    color: #666;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.resultDesc {
+    font-size: 0.95rem;
+    color: #666;
+    margin-top: auto;
+    padding-top: 8px;
+    border-top: 1px solid #f0f0f0;
+}
+
+/* 스크롤바 스타일링 */
+.leftPanel::-webkit-scrollbar {
+    width: 8px;
+}
+
+.leftPanel::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 4px;
+}
+
+.leftPanel::-webkit-scrollbar-thumb {
+    background: #ff6b00;
+    border-radius: 4px;
+}
+
+.leftPanel::-webkit-scrollbar-thumb:hover {
+    background: #ff8533;
+}
+
+/* 반응형 디자인 */
+@media screen and (max-width: 1024px) {
+    .container {
+        position: absolute;
+        left: 0;
+        right: 0;
+        bottom: 0;
+    }
+
+    .leftPanel {
+        flex: none;
+        width: 100%;
+        min-width: unset;
+        height: 100%;
+        border-right: none;
+        border-bottom: none;
+    }
+
+    .rightPanel {
+        display: none;
+    }
+}
+
+@media screen and (max-width: 768px) {
+    .container {
+        top: 133px;
+        height: calc(110vh - 133px);
+    }
+
+    .leftPanel {
+        padding: 12px;
+        padding-bottom: 100px;
+    }
+
+    .searchTitle {
+        font-size: 1.2rem;
+        margin-bottom: 16px;
+        padding-bottom: 12px;
+    }
+
+    .resultList {
+        gap: 12px;
+    }
+
+    .resultItem {
+        padding: 12px;
+        gap: 12px;
+    }
+
+    .resultImg {
+        width: 80px;
+        height: 80px;
+    }
+
+    .resultName {
+        font-size: 1rem;
+        margin-bottom: 2px;
+    }
+
+    .resultMeta {
+        font-size: 0.8rem;
+    }
+
+    .resultDesc {
+        font-size: 0.85rem;
+        padding-top: 6px;
+    }
+}
+
+@media screen and (max-width: 480px) {
+    .leftPanel {
+        padding: 8px;
+        padding-bottom: 100px;
+    }
+
+    .searchTitle {
+        font-size: 1.1rem;
+        margin-bottom: 12px;
+        padding-bottom: 10px;
+    }
+
+    .resultList {
+        gap: 8px;
+    }
+
+    .resultItem {
+        padding: 10px;
+        gap: 10px;
+    }
+
+    .resultImg {
+        width: 70px;
+        height: 70px;
+    }
+
+    .resultName {
+        font-size: 0.95rem;
+    }
+
+    .resultMeta {
+        font-size: 0.75rem;
+    }
+
+    .resultDesc {
+        font-size: 0.8rem;
+        padding-top: 4px;
+    }
+} 

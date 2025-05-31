@@ -201,8 +201,8 @@ export default function Home() {
           </div>
         </div>  
       </section>
-
-      {/* 카테고리 */}
+{/* 
+      카테고리
       <section className={styles.categories}>
         {[
           { icon: '/icons/korean.png', label: '한식'},
@@ -214,6 +214,33 @@ export default function Home() {
           { icon: '/icons/etc.png', label: '기타'},
         ].map((item, idx) => (
           <button key={idx} className={styles.categoryBtn}>
+            <img src={item.icon} alt={item.label} className={styles.categoryIcon} />
+            <span className={styles.categoriesLabel}>{item.label}</span>
+          </button>
+        ))}
+      </section> */}
+
+      <section className={styles.categories}>
+        {[
+          { icon: '/icons/korean.png', label: '한식', category: 'korean'},
+          { icon: '/icons/chinese.png', label: '중식', category: 'chinese'},
+          { icon: '/icons/japanese.png', label: '일식', category: 'japanese'},
+          { icon: '/icons/western.png', label: '양식', category: 'western'},
+          { icon: '/icons/cafe.png', label: '카페 & 디저트', category: 'cafe'},
+          { icon: '/icons/pub.png', label: '호프', category: 'pub'},
+          { icon: '/icons/etc.png', label: '기타', category: 'etc'},
+        ].map((item, idx) => (
+          <button 
+            key={idx} 
+            className={styles.categoryBtn}
+            onClick={() => {
+              if (isLocationLoading) {
+                alert('위치 정보를 가져오는 중입니다. 잠시만 기다려주세요.');
+                return;
+              }
+              router.push(`/search/category?category=${item.category}&lat=${locationInfo.latitude}&lng=${locationInfo.longitude}`);
+            }}
+          >
             <img src={item.icon} alt={item.label} className={styles.categoryIcon} />
             <span className={styles.categoriesLabel}>{item.label}</span>
           </button>

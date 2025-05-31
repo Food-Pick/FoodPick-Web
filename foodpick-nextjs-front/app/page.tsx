@@ -211,7 +211,7 @@ export default function Home() {
           { icon: '/icons/western.png', label: '양식'},
           { icon: '/icons/cafe.png', label: '카페 & 디저트'},
           { icon: '/icons/pub.png', label: '호프'},
-          { icon: '/icons/vegan.png', label: '비건'},
+          { icon: '/icons/etc.png', label: '기타'},
         ].map((item, idx) => (
           <button key={idx} className={styles.categoryBtn}>
             <img src={item.icon} alt={item.label} className={styles.categoryIcon} />

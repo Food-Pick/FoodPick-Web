@@ -137,25 +137,12 @@ export default function RandomPick({ latitude, longitude }: RandomPickProps) {
       </p>
 
       <div style={{ display: 'flex', justifyContent: 'center' }}>
-        {/* <button
-          className={styles.randomPickButton}
-          onClick={handlePick}
-          disabled={isLoading || restaurants.length === 0}
-        >
-          {isLoading ? '로딩 중...' : '랜덤 음식점 뽑기!'}
-        </button> */}
         <button
           className={styles.randomPickButton}
           onClick={handlePick}
           disabled={isLoading || restaurants.length === 0}
         >
-          {isLoading ? (
-            <span className={styles.spinnerWrapper}>
-              <span className={styles.spinner} /> 로딩 중...
-            </span>
-          ) : (
-            '랜덤 음식점 뽑기!'
-          )}
+          {isLoading ? '로딩 중...' : '랜덤 음식점 뽑기!'}
         </button>
       </div>
 

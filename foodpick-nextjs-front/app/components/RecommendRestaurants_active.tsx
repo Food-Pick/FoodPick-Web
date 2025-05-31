@@ -1,6 +1,7 @@
 import { useEffect, useState, useRef } from 'react';
 import { useLocation } from '../contexts/LocationContext';
 import styles from '../../styles/home.module.css';
+import { useRouter } from 'next/navigation';
 
 interface Weather {
   temperature: string;
@@ -160,9 +161,14 @@ export default function RecommendRestaurant({ latitude, longitude }: RecommendRe
     const [popupState, setPopupState] = useState<PopupState>({ isOpen: false, restaurantId: null });
     const [error, setError] = useState<string | null>(null);
     const scrollContainerRef = useRef<HTMLDivElement>(null);
+    const router = useRouter();
 
     const toggleExpand = (restaurantId: number) => {
         setPopupState(prev => ({ ...prev, restaurantId }));
+    };
+
+    const goToDetailPage = (restaurantId: number) => {
+      router.push(`/restaurant/detail/${restaurantId}`);
     };
 
     const scrollLeft = () => {
@@ -342,6 +348,12 @@ export default function RecommendRestaurant({ latitude, longitude }: RecommendRe
                                                 더보기 ({restaurant.menus.length - 1}개 더)
                                             </button>
                                         )}
+                                        <button
+                                          className="detail-button"
+                                          onClick={() => goToDetailPage(restaurant.restaurant_id)}
+                                        >
+                                          상세 페이지 보기
+                                        </button>
                                     </div>
                                 </div>
                             ))
@@ -712,7 +724,24 @@ export default function RecommendRestaurant({ latitude, longitude }: RecommendRe
           background: #e9ecef;
           color: #333;
         }
+        
+        .detail-button {
+          margin-top: 0.3rem;
+          padding: 0.6rem;
+          background: #ff7043; /* 주황색 배경 */
+          border: 1px solid #f4511e; /* 경계도 주황 계열 */
+          border-radius: 8px;
+          color: white; /* 텍스트는 흰색 */
+          font-size: 0.8rem;
+          cursor: pointer;
+          transition: all 0.2s ease;
+        }
 
+        .detail-button:hover {
+          background: #f4511e; /* 더 진한 주황 */
+          color: #fff;
+        }
+        
         .popup-overlay {
           position: fixed;
           top: 0;

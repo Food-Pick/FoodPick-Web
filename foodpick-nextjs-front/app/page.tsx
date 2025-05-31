@@ -240,7 +240,10 @@ export default function Home() {
       <SnsVideoSection videoList={videoList}/>
 
       {/* 랜덤 음식점 추천 */}
-      <RandomPick />
+      <RandomPick 
+        latitude={locationInfo.latitude} 
+        longitude={locationInfo.longitude} 
+      />
       
       {showLocationModal && (
         <LocationModal

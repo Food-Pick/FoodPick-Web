@@ -646,7 +646,6 @@
   animation: fadeScale 0.4s ease-in-out;
 }
 
-
 .randomPickButton {
   background-color: #ff6b00;
   color: white;
@@ -658,12 +657,46 @@
   cursor: pointer;
   width: min(300px, 90%);
   transition: background-color 0.25s ease, transform 0.15s ease;
-  box-shadow: 0 4px 10px rgba(255, 107, 0, 0.2);
 }
 
 .randomPickButton:hover {
   background-color: #e65a00;
   transform: translateY(-2px);
+}
+
+.randomPickButton:disabled {
+  background-color: #e0e0e0; /* 연한 회색 */
+  color: #999;                /* 흐린 텍스트 */
+  cursor: not-allowed;        /* 클릭 불가능한 느낌 */
+  opacity: 0.7;
+  transition: none;
+}
+
+.spinnerWrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
+/* 스피너 바디 */
+.spinner {
+  width: 1rem;
+  height: 1rem;
+  border: 2px solid #ccc;          /* 전체 테두리 */
+  border-top: 2px solid #ff7043;   /* 상단 테두리만 주황색 */
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+/* 회전 애니메이션 정의 */
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
 }
 
 .closeButton {

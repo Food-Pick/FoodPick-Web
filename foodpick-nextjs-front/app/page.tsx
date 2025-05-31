@@ -141,6 +141,14 @@ export default function Home() {
     }
   };
 
+  const handleHashtagClick = (tag: string) => {
+    if (isLocationLoading) {
+      alert('위치 정보를 가져오는 중입니다. 잠시만 기다려주세요.');
+      return;
+    }
+    router.push(`/search/result?food=${encodeURIComponent(tag)}&lat=${locationInfo.latitude}&lng=${locationInfo.longitude}`);
+  };
+
   return (
     <div className={styles.container}>
       <Header/> 
@@ -231,7 +239,13 @@ export default function Home() {
         <h2 className={styles.sectionTitle}>🏷️ 트렌드 해시태그</h2>
         <div className={styles.hashtagList}>
           {trendingHashtags.map((tag, idx) => (
-            <button key={idx} className={styles.hashtagTag}>#{tag}</button>
+            <button 
+              key={idx} 
+              className={styles.hashtagTag}
+              onClick={() => handleHashtagClick(tag)}
+            >
+              #{tag}
+            </button>
           ))}
         </div>
       </section>

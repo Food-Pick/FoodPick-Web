@@ -6,6 +6,7 @@ import dynamic from 'next/dynamic';
 import Link from 'next/link';
 import Header from '../../components/Header';
 import styles from './SearchResult.module.css';
+import { useLocation } from '../../contexts/LocationContext';
 
 const SearchResultMap = dynamic(
   () => import('../../components/SearchResultMap'),
@@ -28,15 +29,21 @@ function SearchResultContent() {
     const [isFromMap, setIsFromMap] = useState(false);
     const searchParams = useSearchParams();
     const router = useRouter();
-    
+    const { locationInfo } = useLocation();
+
+    const food = searchParams.get('food');
+    const category = searchParams.get('category');
+    const lat = searchParams.get('lat');
+    const lng = searchParams.get('lng');
+
+    const searchQuery = food || category || '';
+    const searchType = food ? 'food' : 'category';
+
     useEffect(() => {
         const fetchData = async () => {
             setLoading(true); // 검색 시작할 때 로딩 상태로 변경
             try {
-                const food = searchParams.get('food') || '';
-                const lat = searchParams.get('lat') || '';
-                const lng = searchParams.get('lng') || '';
-                const res = await fetch(`/api/restaurant/search_food?food=${food}&lat=${lat}&lng=${lng}`);
+                const res = await fetch(`/api/restaurant/search_food?food=${searchQuery}&lat=${lat}&lng=${lng}`);
                 const data = await res.json();
                 
                 // 유사도 계산 및 정렬
@@ -44,7 +51,7 @@ function SearchResultContent() {
                     let menu = [];
                     try { menu = JSON.parse(item.menu); } catch {}
                     const menuNames = menu.map((m: any) => m.name).join(' ');
-                    const similarity = calculateSimilarity(food, menuNames);
+                    const similarity = calculateSimilarity(searchQuery, menuNames);
                     return { ...item, similarity };
                 }).sort((a: any, b: any) => b.similarity - a.similarity);
 
@@ -57,7 +64,7 @@ function SearchResultContent() {
         };
 
         fetchData();
-    }, [searchParams]); // searchParams가 변경될 때마다 실행
+    }, [searchQuery, lat, lng]); // searchQuery, lat, lng가 변경될 때마다 실행
 
     // 유사도 계산 함수
     const calculateSimilarity = (searchTerm: string, menuText: string) => {
@@ -140,7 +147,14 @@ function SearchResultContent() {
     return (
         <div className={styles.container}>
             <div className={styles.leftPanel}>
-                <h2 className={styles.title}>'{searchParams.get('food')}'에 대한 검색 결과</h2>
+                <div className={styles.searchHeader}>
+                    <h2 className={styles.searchTitle}>
+                        {searchType === 'food' ? `"${searchQuery}" 검색 결과` : `${searchQuery} 카테고리 검색 결과`}
+                    </h2>
+                    <p className={styles.searchSubtitle}>
+                        {locationInfo.address} 주변 검색 결과입니다.
+                    </p>
+                </div>
                 {results.length === 0 ? (
                     <div style={{ color: '#888', fontSize: '1.1rem', padding: '2rem 0', textAlign: 'center' }}>
                         검색 결과가 없습니다.
@@ -154,7 +168,7 @@ function SearchResultContent() {
                             const isHovered = hoveredRestaurant?.id === item.id;
 
                             // 검색어와 관련된 메뉴 찾기
-                            const searchTerm = searchParams.get('food')?.toLowerCase() || '';
+                            const searchTerm = searchQuery.toLowerCase();
                             const relevantMenus = menu
                                 .filter((m: any) => m.name.toLowerCase().includes(searchTerm))
                                 .slice(0, 2);

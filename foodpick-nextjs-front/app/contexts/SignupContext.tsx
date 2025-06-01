@@ -10,6 +10,7 @@ interface SignupData {
   nickname?: string;
   gender?: number; // 0: 남성, 1: 여성
   age?: number; // 0: 10대, 1: 20대, 2: 30대, 3: 40대, 4: 50대, 5: 60대 이상
+  price?: string;
   favorite_food?: string[];
 }
 

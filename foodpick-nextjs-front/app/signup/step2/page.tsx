@@ -36,6 +36,7 @@ export default function SignupStep2() {
       nickname,
       gender: genderToNumber(gender),
       age: ageGroupToNumber(ageGroup),
+      price: price || undefined,
       favorite_food: preferredFoods
     });
 
@@ -50,6 +51,7 @@ export default function SignupStep2() {
           nickname,
           gender: genderToNumber(gender),
           age: ageGroupToNumber(ageGroup),
+          price: price || undefined,
           favorite_food: preferredFoods
         }),
       });

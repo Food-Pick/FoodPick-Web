@@ -39,6 +39,7 @@ export const authOptions: AuthOptions = {
                             email: data.email,
                             gender: data.gender,
                             age: data.age,
+                            price: data.price,
                             favorite_food: data.favorite_food,
                         };
                     }
@@ -62,6 +63,11 @@ export const authOptions: AuthOptions = {
             if (user) {
                 token.id = user.id;
                 token.email = user.email;
+                token.nickname = user.nickname;
+                token.gender = user.gender;
+                token.age = user.age;
+                token.price = user.price;
+                token.favorite_food = user.favorite_food;
             }
             return token;
         },
@@ -69,6 +75,11 @@ export const authOptions: AuthOptions = {
             if (session.user) {
                 session.user.id = token.id as string;
                 session.user.email = token.email as string;
+                session.user.nickname = token.nickname as string;
+                session.user.gender = token.gender as string;
+                session.user.age = token.age as number;
+                session.user.price = token.price as string;
+                session.user.favorite_food = token.favorite_food as string;
             }
             return session;
         },

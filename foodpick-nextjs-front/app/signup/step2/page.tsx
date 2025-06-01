@@ -206,8 +206,7 @@ export default function SignupStep2() {
                 { name: '일식', image: '/images/food_japanese.jpg' },
                 { name: '양식', image: '/images/food_western.jpg' },
                 { name: '카페 & 디저트', image: '/images/food_cafe.jpg' },
-                { name: '호프', image: '/images/food_pub.jpg' },
-                { name: '비건', image: '/images/food_vegan.jpg' }].map(food => (
+                { name: '호프', image: '/images/food_pub.jpg' }].map(food => (
                 <button
                   key={food.name}
                   type="button"

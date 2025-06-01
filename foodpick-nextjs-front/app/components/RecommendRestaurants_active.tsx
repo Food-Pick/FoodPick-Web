@@ -2,6 +2,8 @@ import { useEffect, useState, useRef } from 'react';
 import { useLocation } from '../contexts/LocationContext';
 import styles from '../../styles/home.module.css';
 import { useRouter } from 'next/navigation';
+import { useSession } from 'next-auth/react';
+import { Session } from 'next-auth';
 
 interface Weather {
   temperature: string;
@@ -152,9 +154,21 @@ const SkeletonCard = () => (
 interface RecommendRestaurantProps {
   latitude: number;
   longitude: number;
+  isLoggedIn?: boolean;
+  userAgeGroup?: number;
+  userPricePreference?: string;
+  userFoodCategoryPreference?: string[];
 }
 
-export default function RecommendRestaurant({ latitude, longitude }: RecommendRestaurantProps) {
+export default function RecommendRestaurant({ 
+  latitude, 
+  longitude, 
+  isLoggedIn = false,
+  userAgeGroup,
+  userPricePreference,
+  userFoodCategoryPreference 
+}: RecommendRestaurantProps) {
+    const { data: session } = useSession();
     const [restaurant, setRestaurant] = useState<Restaurant[]>([]);
     const [data, setData] = useState<RecommendationData | null>(null);
     const [isLoading, setIsLoading] = useState(true);
@@ -192,6 +206,18 @@ export default function RecommendRestaurant({ latitude, longitude }: RecommendRe
     useEffect(() => {
         let isMounted = true;
 
+        // 세션에서 age(0~5)를 '10대' 등으로 변환하는 함수
+        const getAgeGroup = (age: number) => {
+            switch (age) {
+                case 0: return '10대';
+                case 1: return '20대';
+                case 2: return '30대';
+                case 3: return '40대';
+                case 4: return '50대';
+                default: return '';
+            }
+        };
+
         console.log('useEffect 호출', latitude, longitude);
         const fetchRecommendations = async () => {
             if (!latitude || !longitude) {
@@ -204,7 +230,43 @@ export default function RecommendRestaurant({ latitude, longitude }: RecommendRe
             
             try {
                 console.log('fetchRecommendations 호출', latitude, longitude);
-                const response = await fetch(`/api/recommend?lat=${latitude}&lon=${longitude}`);
+                let url = `/api/recommend?lat=${latitude}&lon=${longitude}`;
+                
+                // 세션이 존재하면 로그인 상태로 간주
+                if (session) {
+                    console.log('session', session);
+                    url += `&recommendationType=gemini`;
+                    // 세션에서 age, favorite_food, price 추출
+                    const ageGroup = getAgeGroup(session.user.age);
+                    if (ageGroup) {
+                        url += `&userAgeGroup=${encodeURIComponent(ageGroup)}`;
+                    }
+                    if (session.user.favorite_food && Array.isArray(session.user.favorite_food)) {
+                        session.user.favorite_food.forEach((category: string) => {
+                            url += `&userFoodCategoryPreference=${encodeURIComponent(category)}`;
+                        });
+                    }
+                    if (session.user.price) {
+                        url += `&userPricePreference=${session.user.price}`;
+                    }
+                    // 가격대 등은 기존 props 우선
+
+                } else {
+                    // 비로그인 시 기존 props 사용
+                    if (userAgeGroup !== undefined) {
+                        url += `&userAgeGroup=${userAgeGroup}`;
+                    }
+                    if (userPricePreference) {
+                        url += `&userPricePreference=${userPricePreference}`;
+                    }
+                    if (userFoodCategoryPreference && userFoodCategoryPreference.length > 0) {
+                        userFoodCategoryPreference.forEach(category => {
+                            url += `&userFoodCategoryPreference=${encodeURIComponent(category)}`;
+                        });
+                    }
+                }
+                
+                const response = await fetch(url);
                 const data = await response.json();
                 if (isMounted) {
                     setData(data);
@@ -226,7 +288,7 @@ export default function RecommendRestaurant({ latitude, longitude }: RecommendRe
             isMounted = false;
         };
 
-    }, [latitude, longitude]);
+    }, [latitude, longitude, session, userAgeGroup, userPricePreference, userFoodCategoryPreference]);
 
     const timeMessage = getTimeBasedMessage(data?.mealTime || '');
     const weatherMessage = getWeatherMessage(data?.weather || {

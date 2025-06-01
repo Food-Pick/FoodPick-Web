@@ -41,6 +41,7 @@ export default function Home() {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [showLocationModal, setShowLocationModal] = useState(false);
   const [searchQuery, setSearchQuery] = useState(lastSearchQuery);
+  const [displayTags, setDisplayTags] = useState<string[]>([]);
   const router = useRouter();
 
   // 위치 갱신 함수
@@ -148,6 +149,15 @@ export default function Home() {
     }
     router.push(`/search/result?food=${encodeURIComponent(tag)}&lat=${locationInfo.latitude}&lng=${locationInfo.longitude}`);
   };
+
+  useEffect(() => {
+    setDisplayTags(getRandomHashtags(trendingHashtags, 15))
+  }, []);
+
+  function getRandomHashtags(arr: string[], count: number): string[] {
+    const shuffled = [...arr].sort(() => 0.5 - Math.random());
+    return shuffled.slice(0, count);
+  }
 
   return (
     <div className={styles.container}>
@@ -265,7 +275,7 @@ export default function Home() {
       <section className={styles.recommendSection}>
         <h2 className={styles.sectionTitle}>🏷️ 트렌드 해시태그</h2>
         <div className={styles.hashtagList}>
-          {trendingHashtags.map((tag, idx) => (
+          {displayTags.map((tag, idx) => (
             <button 
               key={idx} 
               className={styles.hashtagTag}

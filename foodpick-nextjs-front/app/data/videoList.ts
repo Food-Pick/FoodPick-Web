@@ -33,8 +33,26 @@ export const videoList: Video[] = [
   },
   {
     id: '6',
-    title: '대전 맛집 논란, 이 영상으로 종결합니다.',
-    url: 'https://www.youtube.com/watch?v=G0mDFLQkR98',
-    thumbnail: '/images/youtube_thumb1.jpg'
+    title: '대전 로컬과 함께하는 찐맛집 10곳',
+    url: 'https://www.youtube.com/shorts/BHXNomufzT4',
+    thumbnail: '/images/youtube_thumb6.jpg'
   },
+  {
+    id: '7',
+    title: '유잼 도시 대전 입성!! 대전人 최애 칼국수🍜 맛집은?! (형들 이렇게 먹다가 죽어...) [미식은 경험이다 / ENG]',
+    url: 'https://www.youtube.com/watch?v=gUz-q1sWeyk',
+    thumbnail: 'images/youtube_thumb7.jpg'
+  },
+  {
+    id: '8',
+    title: '[ENG] 7년 연속 미슐랭 2스타 김진혁 PICK 최애 태국 음식 맛집 | 별들의 맛집💫',
+    url: 'https://www.youtube.com/watch?v=VN6gvHUBFR4',
+    thumbnail: 'images/youtube_thumb8.jpg'
+  },
+  {
+    id: '9',
+    title: '서울에서 모르면 손해입니다.',
+    url: 'https://www.youtube.com/watch?v=vJT_Hs4VHMI',
+    thumbnail: 'images/youtube_thumb9.jpg'
+  }
 ]

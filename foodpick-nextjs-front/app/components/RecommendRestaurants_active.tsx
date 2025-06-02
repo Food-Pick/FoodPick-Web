@@ -158,334 +158,339 @@ interface RecommendRestaurantProps {
   userAgeGroup?: number;
   userPricePreference?: string;
   userFoodCategoryPreference?: string[];
+  isLocationConfirmed?: boolean;
 }
 
-export default function RecommendRestaurant({ 
-  latitude, 
-  longitude, 
-  isLoggedIn = false,
+export default function RecommendRestaurant({
+  latitude,
+  longitude,
   userAgeGroup,
   userPricePreference,
-  userFoodCategoryPreference 
+  userFoodCategoryPreference,
+  isLocationConfirmed
 }: RecommendRestaurantProps) {
-    const { data: session } = useSession();
-    const [restaurant, setRestaurant] = useState<Restaurant[]>([]);
-    const [data, setData] = useState<RecommendationData | null>(null);
-    const [isLoading, setIsLoading] = useState(true);
-    const [popupState, setPopupState] = useState<PopupState>({ isOpen: false, restaurantId: null });
-    const [error, setError] = useState<string | null>(null);
-    const scrollContainerRef = useRef<HTMLDivElement>(null);
-    const router = useRouter();
+  const { data: session } = useSession();
+  const [data, setData] = useState<RecommendationData | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [popupState, setPopupState] = useState<PopupState>({ isOpen: false, restaurantId: null });
+  const [error, setError] = useState<string | null>(null);
 
-    const toggleExpand = (restaurantId: number) => {
-        setPopupState(prev => ({ ...prev, restaurantId }));
+  const scrollContainerRef = useRef<HTMLDivElement>(null);
+  const router = useRouter();
+
+  const goToDetailPage = (restaurantId: number) => {
+    router.push(`/restaurant/detail/${restaurantId}`);
+  };
+
+  const scrollLeft = () => {
+    if (scrollContainerRef.current) {
+      scrollContainerRef.current.scrollBy({
+        left: -400,
+        behavior: 'smooth'
+      });
+    }
+  };
+
+  const scrollRight = () => {
+    if (scrollContainerRef.current) {
+      scrollContainerRef.current.scrollBy({
+        left: 400,
+        behavior: 'smooth'
+      });
+    }
+  };
+
+  useEffect(() => {
+    let isMounted = true;
+    if (!isLocationConfirmed) {
+      console.log('추천 음식 호출 아직 위치 확정 안됨')
+      return;
+    }
+    console.log('추천 음식 호출 위치 확정 됨')
+    // 세션에서 age(0~5)를 '10대' 등으로 변환하는 함수
+    const getAgeGroup = (age: number) => {
+      switch (age) {
+        case 0: return '10대';
+        case 1: return '20대';
+        case 2: return '30대';
+        case 3: return '40대';
+        case 4: return '50대';
+        default: return '';
+      }
     };
 
-    const goToDetailPage = (restaurantId: number) => {
-      router.push(`/restaurant/detail/${restaurantId}`);
-    };
-
-    const scrollLeft = () => {
-        if (scrollContainerRef.current) {
-            scrollContainerRef.current.scrollBy({
-                left: -400,
-                behavior: 'smooth'
-            });
+    const fetchRecommendations = async () => {
+      if (!latitude || !longitude) {
+        if (isMounted) {
+          setError('위치 정보가 없습니다.');
+          setIsLoading(false);
         }
-    };
-
-    const scrollRight = () => {
-        if (scrollContainerRef.current) {
-            scrollContainerRef.current.scrollBy({
-                left: 400,
-                behavior: 'smooth'
+        return;
+      }
+        
+      try {
+        console.log('fetchRecommendations 호출', latitude, longitude);
+        let url = `/api/recommend?lat=${latitude}&lon=${longitude}`;
+                
+        // 세션이 존재하면 로그인 상태로 간주
+        if (session) {
+          console.log('session', session);
+          url += `&recommendationType=gemini`;
+          // 세션에서 age, favorite_food, price 추출
+          const ageGroup = getAgeGroup(session.user.age);
+          if (ageGroup) {
+            url += `&userAgeGroup=${encodeURIComponent(ageGroup)}`;
+          }
+          if (session.user.favorite_food && Array.isArray(session.user.favorite_food)) {
+            session.user.favorite_food.forEach((category: string) => {
+              url += `&userFoodCategoryPreference=${encodeURIComponent(category)}`;
             });
+          }
+          if (session.user.price) {
+            url += `&userPricePreference=${session.user.price}`;
+          }
+          // 가격대 등은 기존 props 우선
+
+        } else {
+          // 비로그인 시 기존 props 사용
+          if (userAgeGroup !== undefined) {
+            url += `&userAgeGroup=${userAgeGroup}`;
+          }
+          if (userPricePreference) {
+            url += `&userPricePreference=${userPricePreference}`;
+          }
+          if (userFoodCategoryPreference && userFoodCategoryPreference.length > 0) {
+            userFoodCategoryPreference.forEach(category => {
+              url += `&userFoodCategoryPreference=${encodeURIComponent(category)}`;
+            });
+          }
         }
+          
+        const response = await fetch(url);
+        if (!response.ok) {
+          throw new Error(`API 응답 에러: ${response.status}`);
+        }
+
+        const data = await response.json();
+
+        if (isMounted) {
+          setData(data);
+          setIsLoading(false);
+        }
+      } catch (error) {
+        console.error('추천 음식점 정보를 가져오는데 실패했습니다.:', error);
+        if (isMounted) {
+          setError('추천 음식점 정보를 가져오는데 실패했습니다.');
+          setIsLoading(false);
+        }
+      }
     };
+      
+    setIsLoading(true);
+    setError(null);
+    fetchRecommendations();
 
-    useEffect(() => {
-        let isMounted = true;
-
-        // 세션에서 age(0~5)를 '10대' 등으로 변환하는 함수
-        const getAgeGroup = (age: number) => {
-            switch (age) {
-                case 0: return '10대';
-                case 1: return '20대';
-                case 2: return '30대';
-                case 3: return '40대';
-                case 4: return '50대';
-                default: return '';
-            }
-        };
-
-        console.log('useEffect 호출', latitude, longitude);
-        const fetchRecommendations = async () => {
-            if (!latitude || !longitude) {
-                if (isMounted) {
-                    setError('위치 정보가 없습니다.');
-                    setIsLoading(false);
-                }
-                return;
-            }
-            
-            try {
-                console.log('fetchRecommendations 호출', latitude, longitude);
-                let url = `/api/recommend?lat=${latitude}&lon=${longitude}`;
-                
-                // 세션이 존재하면 로그인 상태로 간주
-                if (session) {
-                    console.log('session', session);
-                    url += `&recommendationType=gemini`;
-                    // 세션에서 age, favorite_food, price 추출
-                    const ageGroup = getAgeGroup(session.user.age);
-                    if (ageGroup) {
-                        url += `&userAgeGroup=${encodeURIComponent(ageGroup)}`;
-                    }
-                    if (session.user.favorite_food && Array.isArray(session.user.favorite_food)) {
-                        session.user.favorite_food.forEach((category: string) => {
-                            url += `&userFoodCategoryPreference=${encodeURIComponent(category)}`;
-                        });
-                    }
-                    if (session.user.price) {
-                        url += `&userPricePreference=${session.user.price}`;
-                    }
-                    // 가격대 등은 기존 props 우선
-
-                } else {
-                    // 비로그인 시 기존 props 사용
-                    if (userAgeGroup !== undefined) {
-                        url += `&userAgeGroup=${userAgeGroup}`;
-                    }
-                    if (userPricePreference) {
-                        url += `&userPricePreference=${userPricePreference}`;
-                    }
-                    if (userFoodCategoryPreference && userFoodCategoryPreference.length > 0) {
-                        userFoodCategoryPreference.forEach(category => {
-                            url += `&userFoodCategoryPreference=${encodeURIComponent(category)}`;
-                        });
-                    }
-                }
-                
-                const response = await fetch(url);
-                const data = await response.json();
-                if (isMounted) {
-                    setData(data);
-                    setIsLoading(false);
-                }
-            } catch (error) {
-                console.error('Error fetching recommendations:', error);
-                if (isMounted) {
-                    setError('추천 음식점 정보를 가져오는데 실패했습니다.');
-                    setIsLoading(false);
-                }
-            }
-        };
-        setIsLoading(true);
-        setError(null);
-        fetchRecommendations();
-
-        return () => {
-            isMounted = false;
-        };
-
-    }, [latitude, longitude, session, userAgeGroup, userPricePreference, userFoodCategoryPreference]);
-
-    const timeMessage = getTimeBasedMessage(data?.mealTime || '');
-    const weatherMessage = getWeatherMessage(data?.weather || {
-        temperature: '20',
-        precipitation: '0',
-        precipitationType: 'none',
-        humidity: '50',
-        sky: '맑음',
-        windSpeed: '2',
-        windDirection: '북동',
-        eastWestWind: '0',
-        northSouthWind: '0'
-    });
-
-    // 음식점별로 메뉴 그룹화
-    const restaurantsWithMenus: RestaurantWithMenus[] = data?.recommendations || [];
-
-    const openPopup = (restaurantId: number) => {
-        setPopupState({ isOpen: true, restaurantId });
+    return () => {
+      isMounted = false;
     };
+  }, [latitude, longitude, userAgeGroup, userPricePreference, userFoodCategoryPreference]);
 
-    const closePopup = () => {
-        setPopupState({ isOpen: false, restaurantId: null });
-    };
+  const timeMessage = getTimeBasedMessage(data?.mealTime || '');
+  const weatherMessage = getWeatherMessage(data?.weather || {
+    temperature: '20',
+    precipitation: '0',
+    precipitationType: 'none',
+    humidity: '50',
+    sky: '맑음',
+    windSpeed: '2',
+    windDirection: '북동',
+    eastWestWind: '0',
+    northSouthWind: '0'
+  });
 
-    const selectedRestaurant =
-        Array.isArray(data?.recommendations)
-            ? data.recommendations.find(r => r.restaurant_id === popupState.restaurantId)
-            : null;
+  // 음식점별로 메뉴 그룹화
+  const restaurantsWithMenus: RestaurantWithMenus[] = data?.recommendations || [];
 
-    return (
-        <section className={styles.recommendSection}>
-            <div className="recommend-container">
-                {isLoading ? (
-                    <div className="weather-info">
-                        <div className="weather-message">
-                            <div className="skeleton-text skeleton-bar" style={{ width: '60%', height: '2rem', margin: '0 auto' }} />
-                            <div className="skeleton-text skeleton-bar" style={{ width: '40%', height: '1.5rem', margin: '1rem auto 0' }} />
-                        </div>
-                    </div>
-                ) : (
-                    <div className="weather-info">
-                        <div className="weather-message">
-                            <h2 className="recommend-title">
-                                {weatherMessage} {timeMessage} 추천 음식
-                            </h2>
-                            <p className="subtitle">지금은 {data?.mealTime || '야식'} 시간이에요</p>
-                        </div>
-                    </div>
-                )}
+  const openPopup = (restaurantId: number) => {
+    setPopupState({ isOpen: true, restaurantId });
+  };
 
-                <div className="scroll-container">
-                    {isLoading ? (
-                        <>
-                            <div className="scroll-button-skeleton spinner" />
-                        </>
-                    ) : (
-                        <button className="scroll-button left" onClick={scrollLeft}>
-                            <span>←</span>
-                        </button>
-                    )}
+  const closePopup = () => {
+    setPopupState({ isOpen: false, restaurantId: null });
+  };
 
-                    <div className="restaurant-grid" ref={scrollContainerRef}>
-                        {isLoading ? (
-                            Array(3).fill(null).map((_, index) => (
-                                <SkeletonCard key={index} />
-                            ))
-                        ) : (
-                            restaurantsWithMenus.map(restaurant => (
-                                <div key={restaurant.restaurant_id} className="menu-card">
-                                    <div className="menu-content">
-                                        <div className="restaurant-header">
-                                            <img
-                                                src={restaurant.restaurant_image_url || '/images/background.png'}
-                                                alt={restaurant.restaurant_name}
-                                                className="restaurant-image"
-                                            />
-                                            <h3 className="restaurant-name">{restaurant.restaurant_name}</h3>
-                                        </div>
+  const selectedRestaurant =
+    Array.isArray(data?.recommendations)
+      ? data.recommendations.find(r => r.restaurant_id === popupState.restaurantId)
+      : null;
 
-                                        <div className="menus-container">
-                                            <div className="menu-item">
-                                                <div className="menu-header">
-                                                    <img
-                                                        src={restaurant.menus[0].image_url || '/images/background.png'}
-                                                        alt={restaurant.menus[0].name}
-                                                        className="menu-image"
-                                                    />
-                                                    <h4 className="menu-name">{restaurant.menus[0].name}</h4>
-                                                </div>
-                                          
-                                                <div className="recommendation-reason">
-                                                    <h4>추천 이유</h4>
-                                                    <p className="description">{restaurant.menus[0].descriptions[0]}</p>
-                                                </div>
-
-                                                <div className="tags-section">
-                                                    {restaurant.menus[0].matched_tags.map((tagObj, i) =>
-                                                        Object.entries(tagObj).map(([tagType, tags]) => (
-                                                            <div key={tagType + i} className="tag-group">
-                                                                <span className="tag-type">{tagType}</span>
-                                                                <div className="tag-list">
-                                                                    {tags.map((tag, index) => (
-                                                                        <span key={index} className="tag">{tag}</span>
-                                                                    ))}
-                                                                </div>
-                                                            </div>
-                                                        ))
-                                                    )}
-                                                </div>
-                                            </div>
-                                        </div>
-
-                                        {restaurant.menus.length > 1 && (
-                                            <button
-                                                className="more-button"
-                                                onClick={() => openPopup(restaurant.restaurant_id)}
-                                            >
-                                                더보기 ({restaurant.menus.length - 1}개 더)
-                                            </button>
-                                        )}
-                                        <button
-                                          className="detail-button"
-                                          onClick={() => goToDetailPage(restaurant.restaurant_id)}
-                                        >
-                                          상세 페이지 보기
-                                        </button>
-                                    </div>
-                                </div>
-                            ))
-                        )}
-                    </div>
-
-                    {isLoading ? (
-                        <>
-                            <div className="scroll-button-skeleton spinner" />
-                        </>
-                    ) : (
-                        <button className="scroll-button right" onClick={scrollRight}>
-                            <span>→</span>
-                        </button>
-                    )}
-                </div>
-
-                {popupState.isOpen && selectedRestaurant && (
-                    <div className="popup-overlay" onClick={closePopup}>
-                        <div className="popup-content" onClick={e => e.stopPropagation()}>
-                            <button className="close-button" onClick={closePopup}>×</button>
-                            <div className="popup-header">
-                                <img
-                                    src={selectedRestaurant.restaurant_image_url || '/images/background.png'}
-                                    alt={selectedRestaurant.restaurant_name}
-                                    className="popup-restaurant-image"
-                                />
-                                <h2 className="popup-restaurant-name">{selectedRestaurant.restaurant_name}</h2>
-                            </div>
-                
-                            <div className="popup-menus">
-                                {selectedRestaurant.menus.map((menu, index) => (
-                                    <div key={index} className="popup-menu-item">
-                                        <div className="popup-menu-header">
-                                            <img
-                                                src={menu.image_url || '/images/background.png'}
-                                                alt={menu.name}
-                                                className="popup-menu-image"
-                                            />
-                                            <h3 className="popup-menu-name">{menu.name}</h3>
-                                        </div>
-                      
-                                        <div className="popup-recommendation-reason">
-                                            <h4>추천 이유</h4>
-                                            <p className="description">{menu.descriptions[0]}</p>
-                                        </div>
-
-                                        <div className="popup-tags-section">
-                                            {menu.matched_tags.map((tagObj, i) =>
-                                                Object.entries(tagObj).map(([tagType, tags]) => (
-                                                    <div key={tagType + i} className="tag-group">
-                                                        <span className="tag-type">{tagType}</span>
-                                                        <div className="tag-list">
-                                                            {tags.map((tag, index) => (
-                                                                <span key={index} className="tag">{tag}</span>
-                                                            ))}
-                                                        </div>
-                                                    </div>
-                                                ))
-                                            )}
-                                        </div>
-                                    </div>
-                                ))}
-                            </div>
-                        </div>
-                    </div>
-                )}
+  return (
+    <section className={styles.recommendSection}>
+      <div className="recommend-container">
+        {isLoading ? (
+          <div className="weather-info">
+            <div className="weather-message">
+              <div className="skeleton-text skeleton-bar" style={{ width: '60%', height: '2rem', margin: '0 auto' }} />
+              <div className="skeleton-text skeleton-bar" style={{ width: '40%', height: '1.5rem', margin: '1rem auto 0' }} />
             </div>
+          </div>
+        ) : (
+          <div className="weather-info">
+            <div className="weather-message">
+              <h2 className="recommend-title">
+                {weatherMessage} {timeMessage} 추천 음식
+              </h2>
+              <p className="subtitle">지금은 {data?.mealTime || '야식'} 시간이에요</p>
+            </div>
+          </div>
+        )}
 
-            <style jsx>{`
+        <div className="scroll-container">
+          {isLoading ? (
+            <>
+              <div className="scroll-button-skeleton spinner" />
+            </>
+          ) : (
+            <button className="scroll-button left" onClick={scrollLeft}>
+              <span>←</span>
+            </button>
+          )}
+
+          <div className="restaurant-grid" ref={scrollContainerRef}>
+            {isLoading ? (
+              Array(3).fill(null).map((_, index) => (
+                <SkeletonCard key={index} />
+              ))
+            ) : (
+              restaurantsWithMenus.map(restaurant => (
+                <div key={restaurant.restaurant_id} className="menu-card">
+                  <div className="menu-content">
+                    <div className="restaurant-header">
+                      <img
+                        src={restaurant.restaurant_image_url || '/images/background.png'}
+                        alt={restaurant.restaurant_name}
+                        className="restaurant-image"
+                      />
+                      <h3 className="restaurant-name">{restaurant.restaurant_name}</h3>
+                    </div>
+
+                    <div className="menus-container">
+                      <div className="menu-item">
+                        <div className="menu-header">
+                          <img
+                            src={restaurant.menus[0].image_url || '/images/background.png'}
+                            alt={restaurant.menus[0].name}
+                            className="menu-image"
+                          />
+                          <h4 className="menu-name">{restaurant.menus[0].name}</h4>
+                        </div>
+                                          
+                        <div className="recommendation-reason">
+                          <h4>추천 이유</h4>
+                          <p className="description">{restaurant.menus[0].descriptions[0]}</p>
+                        </div>
+
+                        <div className="tags-section">
+                          {restaurant.menus[0].matched_tags.map((tagObj, i) =>
+                            Object.entries(tagObj).map(([tagType, tags]) => (
+                              <div key={tagType + i} className="tag-group">
+                                <span className="tag-type">{tagType}</span>
+                                <div className="tag-list">
+                                  {tags.map((tag, index) => (
+                                    <span key={index} className="tag">{tag}</span>
+                                  ))}
+                                </div>
+                              </div>
+                            ))
+                          )}
+                        </div>
+                      </div>
+                    </div>
+
+                    {restaurant.menus.length > 1 && (
+                      <button
+                        className="more-button"
+                        onClick={() => openPopup(restaurant.restaurant_id)}
+                      >
+                        더보기 ({restaurant.menus.length - 1}개 더)
+                      </button>
+                    )}
+                    <button
+                      className="detail-button"
+                      onClick={() => goToDetailPage(restaurant.restaurant_id)}
+                    >
+                      상세 페이지 보기
+                    </button>
+                  </div>
+                </div>
+              ))
+            )}
+          </div>
+
+          {isLoading ? (
+            <>
+              <div className="scroll-button-skeleton spinner" />
+            </>
+          ) : (
+            <button className="scroll-button right" onClick={scrollRight}>
+              <span>→</span>
+            </button>
+          )}
+        </div>
+
+        {popupState.isOpen && selectedRestaurant && (
+          <div className="popup-overlay" onClick={closePopup}>
+            <div className="popup-content" onClick={e => e.stopPropagation()}>
+              <button className="close-button" onClick={closePopup}>×</button>
+              <div className="popup-header">
+                <img
+                  src={selectedRestaurant.restaurant_image_url || '/images/background.png'}
+                  alt={selectedRestaurant.restaurant_name}
+                  className="popup-restaurant-image"
+                />
+                <h2 className="popup-restaurant-name">{selectedRestaurant.restaurant_name}</h2>
+              </div>
+                
+              <div className="popup-menus">
+                {selectedRestaurant.menus.map((menu, index) => (
+                  <div key={index} className="popup-menu-item">
+                    <div className="popup-menu-header">
+                      <img
+                        src={menu.image_url || '/images/background.png'}
+                        alt={menu.name}
+                        className="popup-menu-image"
+                      />
+                      <h3 className="popup-menu-name">{menu.name}</h3>
+                    </div>
+                      
+                    <div className="popup-recommendation-reason">
+                      <h4>추천 이유</h4>
+                      <p className="description">{menu.descriptions[0]}</p>
+                    </div>
+
+                    <div className="popup-tags-section">
+                      {menu.matched_tags.map((tagObj, i) =>
+                        Object.entries(tagObj).map(([tagType, tags]) => (
+                          <div key={tagType + i} className="tag-group">
+                            <span className="tag-type">{tagType}</span>
+                            <div className="tag-list">
+                              {tags.map((tag, index) => (
+                                <span key={index} className="tag">{tag}</span>
+                              ))}
+                            </div>
+                          </div>
+                        ))
+                      )}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        )}
+      </div>
+
+      <style jsx>{`
         .recommend-container {
           padding: 1.5rem;
           max-width: 100%;
@@ -980,6 +985,6 @@ export default function RecommendRestaurant({
           right: 0;
         }
       `}</style>
-        </section>
-    );
+    </section>
+  );
 }

@@ -19,9 +19,10 @@ interface Restaurant {
 interface RandomPickProps {
   latitude: number;
   longitude: number;
+  isLocationConfirmed: boolean;
 }
 
-export default function RandomPick({ latitude, longitude }: RandomPickProps) {
+export default function RandomPick({ latitude, longitude, isLocationConfirmed }: RandomPickProps) {
   const [restaurants, setRestaurants] = useState<Restaurant[]>([]);
   const [selected, setSelected] = useState<Restaurant | null>(null);
   const [isOpen, setIsOpen] = useState(false);
@@ -53,49 +54,54 @@ export default function RandomPick({ latitude, longitude }: RandomPickProps) {
   // }, [latitude, longitude]);
 
   useEffect(() => {
-  let isMounted = true;
-
-  const fetchNearbyRestaurants = async () => {
-    if (!latitude || !longitude) {
-      if (isMounted) {
-        setError('위치 정보가 없습니다.');
-        setIsLoading(false);
-      }
+    let isMounted = true;
+    if (!isLocationConfirmed) {
+      console.log('랜덤 음식 호출 아직 위치 확정 안됨')
       return;
     }
+    console.log('랜덤 음식 호출 위치 확정 됨')
 
-    try {
-      const response = await fetch(
-        `/api/nearby/randompick?lat=${latitude}&lng=${longitude}`
-      );
-
-      if (!response.ok) {
-        throw new Error(`API 응답 에러: ${response.status}`);
+    const fetchNearbyRestaurants = async () => {
+      if (!latitude || !longitude) {
+        if (isMounted) {
+          setError('위치 정보가 없습니다.');
+          setIsLoading(false);
+        }
+        return;
       }
 
-      const data = await response.json();
+      try {
+        const response = await fetch(
+          `/api/nearby/randompick?lat=${latitude}&lng=${longitude}`
+        );
 
-      if (isMounted) {
-        setRestaurants(data.raw || []);
-        setIsLoading(false);
+        if (!response.ok) {
+          throw new Error(`API 응답 에러: ${response.status}`);
+        }
+
+        const data = await response.json();
+
+        if (isMounted) {
+          setRestaurants(data.raw || []);
+          setIsLoading(false);
+        }
+      } catch (error) {
+        console.error('주변 음식점 정보를 가져오는데 실패했습니다:', error);
+        if (isMounted) {
+          setError('주변 음식점 정보를 가져오는데 실패했습니다.');
+          setIsLoading(false);
+        }
       }
-    } catch (error) {
-      console.error('주변 음식점 정보를 가져오는데 실패했습니다:', error);
-      if (isMounted) {
-        setError('주변 음식점 정보를 가져오는데 실패했습니다.');
-        setIsLoading(false);
-      }
-    }
-  };
+    };
 
-  setIsLoading(true);
-  setError(null);
-  fetchNearbyRestaurants();
+    setIsLoading(true);
+    setError(null);
+    fetchNearbyRestaurants();
 
-  return () => {
-    isMounted = false;
-  };
-}, [latitude, longitude]);
+    return () => {
+      isMounted = false;
+    };
+  }, [latitude, longitude]);
 
   const spinSlot = (restaurants: Restaurant[]) => {
     // console.log('restaurnts length', restaurants.length);
@@ -221,9 +227,9 @@ export default function RandomPick({ latitude, longitude }: RandomPickProps) {
                   {isSpinning || !showResult ? (
                     <>
                       <div className={styles.slotMachine}>
-                        <div 
+                        <div
                           className={styles.slotMachineContent}
-                          style={{ 
+                          style={{
                             transform: `translateY(${slotPosition}px)`,
                             transition: isSpinning ? 'transform 0.05s linear' : 'transform 0.3s ease-out'
                           }}
@@ -239,17 +245,17 @@ export default function RandomPick({ latitude, longitude }: RandomPickProps) {
                       </div>
 
                       <div className={styles.slotMachine}>
-                        <div 
+                        <div
                           className={styles.slotMachineContent}
-                          style={{ 
+                          style={{
                             transform: `translateY(${slotPosition}px)`,
                             transition: isSpinning ? 'transform 0.05s linear' : 'transform 0.3s ease-out'
                           }}
                         >
                           {tempRestaurants.map((r, index) => (
                             <div key={index} className={`${styles.slotMachineItem} ${styles.price}`}>
-                              {JSON.parse(r.restaurant_menu || '[]')[0]?.price ? 
-                                `${JSON.parse(r.restaurant_menu || '[]')[0].price.toLocaleString()}원` : 
+                              {JSON.parse(r.restaurant_menu || '[]')[0]?.price ?
+                                `${JSON.parse(r.restaurant_menu || '[]')[0].price.toLocaleString()}원` :
                                 '가격 정보 없음'}
                             </div>
                           ))}
@@ -264,8 +270,8 @@ export default function RandomPick({ latitude, longitude }: RandomPickProps) {
                         {JSON.parse((selected || tempRestaurants[0]).restaurant_menu || '[]')[0]?.name || '메뉴 정보 없음'}
                       </h3>
                       <p className={styles.selectedMenuPrice}>
-                        {JSON.parse((selected || tempRestaurants[0]).restaurant_menu || '[]')[0]?.price ? 
-                          `${JSON.parse((selected || tempRestaurants[0]).restaurant_menu || '[]')[0].price.toLocaleString()}원` : 
+                        {JSON.parse((selected || tempRestaurants[0]).restaurant_menu || '[]')[0]?.price ?
+                          `${JSON.parse((selected || tempRestaurants[0]).restaurant_menu || '[]')[0].price.toLocaleString()}원` :
                           '가격 정보 없음'}
                       </p>
                     </div>
@@ -296,9 +302,9 @@ export default function RandomPick({ latitude, longitude }: RandomPickProps) {
                 </button>
 
                 <div className={styles.retryBottomWrapper}>
-                  <button 
-                    onClick={handleRetry} 
-                    className={styles.retryIconButton} 
+                  <button
+                    onClick={handleRetry}
+                    className={styles.retryIconButton}
                     title="다시 뽑기"
                     disabled={isRetrySpinning}
                   >

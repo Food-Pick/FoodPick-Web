@@ -26,6 +26,8 @@ interface LocationContextType {
   lastSearchQuery: string;
   setLastSearchQuery: (query: string) => void;
   isLocationLoading: boolean;
+  isLocationConfirmed: boolean;
+  setIsLocationConfirmed: (confirmed: boolean) => void;
 }
 
 const defaultLocation: LocationInfo = {
@@ -56,6 +58,7 @@ export function LocationProvider({ children }: { children: ReactNode }) {
   const [isFirstVisit, setIsFirstVisit] = useState(true);
   const [lastSearchQuery, setLastSearchQuery] = useState('');
   const [isLocationLoading, setIsLocationLoading] = useState(false);
+  const [isLocationConfirmed, setIsLocationConfirmed] = useState(false);
 
   // 초기 위치 정보 가져오기
   const getInitialLocation = async () => {
@@ -71,6 +74,7 @@ export function LocationProvider({ children }: { children: ReactNode }) {
         // 저장된 위치 정보가 1시간 이내인 경우에만 사용
         if (parsedLocation.timestamp && (now - parsedLocation.timestamp) < timeLimit) {
           setLocationInfo(parsedLocation);
+          setIsLocationConfirmed(true);
           setIsFirstVisit(false);
           return;
         }
@@ -104,6 +108,7 @@ export function LocationProvider({ children }: { children: ReactNode }) {
           timestamp: Date.now()
         };
         setLocationInfo(newLocationInfo);
+        setIsLocationConfirmed(true);
         localStorage.setItem('locationInfo', JSON.stringify(newLocationInfo));
         setIsFirstVisit(false);
       }
@@ -127,9 +132,11 @@ export function LocationProvider({ children }: { children: ReactNode }) {
         console.log('위치 정보를 가져오는데 실패했습니다. 기본 위치로 설정됩니다.');
       }
       setLocationInfo(defaultLocation);
+      setIsLocationConfirmed(true);
       setIsFirstVisit(false);
     } finally {
       setIsLocationLoading(false);
+      setIsLocationConfirmed(true);
     }
   };
 
@@ -161,7 +168,9 @@ export function LocationProvider({ children }: { children: ReactNode }) {
       isFirstVisit,
       lastSearchQuery,
       setLastSearchQuery: handleSetLastSearchQuery,
-      isLocationLoading
+      isLocationLoading,
+      isLocationConfirmed,
+      setIsLocationConfirmed
     }}>
       {children}
     </LocationContext.Provider>

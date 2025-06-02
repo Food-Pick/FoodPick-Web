@@ -125,7 +125,7 @@ export default function Header() {
   };
 
   const handleSettings = () => {
-    router.push('/settings');
+    router.push('/user-settings');
     setShowDropdown(false);
     setShowMobileMenu(false);
   };

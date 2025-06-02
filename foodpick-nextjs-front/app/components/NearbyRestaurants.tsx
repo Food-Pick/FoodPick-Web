@@ -20,16 +20,21 @@ interface Restaurant {
 interface NearbyRestaurantsProps {
   latitude: number;
   longitude: number;
+  isLocationConfirmed: boolean;
 }
 
-export default function NearbyRestaurants({ latitude, longitude }: NearbyRestaurantsProps) {
+export default function NearbyRestaurants({ latitude, longitude, isLocationConfirmed }: NearbyRestaurantsProps) {
   const [restaurants, setRestaurants] = useState<Restaurant[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     let isMounted = true;
-
+    if (!isLocationConfirmed) {
+      console.log('주변 음식점 호출 아직 위치 확정 안됨')
+      return;
+    }
+    console.log('주변 음식점 호출 위치 확정 됨')
     const fetchNearbyRestaurants = async () => {
       if (!latitude || !longitude) {
         if (isMounted) {

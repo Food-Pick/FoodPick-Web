@@ -1,6 +1,44 @@
 import { AuthOptions } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 
+// User 타입 확장
+declare module "next-auth" {
+    interface User {
+        id: string;
+        email: string;
+        name: string;
+        nickname: string;
+        gender: string;
+        age: number;
+        price: number;
+        favorite_food: string;
+    }
+
+    interface Session {
+        user: User & {
+            id: string;
+            email: string;
+            name: string;
+            nickname: string;
+            gender: string;
+            age: number;
+            price: number;
+            favorite_food: string;
+        }
+    }
+}
+
+declare module "next-auth/jwt" {
+    interface JWT {
+        id: string;
+        email: string;
+        nickname: string;
+        gender: string;
+        age: number;
+        price: number;
+        favorite_food: string;
+    }
+}
 
 export const authOptions: AuthOptions = {
     providers: [
@@ -63,23 +101,27 @@ export const authOptions: AuthOptions = {
             if (user) {
                 token.id = user.id;
                 token.email = user.email;
-                token.nickname = user.nickname;
-                token.gender = user.gender;
-                token.age = user.age;
-                token.price = user.price;
-                token.favorite_food = user.favorite_food;
+                token.nickname = (user as any).nickname;
+                token.gender = (user as any).gender;
+                token.age = (user as any).age;
+                token.price = (user as any).price;
+                token.favorite_food = (user as any).favorite_food;
             }
             return token;
         },
         async session({ session, token }) {
             if (session.user) {
-                session.user.id = token.id as string;
-                session.user.email = token.email as string;
-                session.user.nickname = token.nickname as string;
-                session.user.gender = token.gender as string;
-                session.user.age = token.age as number;
-                session.user.price = token.price as string;
-                session.user.favorite_food = token.favorite_food as string;
+                session.user = {
+                    ...session.user,
+                    id: token.id as string,
+                    email: token.email as string,
+                    name: token.nickname as string,
+                    nickname: token.nickname as string,
+                    gender: token.gender as string,
+                    age: token.age as number,
+                    price: token.price as number,
+                    favorite_food: token.favorite_food as string,
+                };
             }
             return session;
         },

@@ -3,7 +3,6 @@ import { FiSearch, FiCrosshair, FiRefreshCw } from 'react-icons/fi';
 import styles from '../styles/home.module.css';
 import { useState, useEffect } from 'react';
 import Header from './components/Header';
-import RecommendRestaurants from './components/RecommendRestaurants';
 import NearbyRestaurants from './components/NearbyRestaurants';
 import { trendingHashtags } from './data/hashtags';
 import { videoList } from './data/videoList';
@@ -37,7 +36,7 @@ const parseAddress = (data: any): string => {
 };
 
 export default function Home() {
-  const { locationInfo, setLocationInfo, isFirstVisit, lastSearchQuery, setLastSearchQuery, isLocationLoading } = useLocation();
+  const { locationInfo, setLocationInfo, isFirstVisit, lastSearchQuery, setLastSearchQuery, isLocationLoading, isLocationConfirmed } = useLocation();
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [showLocationModal, setShowLocationModal] = useState(false);
   const [searchQuery, setSearchQuery] = useState(lastSearchQuery);
@@ -113,6 +112,11 @@ export default function Home() {
       setIsLoading(false);
     }
   };
+
+  useEffect(() => {
+    console.log('isLocationConfirmed', isLocationConfirmed);
+    console.log('locationInfo', locationInfo);
+  }, [isLocationConfirmed, locationInfo]);
 
   // 검색어가 변경될 때마다 Context에 저장
   useEffect(() => {
@@ -262,13 +266,15 @@ export default function Home() {
 
       <RecommendRestaurant
         latitude={locationInfo.latitude} 
-        longitude={locationInfo.longitude} 
+        longitude={locationInfo.longitude}
+        isLocationConfirmed={isLocationConfirmed}
       />
 
       {/* 주변 맛집 */}
       <NearbyRestaurants 
         latitude={locationInfo.latitude} 
         longitude={locationInfo.longitude} 
+        isLocationConfirmed={isLocationConfirmed}
       />
 
       {/* 트렌드 해시태그 */}
@@ -294,6 +300,7 @@ export default function Home() {
       <RandomPick 
         latitude={locationInfo.latitude} 
         longitude={locationInfo.longitude} 
+        isLocationConfirmed={isLocationConfirmed}
       />
       
       {showLocationModal && (

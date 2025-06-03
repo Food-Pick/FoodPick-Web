@@ -75,7 +75,7 @@ export default function NearbyRestaurants({ latitude, longitude, isLocationConfi
     return () => {
       isMounted = false;
     };
-  }, [latitude, longitude]);
+  }, [latitude, longitude, isLocationConfirmed]);
 
   return (
     <section className={styles.recommendSection}>

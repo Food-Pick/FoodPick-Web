@@ -101,7 +101,7 @@ export default function RandomPick({ latitude, longitude, isLocationConfirmed }:
     return () => {
       isMounted = false;
     };
-  }, [latitude, longitude]);
+  }, [latitude, longitude, isLocationConfirmed]);
 
   const spinSlot = (restaurants: Restaurant[]) => {
     // console.log('restaurnts length', restaurants.length);

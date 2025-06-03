@@ -288,12 +288,12 @@ export default function RecommendRestaurant({
       
     setIsLoading(true);
     setError(null);
-    fetchRecommendations();
+    fetchRecommendations(); 
 
     return () => {
       isMounted = false;
     };
-  }, [latitude, longitude, userAgeGroup, userPricePreference, userFoodCategoryPreference]);
+  }, [latitude, longitude, isLocationConfirmed]);
 
   const timeMessage = getTimeBasedMessage(data?.mealTime || '');
   const weatherMessage = getWeatherMessage(data?.weather || {

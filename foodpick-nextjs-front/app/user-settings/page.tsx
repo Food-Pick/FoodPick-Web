@@ -12,7 +12,7 @@ export default function SettingsPage() {
   const router = useRouter();
 
   const handleProfileEdit = () => {
-    router.push('/signup/step2'); // 기존 경로에 맞게 조정
+    router.push('/user-settings/profile'); 
   };
 
   const handlePasswordChange = () => {

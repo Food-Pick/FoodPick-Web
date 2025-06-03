@@ -1,0 +1,317 @@
+.container {
+  display: flex;
+  padding: 2rem;
+  max-width: 960px;
+  margin: 0 auto;
+  gap: 2rem;
+}
+
+.sidebar {
+  background-color: #ffffff;
+  padding: 1.5rem;
+  border-radius: 16px;
+  font-weight: 500;
+  border: 1px solid #eee;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.03);
+}
+
+.sidebar h2 {
+  font-size: 1.4rem;
+  margin-bottom: 1.5rem;
+  font-weight: 700;
+}
+
+.sidebar ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+} 
+
+.sidebar li {
+  margin-bottom: 1rem;
+  padding: 0.75rem 1rem;
+  border-radius: 10px;
+  cursor: pointer;
+  font-size: 1.05rem;
+  transition: background-color 0.2s ease;
+  color: #333;
+}
+
+.sidebar li:hover {
+  background-color: #fff3e0;
+}
+
+.sidebar .active {
+  color: #ff7f00;
+  font-weight: 600;
+  background-color: #fff3e0;
+}
+
+.content {
+  flex: 1;
+}
+
+.box {
+  background: white;
+  border: 1px solid #ddd;
+  padding: 2rem;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.box h3 {
+  font-size: 1.4rem;
+  color: #f25c05;
+  margin-bottom: 0.75rem;
+}
+
+.profileHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+}
+
+.editBtn {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1rem;
+  background: #f25c05;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.editBtn:hover {
+  background: #d94f04;
+}
+
+.profileInfo {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.infoField {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.infoLabel {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: #666;
+  font-size: 0.95rem;
+}
+
+.infoValue {
+  font-size: 1.1rem;
+  color: #333;
+  font-weight: 500;
+}
+
+.foodTags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.foodTag {
+  background: #fff3e0;
+  color: #f25c05;
+  padding: 0.5rem 1rem;
+  border-radius: 20px;
+  font-size: 0.9rem;
+}
+
+.noFood {
+  color: #999;
+  font-size: 0.95rem;
+}
+
+.inputWrapper {
+  margin-bottom: 1.5rem;
+}
+
+.inputLabel {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0.75rem;
+  color: #333;
+  font-weight: 500;
+}
+
+.inputTop {
+  display: block;
+  width: 100%;
+  padding: 0.75rem;
+  font-size: 0.95rem;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  background: #f2f2f2;
+}
+
+.genderRow,
+.ageGroupRow,
+.priceRow {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.selectButton {
+  padding: 0.75rem 1.5rem;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  background: white;
+  color: #666;
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.selectButton:hover {
+  border-color: #f25c05;
+  color: #f25c05;
+}
+
+.selectButton.active {
+  background: #f25c05;
+  color: white;
+  border-color: #f25c05;
+}
+
+.foodGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+  gap: 0.75rem;
+}
+
+.foodButton {
+  padding: 0.75rem;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  background: white;
+  color: #666;
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-align: center;
+}
+
+.foodButton:hover {
+  border-color: #f25c05;
+  color: #f25c05;
+}
+
+.foodButton.active {
+  background: #f25c05;
+  color: white;
+  border-color: #f25c05;
+}
+
+.editButtons {
+  display: flex;
+  gap: 1rem;
+  margin-top: 2rem;
+}
+
+.primaryBtn {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: #f25c05;
+  color: white;
+  padding: 0.75rem 1.2rem;
+  font-size: 1rem;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+  flex: 1;
+  justify-content: center;
+}
+
+.primaryBtn:hover {
+  background: #d94f04;
+}
+
+.cancelBtn {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: white;
+  color: #666;
+  padding: 0.75rem 1.2rem;
+  font-size: 1rem;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  flex: 1;
+  justify-content: center;
+}
+
+.cancelBtn:hover {
+  background: #f5f5f5;
+  border-color: #ccc;
+}
+
+.successMessage {
+  margin-top: 1rem;
+  color: #2e7d32;
+  font-weight: 500;
+  background: #e6f4ea;
+  padding: 0.75rem 1rem;
+  border-radius: 8px;
+  border: 1px solid #c8e6c9;
+  animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@media (max-width: 768px) {
+  .container {
+    flex-direction: column;
+    padding: 0;
+    gap: 1rem;
+  }
+
+  .box {
+    padding: 1rem;
+    border-radius: 0;
+    border-left: none;
+    border-right: none;
+    width: 90vw;
+    max-width: 90vw;
+    margin: 0 auto;
+  }
+
+  .genderRow,
+  .ageGroupRow,
+  .priceRow {
+    flex-direction: column;
+  }
+
+  .selectButton {
+    width: 100%;
+  }
+
+  .foodGrid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .editButtons {
+    flex-direction: column;
+  }
+} 

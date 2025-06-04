@@ -227,20 +227,21 @@
   display: flex;
   align-items: center;
   gap: 0.5rem;
-  background: #f25c05;
-  color: white;
+  background: white;
+  color: #f25c05;
   padding: 0.75rem 1.2rem;
   font-size: 1rem;
-  border: none;
+  border: 1.5px solid #f25c05;
   border-radius: 8px;
   cursor: pointer;
-  transition: background-color 0.2s ease;
+  transition: background-color 0.2s ease, color 0.2s ease;
   flex: 1;
   justify-content: center;
 }
 
 .primaryBtn:hover {
-  background: #d94f04;
+  background: #f25c05;
+  color: white;
 }
 
 .cancelBtn {

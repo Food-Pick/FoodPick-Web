@@ -2,10 +2,12 @@
 
 import { useState, useEffect } from 'react';
 import { useSession } from 'next-auth/react';
+import { signOut } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import styles from '../../styles/userProfileSettingsPage.module.css'
 import Header from '../../components/Header';
 import { FiUser, FiEdit3, FiCheck, FiX } from 'react-icons/fi';
+
 
 export default function ProfileEditPage() {
   const { data: session } = useSession();
@@ -25,14 +27,13 @@ export default function ProfileEditPage() {
     preferredFoods: [] as string[],
   });
 
-  // 연령대 숫자를 한글로 변환하는 함수 추가
+  // 연령대 숫자 <-> 한글 변환 맵 추가
   const ageGroupMap: { [key: string]: string } = {
     '0': '10대',
     '1': '20대',
     '2': '30대',
     '3': '40대',
     '4': '50대 이상',
-    '5': '미설정',
   };
 
   useEffect(() => {
@@ -40,7 +41,7 @@ export default function ProfileEditPage() {
       const userData = {
         nickname: session.user.nickname || '',
         gender: session.user.gender === 0 ? '남성' : '여성',
-        ageGroup: ageGroupMap[String(session.user.age)] || '미설정',
+        ageGroup: session.user.age?.toString() ?? null, // 숫자 string으로 저장
         price: session.user.price || null,
         preferredFoods: Array.isArray(session.user.favorite_food) ? session.user.favorite_food : [],
       };
@@ -84,16 +85,19 @@ export default function ProfileEditPage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
+    console.log('프로필 업데이트 시작');
     try {
-      const response = await fetch('/api/user/update-profile', {
-        method: 'PUT',
+      const response = await fetch('/api/auth/update-profile', {
+        method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
+          id: session?.user.id,
+          email: session?.user.email,
           nickname,
           gender: gender === '남성' ? 0 : 1,
-          age: ageGroup,
+          age: ageGroup ? Number(ageGroup) : null,
           price,
           favorite_food: preferredFoods,
         }),
@@ -102,10 +106,12 @@ export default function ProfileEditPage() {
       if (response.ok) {
         setShowSuccessMessage(true);
         setEditMode(false);
-        setTimeout(() => {
-          setShowSuccessMessage(false);
-          router.push('/user-settings');
-        }, 2000);
+        // setTimeout(() => {
+        //   setShowSuccessMessage(false);
+        //   router.push('/user-settings');
+        // }, 2000);
+        alert('프로필 업데이트에 성공했습니다. 다시 로그인 해주세요.');
+        signOut({ callbackUrl: '/login' });
       } else {
         alert('프로필 업데이트에 실패했습니다.');
       }
@@ -143,7 +149,7 @@ export default function ProfileEditPage() {
             <div className={styles.profileInfo}>
               {renderField('닉네임', nickname, <FiUser />)}
               {renderField('성별', gender, <FiEdit3 />)}
-              {renderField('연령대', ageGroup, <FiEdit3 />)}
+              {renderField('연령대', ageGroup ? ageGroupMap[ageGroup] : null, <FiEdit3 />)}
               {renderField('선호 가격대', price, <FiEdit3 />)}
               <div className={styles.infoField}>
                 <div className={styles.infoLabel}>
@@ -199,14 +205,14 @@ export default function ProfileEditPage() {
                   <span>연령대</span>
                 </div>
                 <div className={styles.ageGroupRow}>
-                  {['10대', '20대', '30대', '40대', '50대 이상'].map(age => (
+                  {["0", "1", "2", "3", "4"].map(age => (
                     <button
                       key={age}
                       type="button"
                       className={`${styles.selectButton} ${ageGroup === age ? styles.active : ''}`}
                       onClick={() => setAgeGroup(age)}
                     >
-                      {age}
+                      {ageGroupMap[age]}
                     </button>
                   ))}
                 </div>
@@ -215,7 +221,7 @@ export default function ProfileEditPage() {
                   <span>선호 가격대</span>
                 </div>
                 <div className={styles.priceRow}>
-                  {['1만원 이하', '1-2만원', '2-3만원', '3만원 이상'].map(p => (
+                  {['10,000원 이하', '15,000원 이하', '20,000원 이하', '25,000원 이하', '30,000원 이하', '30,000원 이상'].map(p => (
                     <button
                       key={p}
                       type="button"
@@ -231,7 +237,7 @@ export default function ProfileEditPage() {
                   <span>선호 음식</span>
                 </div>
                 <div className={styles.foodGrid}>
-                  {['한식', '중식', '일식', '양식', '카페/디저트', '분식', '치킨', '피자', '햄버거', '샐러드'].map(food => (
+                  {['한식', '중식', '일식', '양식', '카페 & 디저트', '호프'].map(food => (
                     <button
                       key={food}
                       type="button"

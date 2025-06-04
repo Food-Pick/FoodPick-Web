@@ -49,6 +49,10 @@ const nextConfig: NextConfig = {
       {
         source: '/api/auth/login',
         destination: `${BACKEND_API_INTERNAL_URL}/auth/login`,
+      }, 
+      {
+        source: '/api/auth/update-profile',
+        destination: `${BACKEND_API_INTERNAL_URL}/auth/update-profile`,
       }
     ];
   },

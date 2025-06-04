@@ -329,9 +329,16 @@ export default function RecommendRestaurant({
       <div className="recommend-container">
         {isLoading ? (
           <div className="weather-info">
+            <img
+                  src="/images/loading_ai2.png"
+                  alt="추천 중"
+                  width={160}
+                  height={160}
+                  className="loading-image"
+                />
             <div className="weather-message">
-              <div className="skeleton-text skeleton-bar" style={{ width: '60%', height: '2rem', margin: '0 auto' }} />
-              <div className="skeleton-text skeleton-bar" style={{ width: '40%', height: '1.5rem', margin: '1rem auto 0' }} />
+              <h2 className="recommend-title">FoodPick AI가 맛집 추천을 준비 중입니다.</h2>
+              <p className="subtitle">잠시만 기다려주세요!</p>
             </div>
           </div>
         ) : (
@@ -501,6 +508,16 @@ export default function RecommendRestaurant({
           box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
         }
 
+        .loading-image {
+          display: block;              /* ✅ inline 문제 해결 */
+          margin: 0 auto 1rem;         /* ✅ 정확한 가운데 정렬 */
+          width: 160px;
+          max-width: 100%;
+          height: auto;
+          animation: none !important;
+          transition: none !important;
+        }
+                  
         @keyframes shimmer {
           0% {
             background-position: -1000px 0;

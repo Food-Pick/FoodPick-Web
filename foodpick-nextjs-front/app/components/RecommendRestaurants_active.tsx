@@ -410,8 +410,19 @@ export default function RecommendRestaurant({
                         </div>
 
                         <div className="tags-section">
-                          {restaurant.menus[0].matched_tags.map((tagObj, i) =>
-                            Object.entries(tagObj).map(([tagType, tags]) => {
+                          {(() => {
+                            const mergedTagMap = new Map<string, string[]>();
+
+                            // 중복된 tagType 방지
+                            restaurant.menus[0].matched_tags.forEach(tagObj => {
+                              Object.entries(tagObj).forEach(([tagType, tags]) => {
+                                if (!mergedTagMap.has(tagType)) {
+                                  mergedTagMap.set(tagType, tags);
+                                }
+                              });
+                            });
+
+                            return Array.from(mergedTagMap.entries()).map(([tagType, tags]) => {
                               const key = `${restaurant.restaurant_id}_${tagType}`;
                               const isExpanded = expandedTags[key] || false;
                               const displayedTags = isExpanded ? tags : tags.slice(0, 3);
@@ -435,8 +446,8 @@ export default function RecommendRestaurant({
                                   </div>
                                 </div>
                               );
-                            })
-                          )}
+                            });
+                          })()}
                         </div>
                       </div>
                     </div>

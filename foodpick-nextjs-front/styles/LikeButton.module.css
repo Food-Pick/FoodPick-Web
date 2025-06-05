@@ -1,0 +1,20 @@
+/* components/LikeButton.module.css */
+.heartIcon {
+  position: absolute;
+  bottom: 0.8rem;
+  right: 0.8rem;
+  width: 44px;  /* 정사각형 유지 */
+  height: 44px;
+  background: rgba(255, 255, 255, 0.95);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+  cursor: pointer;
+  transition: transform 0.2s ease-in-out;
+}
+
+.heartIcon:hover {
+  transform: scale(1.2);
+}

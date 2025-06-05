@@ -7,6 +7,7 @@ import MenuSection from '../../../components/MenuSection';
 import MergedPhotoGallery from '../../../components/MergedPhotoGallery';
 import ReviewSection from '../../../components/ReviewSection';
 import { Review } from '../../../components/ReviewSection';
+import LikeButton from '../../../components/LikeButton';
 
 type Props = {
   params: Promise<{
@@ -134,14 +135,17 @@ export default async function NearbyRestaurantDetailPage({ params, searchParams 
               src={mainImage}
               alt={restaurant.네이버_상호명 || restaurant.사업장명}
             />
+            <LikeButton restaurantId={restaurant.id} initialLiked={false} />
           </div>
 
           <div className={styles.heroContent}>
-            <h1 className={styles.title}>
-              {restaurant.네이버_상호명 || restaurant.사업장명}
+            <h1 className={styles.titleWrapper}>
+              <span className={styles.titleText}>
+                {restaurant.네이버_상호명 || restaurant.사업장명}
+              </span>
             </h1>
-            <p className={styles.tags}>{restaurant.업태구분명}</p>
 
+            <p className={styles.tags}>{restaurant.업태구분명}</p>
             <div className={styles.infoRow}>
               <FiMapPin />
               <div className={styles.infoTextGroup}>

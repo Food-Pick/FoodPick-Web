@@ -174,6 +174,7 @@ export default function RecommendRestaurant({
   const [isLoading, setIsLoading] = useState(true);
   const [popupState, setPopupState] = useState<PopupState>({ isOpen: false, restaurantId: null });
   const [error, setError] = useState<string | null>(null);
+  const [expandedTags, setExpandedTags] = useState<Record<string, boolean>>({});
 
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const router = useRouter();
@@ -200,6 +201,14 @@ export default function RecommendRestaurant({
     }
   };
 
+  const toggleTags = (restaurantId: number, tagType: string) => {
+    const key = `${restaurantId}_${tagType}`;
+    setExpandedTags(prev => ({
+      ...prev,
+      [key]: !prev[key],
+    }));
+  };
+  
   useEffect(() => {
     let isMounted = true;
     if (!isLocationConfirmed) {
@@ -219,6 +228,7 @@ export default function RecommendRestaurant({
       }
     };
 
+    
     const fetchRecommendations = async () => {
       if (!latitude || !longitude) {
         if (isMounted) {
@@ -285,7 +295,8 @@ export default function RecommendRestaurant({
         }
       }
     };
-      
+    
+    
     setIsLoading(true);
     setError(null);
     fetchRecommendations(); 
@@ -337,7 +348,8 @@ export default function RecommendRestaurant({
                   className="loading-image"
                 />
             <div className="weather-message">
-              <h2 className="recommend-title">FoodPick AI가 맛집 추천을 준비 중입니다.</h2>
+              {/* <h2 className="recommend-title">FoodPick AI가 맛집 추천을 준비 중입니다.</h2> */}
+              <h2 className="recommend-title">FoodPick AI가 추천 메뉴를 고르고 있습니다.</h2>
               <p className="subtitle">잠시만 기다려주세요!</p>
             </div>
           </div>
@@ -399,16 +411,31 @@ export default function RecommendRestaurant({
 
                         <div className="tags-section">
                           {restaurant.menus[0].matched_tags.map((tagObj, i) =>
-                            Object.entries(tagObj).map(([tagType, tags]) => (
-                              <div key={tagType + i} className="tag-group">
-                                <span className="tag-type">{tagType}</span>
-                                <div className="tag-list">
-                                  {tags.map((tag, index) => (
-                                    <span key={index} className="tag">{tag}</span>
-                                  ))}
+                            Object.entries(tagObj).map(([tagType, tags]) => {
+                              const key = `${restaurant.restaurant_id}_${tagType}`;
+                              const isExpanded = expandedTags[key] || false;
+                              const displayedTags = isExpanded ? tags : tags.slice(0, 3);
+                              const hasMore = tags.length > 3;
+
+                              return (
+                                <div key={key} className="tag-group">
+                                  <span className="tag-type">{tagType}</span>
+                                  <div className="tag-list">
+                                    {displayedTags.map((tag, index) => (
+                                      <span key={index} className="tag">{tag}</span>
+                                    ))}
+                                    {hasMore && (
+                                      <button
+                                        className="tag-toggle-button"
+                                        onClick={() => toggleTags(restaurant.restaurant_id, tagType)}
+                                      >
+                                        {isExpanded ? '간략히' : '더보기'}
+                                      </button>
+                                    )}
+                                  </div>
                                 </div>
-                              </div>
-                            ))
+                              );
+                            })
                           )}
                         </div>
                       </div>
@@ -1000,6 +1027,18 @@ export default function RecommendRestaurant({
         }
         .scroll-button-skeleton:last-of-type {
           right: 0;
+        }
+        .tag-toggle-button {
+          background: none;
+          border: none;
+          color: #1976d2;
+          font-size: 0.7rem;
+          cursor: pointer;
+          margin-left: 0.5rem;
+          padding: 0;
+        }
+        .tag-toggle-button:hover {
+          text-decoration: underline;
         }
       `}</style>
     </section>

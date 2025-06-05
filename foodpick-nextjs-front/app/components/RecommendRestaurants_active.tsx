@@ -409,6 +409,22 @@ export default function RecommendRestaurant({
                           <p className="description">{restaurant.menus[0].descriptions[0]}</p>
                         </div>
 
+                        {/* <div className="tags-section">
+                          {restaurant.menus[0].matched_tags.map((tagObj, i) =>
+                            Object.entries(tagObj).map(([tagType, tags]) => {
+                              const key = `${restaurant.restaurant_id}_${tagType}`;
+                              const isExpanded = expandedTags[key] || false;
+                              const displayedTags = isExpanded ? tags : tags.slice(0, 3);
+                              const hasMore = tags.length > 3;
+
+                              return (
+                                <div key={key} className="tag-group">
+                                  ...
+                                </div>
+                              );
+                            })
+                          )}
+                        </div> */}
                         <div className="tags-section">
                           {(() => {
                             const mergedTagMap = new Map<string, string[]>();

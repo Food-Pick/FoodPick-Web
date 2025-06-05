@@ -40,7 +40,7 @@ export default function ProfileEditPage() {
     if (session?.user) {
       const userData = {
         nickname: session.user.nickname || '',
-        gender: session.user.gender === '0' ? '남성' : '여성',
+        gender: Number(session.user.gender) === 0 ? '남성' : '여성',
         ageGroup: session.user.age?.toString() ?? null,
         price: session.user.price?.toString() ?? null,
         preferredFoods: Array.isArray(session.user.favorite_food) ? session.user.favorite_food : [],

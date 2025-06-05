@@ -529,7 +529,7 @@ export default function RecommendRestaurant({
                       <p className="description">{menu.descriptions[0]}</p>
                     </div>
 
-                    <div className="popup-tags-section">
+                    {/* <div className="popup-tags-section">
                       {menu.matched_tags.map((tagObj, i) =>
                         Object.entries(tagObj).map(([tagType, tags]) => (
                           <div key={tagType + i} className="tag-group">
@@ -542,6 +542,31 @@ export default function RecommendRestaurant({
                           </div>
                         ))
                       )}
+                    </div> */}
+                    <div className="popup-tags-section">
+                      {(() => {
+                        const mergedTagMap = new Map<string, string[]>();
+
+                        // 중복 제거된 tagType만 map에 추가
+                        menu.matched_tags.forEach(tagObj => {
+                          Object.entries(tagObj).forEach(([tagType, tags]) => {
+                            if (!mergedTagMap.has(tagType)) {
+                              mergedTagMap.set(tagType, tags);
+                            }
+                          });
+                        });
+
+                        return Array.from(mergedTagMap.entries()).map(([tagType, tags], i) => (
+                          <div key={tagType + i} className="tag-group">
+                            <span className="tag-type">{tagType}</span>
+                            <div className="tag-list">
+                              {tags.map((tag, index) => (
+                                <span key={index} className="tag">{tag}</span>
+                              ))}
+                            </div>
+                          </div>
+                        ));
+                      })()}
                     </div>
                   </div>
                 ))}

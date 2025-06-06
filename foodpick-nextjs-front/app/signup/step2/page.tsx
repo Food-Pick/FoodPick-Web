@@ -5,6 +5,7 @@ import styles from '../../styles/SignupFormStep2.module.css';
 import Link from 'next/link';
 import Image from 'next/image';
 import { FiUser, FiEdit3 } from 'react-icons/fi';
+import { FaCheck } from 'react-icons/fa';
 import { useRouter } from 'next/navigation';
 import { useSignup, genderToNumber, ageGroupToNumber } from '../../contexts/SignupContext';
 
@@ -218,6 +219,11 @@ export default function SignupStep2() {
                   <Image src={food.image} alt={food.name} width={120} height={80} className={styles.foodImage} />
                   <div className={styles.overlay}></div>
                   <span className={styles.foodLabel}>{food.name}</span>
+                  {preferredFoods.includes(food.name) && (
+                    <span className={styles.checkIcon}>
+                      <FaCheck />
+                    </span>
+                  )}
                 </button>
               ))}
             </div>

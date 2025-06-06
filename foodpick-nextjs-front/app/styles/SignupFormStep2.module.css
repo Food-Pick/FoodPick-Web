@@ -137,8 +137,13 @@
   overflow: hidden;
   cursor: pointer;
   padding: 0;
-  border: none;
+  border: 2px solid transparent;
   height: 100px;
+  transition: border-color 0.2s ease;
+}
+
+.foodItem.activeFood {
+  border-color: #ff7a3e;
 }
 
 .foodImage {
@@ -162,7 +167,7 @@
 }
 
 .foodItem.activeFood .overlay {
-  background-color: rgba(0, 0, 0, 0.35);
+  background-color: rgba(0, 0, 0, 0.45);
 }
 
 .foodLabel {
@@ -177,6 +182,21 @@
   background: rgba(0, 0, 0, 0.5);
   color: white;
   padding: 0.25rem 0;
+}
+
+.checkIcon {
+  position: absolute;
+  top: 6px;
+  right: 6px;
+  font-size: 1rem;
+  color: white;
+  background: #ff7a3e;
+  border-radius: 50%;
+  padding: 0.35rem;
+  z-index: 3;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .signupBtn {

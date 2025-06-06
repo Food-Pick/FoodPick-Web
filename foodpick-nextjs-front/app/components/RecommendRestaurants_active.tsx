@@ -337,9 +337,9 @@ export default function RecommendRestaurant({
 
   return (
     <section className={styles.recommendSection}>
-      <div className="recommend-container">
+      <div className="recommend-container" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', minHeight: 220, width: '100%', textAlign: 'center' }}>
         {isLoading ? (
-          <div className="weather-info">
+          <div className="weather-info" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', minHeight: 180, width: '100%', textAlign: 'center' }}>
             <img
                   src="/images/loading_ai2.png"
                   alt="추천 중"

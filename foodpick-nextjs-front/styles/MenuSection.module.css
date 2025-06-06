@@ -33,11 +33,12 @@
 .menuPrice {
   color: #555;
   margin-top: 0.3rem;
+  margin-bottom: 0.8rem; /* ✅ 가격과 하단 요소 사이 간격 추가 */
 }
 
 .menuImage {
-  width: 80px;
-  height: 80px;
+  width: 100px;
+  height: 100px;
   border-radius: 8px;
   object-fit: cover;
   margin-left: 1rem;
@@ -63,4 +64,27 @@
 
 .toggleButton:hover {
   background-color: #e65c00; /* 호버 시 색상 변경 */
+}
+
+.heartButton {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  display: flex;
+  align-items: center;
+}
+
+.heartIcon {
+  font-size: 1.4rem;
+  color: #ccc;
+  transition: color 0.2s ease;
+}
+
+.heartButton:hover .heartIcon {
+  color: #f97316; /* 호버 시 주황색 */
+}
+
+.liked {
+  color: #e63946; /* 찜한 경우 빨간색 하트 */
 }

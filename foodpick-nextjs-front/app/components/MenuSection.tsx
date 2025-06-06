@@ -1,6 +1,7 @@
 'use client';
 import React, { useState } from 'react';
 import styles from '../../styles/MenuSection.module.css';
+import { AiFillHeart, AiOutlineHeart } from 'react-icons/ai';
 
 type MenuItem = {
   name: string;
@@ -15,6 +16,15 @@ type Props = {
 export default function MenuSection({ items }: Props) {
   const [showAll, setShowAll] = useState(false);
   const visibleItems = showAll ? items : items.slice(0, 3);
+  const [likedItems, setLikedItems] = useState<Set<number>>(new Set());
+
+  const toggleLike = (index: number) => {
+    setLikedItems((prev) => {
+      const updated = new Set(prev);
+      updated.has(index) ? updated.delete(index) : updated.add(index);
+      return updated;
+    });
+  };
 
   return (
     <section className={styles.menuSection}>
@@ -25,7 +35,20 @@ export default function MenuSection({ items }: Props) {
         <div className={styles.menuCard} key={idx}>
           <div className={styles.menuInfo}>
             <p className={styles.menuName}>{item.name}</p>
-            <p className={styles.menuPrice}>{item.price.toLocaleString()}원</p>
+             <div className={styles.priceLikeWrapper}>
+              <p className={styles.menuPrice}>{item.price.toLocaleString()}원</p>
+              <button
+                className={styles.heartButton}
+                onClick={() => toggleLike(idx)}
+                aria-label="찜하기"
+              >
+                {likedItems.has(idx) ? (
+                  <AiFillHeart className={`${styles.heartIcon} ${styles.liked}`} />
+                ) : (
+                  <AiOutlineHeart className={styles.heartIcon} />
+                )}
+              </button>
+            </div>
           </div>
           {item.image && (
             <img

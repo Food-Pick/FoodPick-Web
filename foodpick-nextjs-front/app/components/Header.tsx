@@ -1,7 +1,7 @@
 'use client';
 
 import Image from 'next/image';
-import { FiUser, FiSearch, FiSettings, FiLogOut, FiX } from 'react-icons/fi';
+import { FiUser, FiSearch, FiSettings, FiLogOut, FiX, FiHeart } from 'react-icons/fi';
 import { usePathname } from 'next/navigation';
 import styles from '../../styles/home.module.css';
 import { useEffect, useState, useRef } from 'react';
@@ -130,6 +130,12 @@ export default function Header() {
     setShowMobileMenu(false);
   };
 
+  const handleLikedList = () => {
+    router.push(`/liked`);
+    setShowDropdown(false);
+    setShowMobileMenu(false);
+  };
+
   return (
     <header className={styles.header}>
       <div className={styles.logo}>
@@ -192,6 +198,9 @@ export default function Header() {
           {/* PC 버전 드롭다운 */}
           {showDropdown && (
             <div className={styles.dropdownMenu}>
+              <button onClick={handleLikedList} className={styles.dropdownItem}>
+                <FiHeart size={16} /> 내 찜 목록
+              </button>
               <button onClick={handleSettings} className={styles.dropdownItem}>
                 <FiSettings size={16} /> 계정 설정
               </button>
@@ -218,6 +227,12 @@ export default function Header() {
             <FiX size={24} />
           </button>
         </div>
+        <button onClick={handleLikedList} className={styles.mobileMenuItem}>
+          <div className={styles.mobileMenuItemIcon}>
+            <FiHeart size={20} />
+          </div>
+          내 찜 목록
+        </button>
         <button onClick={handleSettings} className={styles.mobileMenuItem}>
           <div className={styles.mobileMenuItemIcon}>
             <FiSettings size={20} />

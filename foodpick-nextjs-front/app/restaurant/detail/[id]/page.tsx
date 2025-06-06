@@ -135,7 +135,9 @@ export default async function NearbyRestaurantDetailPage({ params, searchParams 
               src={mainImage}
               alt={restaurant.네이버_상호명 || restaurant.사업장명}
             />
-            <LikeButton restaurantId={restaurant.id} initialLiked={false} />
+            <div>
+              <LikeButton restaurantId={restaurant.id} initialLiked={false} />
+            </div>
           </div>
 
           <div className={styles.heroContent}>

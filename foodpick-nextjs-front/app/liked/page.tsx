@@ -1,7 +1,7 @@
   'use client';
 
   import Link from 'next/link';
-  import styles from '../../styles/likedPage.module.css'; // ❗ 새로운 CSS 파일 경로로 변경
+  import styles from '../../styles/likedPage.module.css';
   import Header from '../components/Header';
 
   interface Restaurant {
@@ -37,7 +37,7 @@
       <>
         <Header />
           <section className={styles.likedSection}>
-            <h2 className={styles.sectionTitle}>내 찜 목록</h2>
+            <h2 className={styles.sectionTitle}>찜 리스트</h2>
 
             {dummyLikedRestaurants.map((r) => (
               <div key={r.id} className={styles.card}>

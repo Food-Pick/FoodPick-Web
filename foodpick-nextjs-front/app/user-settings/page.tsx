@@ -4,9 +4,11 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Header from '../components/Header';
 import styles from '../../styles/userSettingsPage.module.css';
+import LikedListSection from '../components/LikeListSection';
 
 export default function SettingsPage() {
-  const [activeTab, setActiveTab] = useState<'profile' | 'password' | 'delete'>('profile');
+  // const [activeTab, setActiveTab] = useState<'profile' | 'password' | 'delete'>('profile');
+  const [activeTab, setActiveTab] = useState<'profile' | 'liked' | 'password' | 'delete'>('profile');
   const [showSuccessMessage, setShowSuccessMessage] = useState(false);
   const [showModal, setShowModal] = useState(false);
   const router = useRouter();
@@ -57,6 +59,12 @@ export default function SettingsPage() {
                 프로필 변경하기
               </li>
               <li
+                className={activeTab === 'liked' ? styles.active : ''}
+                onClick={() => setActiveTab('liked')}
+              >
+                찜 리스트
+              </li>
+              <li
                 className={activeTab === 'password' ? styles.active : ''}
                 onClick={() => setActiveTab('password')}
               >
@@ -81,6 +89,7 @@ export default function SettingsPage() {
             </div>
           )}
 
+
           {activeTab === 'password' && (
             <div className={styles.box}>
               <h3>비밀번호 변경하기</h3>
@@ -96,6 +105,7 @@ export default function SettingsPage() {
             </div>
           )}
 
+          {activeTab === 'liked' && <LikedListSection />}
           {activeTab === 'delete' && (
             <div className={styles.box}>
               <h3>회원 탈퇴하기</h3>

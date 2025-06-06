@@ -231,7 +231,7 @@ export default function Header() {
           <div className={styles.mobileMenuItemIcon}>
             <FiHeart size={20} />
           </div>
-          내 찜 목록
+          찜 리스트
         </button>
         <button onClick={handleSettings} className={styles.mobileMenuItem}>
           <div className={styles.mobileMenuItemIcon}>

@@ -23,13 +23,18 @@
   border: 1px solid #eee;
   border-radius: 16px;
   background-color: #fff;
-  transition: box-shadow 0.2s ease;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
   overflow: hidden;
   margin-bottom: 1.5rem;
+
+  /* ✅ 부드럽게 등장 */
+  animation: fadeInUp 0.4s ease both;
 }
 
+/* hover 시 약간 띄우기 */
 .card:hover {
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.08);
 }
 
 .linkWrapper {

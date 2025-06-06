@@ -199,7 +199,7 @@ export default function Header() {
           {showDropdown && (
             <div className={styles.dropdownMenu}>
               <button onClick={handleLikedList} className={styles.dropdownItem}>
-                <FiHeart size={16} /> 내 찜 목록
+                <FiHeart size={16} /> 찜 리스트
               </button>
               <button onClick={handleSettings} className={styles.dropdownItem}>
                 <FiSettings size={16} /> 계정 설정

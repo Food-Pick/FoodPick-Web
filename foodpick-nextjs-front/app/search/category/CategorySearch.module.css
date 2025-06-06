@@ -1,237 +1,396 @@
+/* 기본 컨테이너 스타일 (데스크톱) */
 .container {
-    display: flex;
-    height: calc(100vh - 82px);
-    overflow: hidden;
-    position: absolute;
-    top: 82px;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background-color: #fff;
+  display: flex;
+  height: calc(100dvh - 82px); /* 헤더 높이 제외 */
+  overflow: hidden; /* 전체 페이지 스크롤 방지 */
+  position: absolute; /* 헤더 아래에 위치 */
+  top: 82px;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #fff;
 }
 
+/* 좌측 패널 (데스크톱) */
 .leftPanel {
-    flex: 0.25;
-    padding: 24px;
-    overflow-y: auto;
-    border-right: 1px solid #e5e5e5;
-    background-color: #f8f9fa;
-    min-width: 550px;
-    height: 100%;
+  display: flex;
+  flex-direction: column;
+  flex: 0.25; /* 25% 너비 차지 */
+  padding: 24px;
+  border-right: 1px solid #e5e5e5;
+  background-color: #f8f9fa;
+  min-width: 550px; /* 최소 너비 지정 */
+  height: calc(100dvh - 82px); /* 컨테이너 높이와 동일 */
+  transition: transform 0.3s ease-in-out; /* 부드러운 전환 효과 (데스크톱에서는 주로 사용 안됨) */
+  scrollbar-width: thin; /* Firefox 스크롤바 */
+  scrollbar-color: #ff6b00 #f1f1f1; /* Firefox 스크롤바 색상 */
+  -webkit-overflow-scrolling: touch; /* iOS 스크롤 성능 향상 */
+  will-change: scroll-position; /* 스크롤 성능 최적화 */
+  transform: translateZ(0); /* 하드웨어 가속 */
+  backface-visibility: hidden; /* 하드웨어 가속 */
+  overflow: hidden; /* 자식 요소의 넘침 숨김 */
+  display: flex; /* 내부 요소를 flex로 정렬 */
+  flex-direction: column; /* 수직 정렬 */
+  touch-action: none;
+  -webkit-touch-callout: none;
+  -webkit-tap-highlight-color: transparent;
+  user-select: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
 }
 
+/* 우측 패널 (데스크톱) */
 .rightPanel {
-    flex: 0.75;
-    position: relative;
-    height: 100%;
+  flex: 0.75; /* 75% 너비 차지 */
+  position: relative; /* 자식 요소의 absolute 위치 기준 */
+  height: 100%; /* 부모 높이와 동일 */
 }
 
+/* 검색 헤더 스타일 */
 .searchHeader {
-    margin-bottom: 2rem;
-    padding-bottom: 1rem;
-    border-bottom: 1px solid #eee;
+  padding-bottom: 10px;
+  margin-bottom: 10px;
+  border-bottom: 2px solid #ff6b00;
 }
 
 .searchTitle {
-    font-size: 1.5rem;
-    font-weight: 600;
-    color: #333;
-    margin-bottom: 0.5rem;
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: #333;
 }
 
 .searchSubtitle {
-    font-size: 0.9rem;
-    color: #666;
+  font-size: 14px;
+  color: #666;
+  padding-bottom: 15px; /* 약간의 여백 추가 */
 }
 
+/* 결과 목록 스타일 */
 .resultList {
-    display: flex;
-    flex-direction: column;
-    gap: 16px;
+  flex: 1; /* 남은 공간을 모두 차지하여 스크롤 가능하게 함 */
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  overflow-y: auto; /* 세로 스크롤 가능 */
 }
 
+/* 개별 결과 아이템 스타일 */
 .resultItem {
-    display: flex;
-    gap: 16px;
-    padding: 16px;
-    border: 1px solid #e5e5e5;
-    border-radius: 12px;
-    background-color: #fff;
-    cursor: pointer;
-    transition: all 0.2s ease-in-out;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  display: flex;
+  gap: 16px;
+  padding: 16px;
+  border: 1px solid #e5e5e5;
+  border-radius: 12px;
+  background-color: #fff;
+  cursor: pointer;
+  transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out, border-color 0.2s ease-in-out, background-color 0.2s ease-in-out;
+  will-change: transform, box-shadow;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  -webkit-tap-highlight-color: transparent; /* 모바일 터치 시 하이라이트 제거 */
+  touch-action: manipulation; /* 터치 이벤트 최적화 */
 }
 
+/* 아이템 호버/활성화 시 스타일 */
 .resultItem:hover,
 .resultItemHovered {
-    transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-    border-color: #ff6b00;
-    background-color: #fff8f3;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  border-color: #ff6b00;
+  background-color: #fff8f3;
 }
 
+/* 아이템 내부 링크 스타일 (전체 영역 클릭 가능하게) */
+.resultLink {
+  display: flex;
+  gap: 16px;
+  width: 100%;
+  text-decoration: none; /* 링크 밑줄 제거 */
+  color: inherit; /* 텍스트 색상 상속 */
+}
+
+/* 결과 이미지 스타일 */
 .resultImg {
-    width: 120px;
-    height: 120px;
-    object-fit: cover;
-    border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  width: 120px;
+  height: 120px;
+  object-fit: cover;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
+/* 결과 정보 영역 스타일 */
 .resultInfo {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
 }
 
+/* 음식점 이름 스타일 */
 .resultName {
-    font-size: 1.25rem;
-    font-weight: 600;
-    color: #333;
-    margin-bottom: 4px;
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 4px;
 }
 
+/* 메타 정보 (주소 또는 업태) 스타일 */
 .resultMeta {
-    font-size: 0.9rem;
-    color: #666;
-    display: flex;
-    align-items: center;
-    gap: 6px;
+  font-size: 0.9rem;
+  color: #666;
+  display: flex;
+  align-items: center;
+  gap: 6px;
 }
 
+/* 메뉴 설명 스타일 */
 .resultDesc {
-    font-size: 0.95rem;
-    color: #666;
-    margin-top: auto;
-    padding-top: 8px;
-    border-top: 1px solid #f0f0f0;
+  font-size: 0.95rem;
+  color: #666;
+  margin-top: auto; /* 하단에 붙도록 */
+  padding-top: 8px;
+  border-top: 1px solid #f0f0f0;
 }
 
-/* 스크롤바 스타일링 */
+/* 스크롤바 스타일링 (데스크톱) */
 .leftPanel::-webkit-scrollbar {
-    width: 8px;
+  width: 6px;
 }
 
 .leftPanel::-webkit-scrollbar-track {
-    background: #f1f1f1;
-    border-radius: 4px;
+  background: #f1f1f1;
 }
 
 .leftPanel::-webkit-scrollbar-thumb {
-    background: #ff6b00;
-    border-radius: 4px;
+  background: #ff6b00;
+  border-radius: 3px;
 }
 
 .leftPanel::-webkit-scrollbar-thumb:hover {
-    background: #ff8533;
+  background: #ff8533;
 }
 
 /* 반응형 디자인 */
+
+/* 1024px 이하: 태블릿 정도, 데스크톱과 유사하지만 요소 크기 조정 */
 @media screen and (max-width: 1024px) {
-    .container {
-        position: absolute;
-        left: 0;
-        right: 0;
-        bottom: 0;
-    }
+  .leftPanel {
+    min-width: 350px; /* 최소 너비 조정 */
+  }
 
-    .leftPanel {
-        flex: none;
-        width: 100%;
-        min-width: unset;
-        height: 100%;
-        border-right: none;
-        border-bottom: none;
-    }
+  .searchTitle {
+    font-size: 1.2rem;
+  }
 
-    .rightPanel {
-        display: none;
-    }
+  .searchSubtitle {
+    font-size: 12px;
+  }
+
+  .resultList {
+    gap: 12px;
+  }
+
+  .resultItem {
+    padding: 12px;
+  }
+
+  .resultImg {
+    width: 100px;
+    height: 100px;
+  }
+
+  .resultName {
+    font-size: 1rem;
+  }
+
+  .resultMeta {
+    font-size: 0.8rem;
+  }
+
+  .resultDesc {
+    font-size: 0.85rem;
+  }
 }
 
+/* 768px 이하: 작은 태블릿 또는 큰 모바일 (여전히 2열 레이아웃 유지) */
 @media screen and (max-width: 768px) {
-    .container {
-        top: 133px;
-        height: calc(110vh - 133px);
-    }
+  .container {
+    top: 136px;
+    height: calc(100dvh - 136px);
+    overflow: hidden;
+  }
 
-    .leftPanel {
-        padding: 12px;
-        padding-bottom: 100px;
-    }
+  .searchTitle {
+    font-size: 1.2rem;
+    margin-bottom: 16px;
+    padding-bottom: 12px;
+  }
 
-    .searchTitle {
-        font-size: 1.2rem;
-        margin-bottom: 16px;
-        padding-bottom: 12px;
-    }
+  .resultList {
+    gap: 12px;
+  }
 
-    .resultList {
-        gap: 12px;
-    }
+  .resultImg {
+    width: 80px;
+    height: 80px;
+  }
 
-    .resultItem {
-        padding: 12px;
-        gap: 12px;
-    }
+  .resultName {
+    font-size: 1rem;
+    margin-bottom: 2px;
+  }
 
-    .resultImg {
-        width: 80px;
-        height: 80px;
-    }
+  .resultMeta {
+    font-size: 0.8rem;
+  }
 
-    .resultName {
-        font-size: 1rem;
-        margin-bottom: 2px;
-    }
-
-    .resultMeta {
-        font-size: 0.8rem;
-    }
-
-    .resultDesc {
-        font-size: 0.85rem;
-        padding-top: 6px;
-    }
+  .resultDesc {
+    font-size: 0.85rem;
+    padding-top: 6px;
+  }
 }
 
-@media screen and (max-width: 480px) {
-    .leftPanel {
-        padding: 8px;
-        padding-bottom: 100px;
-    }
+/* 630px 이하: 모바일 드로어 레이아웃 적용 (핵심 변경점) */
+@media screen and (max-width: 630px) {
+  .container {
+    top: 136px; /* 모바일 헤더 높이 반영 */
+    height: calc(100dvh - 136px); /* 모바일 헤더 높이 제외 */
+    overflow: hidden; /* 페이지 전체 스크롤 방지 */
+    flex-direction: column; /* 패널을 수직으로 정렬 */
+  }
 
+  .leftPanel {
+    position: fixed; /* 뷰포트에 고정 */
+    bottom: 0; /* 하단에 붙임 */
+    left: 0;
+    right: 0;
+    min-width: unset; /* 최소 너비 제한 제거 */
+    width: 100vw; /* 전체 너비 차지 */
+    border-radius: 20px 20px 0 0; /* 상단 모서리 둥글게 */
+    box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.1); /* 상단 그림자 */
+    z-index: 1000; /* 다른 요소 위에 표시 */
+    background: #fff;
+    display: flex;
+    flex-direction: column;
+    height: calc(100dvh - 136px); /* 드로어가 최상단에 있을 때의 높이 (모바일 헤더 제외) */
+    min-height: 0; /* flex 컨테이너에서 최소 높이 설정 */
+    box-sizing: border-box;
+  }
+
+  .rightPanel {
+    flex: 1; /* 남은 공간 모두 차지 (지도가 보여야 할 때) */
+    width: 100%;
+    height: 100%; /* 부모 높이와 동일 */
+    position: relative;
+    /* display, pointer-events, position은 JS에서 style prop으로 제어 */
+  }
+
+  .searchHeader {
+    padding: 20px 16px 10px; /* 모바일용 패딩 조정 */
+    margin-bottom: 10px;
+    box-sizing: border-box;
+  }
+
+  .resultList {
+    flex: 1 1 0; /* 남은 공간을 채우고, 필요 시 축소 */
+    min-height: 0; /* flex 아이템의 최소 높이 허용 */
+    max-height: 100%; /* 부모 높이를 넘지 않도록 */
+    overflow-y: auto; /* 목록 자체의 스크롤 허용 */
+    -webkit-overflow-scrolling: touch;
+    padding: 0 16px; /* 모바일용 패딩 조정 */
+    padding-bottom: env(safe-area-inset-bottom, 20px); /* iPhone X 등 하단 여백 처리 */
+    box-sizing: border-box;
+  }
+
+  /* 드로어 핸들 영역 (드래그 가능한 영역) */
+  .drawerHandleZone {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100px;
+    z-index: 1;
+    background: transparent;
+    cursor: grab;
+    user-select: none;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding-top: 10px;
+    box-sizing: border-box;
+    transition: background-color 0.2s ease;
+  }
+
+  /* 드로어 핸들바 (시각적 요소) */
+  .drawerHandleZone::before {
+    content: '';
+    display: block;
+    width: 40px;
+    height: 4px;
+    margin-bottom: 80px;
+    background-color: #ccc;
+    border-radius: 2px;
+    transition: background-color 0.2s ease;
+  }
+
+  /* 핸들 드래그 중 커서 */
+  .drawerHandleZone:active {
+    cursor: grabbing;
+    background: rgba(0,0,0,0.05);
+  }
+
+  /* 핸들 드래그 중 커서 이전 상태 스타일 */
+  .drawerHandleZone:active::before {
+    background-color: #999;
+  }
+
+  /* 호버 가능한 장치에서 핸들 호버 효과 */
+  @media (hover: hover) and (pointer: fine) {
+    .drawerHandleZone:hover {
+      background: rgba(0,0,0,0.04);
+    }
+    
+    .drawerHandleZone:hover::before {
+      background-color: #999;
+    }
+  }
+
+  /* 480px 이하: 더 작은 모바일 화면에 대한 조정 */
+  @media screen and (max-width: 480px) {
     .searchTitle {
-        font-size: 1.1rem;
-        margin-bottom: 12px;
-        padding-bottom: 10px;
+      font-size: 1.1rem;
+      margin-bottom: 12px;
+      padding-bottom: 10px;
     }
 
     .resultList {
-        gap: 8px;
+      gap: 8px;
     }
 
     .resultItem {
-        padding: 10px;
-        gap: 10px;
+      padding: 10px;
+      gap: 10px;
     }
 
     .resultImg {
-        width: 70px;
-        height: 70px;
+      width: 70px;
+      height: 70px;
     }
 
     .resultName {
-        font-size: 0.95rem;
+      font-size: 0.95rem;
     }
 
     .resultMeta {
-        font-size: 0.75rem;
+      font-size: 0.75rem;
     }
 
     .resultDesc {
-        font-size: 0.8rem;
-        padding-top: 4px;
+      font-size: 0.8rem;
+      padding-top: 4px;
     }
-} 
+  }
+}

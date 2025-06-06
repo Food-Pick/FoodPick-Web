@@ -4,7 +4,7 @@
 import { useEffect, useState, useRef } from 'react';
 import { MapContainer, TileLayer, Marker, Popup, useMap } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
-import { divIcon, LatLng } from 'leaflet';
+import { divIcon, LatLng, Point } from 'leaflet';
 import styles from './SearchResultMap.module.css';
 
 interface MarkerData {
@@ -47,20 +47,37 @@ function MapController({ highlightedMarker, onSearchAtLocation }: { highlightedM
     useEffect(() => {
         if (highlightedMarker) {
             const markerLatLng = new LatLng(highlightedMarker.lat, highlightedMarker.lng);
-            const bounds = map.getBounds();
             const currentZoom = map.getZoom();
             
-            // 마커가 현재 지도 영역 밖에 있는지 확인
-            if (!bounds.contains(markerLatLng)) {
+            // ✨ START: 마커 위치를 화면 중앙에서 위로 20% 이동시키는 로직 추가
+            // 1. 지도의 현재 높이(픽셀)를 가져옵니다.
+            const mapHeight = map.getSize().y; 
+            // 2. 지도 높이의 20%에 해당하는 픽셀 오프셋을 계산합니다. (위로 올리므로 마이너스 값)
+            const offsetPx = mapHeight * -0.20; 
+
+            // 3. 마커의 지리적 좌표를 현재 지도의 픽셀 좌표로 변환합니다.
+            const markerPx = map.latLngToContainerPoint(markerLatLng);
+
+            // 4. 새로운 타겟 픽셀 좌표를 생성합니다. (Y 좌표에서 오프셋만큼 빼서 위로 이동)
+            const targetPx = new Point(markerPx.x, markerPx.y - offsetPx);
+
+            // 5. 새로운 픽셀 좌표를 다시 지리적 좌표(LatLng)로 변환합니다.
+            const targetLatLng = map.containerPointToLatLng(targetPx);
+            // ✨ END: 마커 위치 조정 로직
+
+            const bounds = map.getBounds();
+            
+            // 마커가 현재 지도 영역 밖에 있는지 확인합니다. (여기서는 원래 마커 위치 기준으로 판단)
+            if (!bounds.contains(markerLatLng)) { 
                 // 먼저 지도를 축소
                 map.setZoom(currentZoom - 2, {
                     animate: true,
                     duration: 0.5
                 });
 
-                // 축소 애니메이션이 끝난 후 마커 위치로 이동
+                // 축소 애니메이션이 끝난 후, 계산된 타겟 위치로 이동
                 setTimeout(() => {
-                    map.setView(markerLatLng, currentZoom - 2, {
+                    map.setView(targetLatLng, currentZoom - 2, { // ✨ targetLatLng 사용
                         animate: true,
                         duration: 0.5
                     });
@@ -74,14 +91,14 @@ function MapController({ highlightedMarker, onSearchAtLocation }: { highlightedM
                     }, 500);
                 }, 500);
             } else {
-                // 마커가 보이는 영역 안에 있더라도 정중앙으로 이동
-                map.setView(markerLatLng, currentZoom, {
+                // 마커가 보이는 영역 안에 있더라도, 계산된 타겟 위치로 이동
+                map.setView(targetLatLng, currentZoom, { // ✨ targetLatLng 사용
                     animate: true,
                     duration: 0.5
                 });
             }
         }
-    }, [highlightedMarker, map]);
+    }, [highlightedMarker, map]); // map 의존성은 보통 변경되지 않지만, 명시적으로 추가
 
     // 지도 이동이 끝난 후 검색 버튼 표시
     useEffect(() => {
@@ -163,7 +180,7 @@ export default function SearchResultMap({ markers, highlightedMarker, onMarkerHo
             style={{ height: '100%', width: '100%' }}
         >
             <TileLayer
-                attribution='&copy; OpenStreetMap contributors'
+                attribution='© OpenStreetMap contributors'
                 url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
             />
             <MapController 

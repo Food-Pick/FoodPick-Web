@@ -1,6 +1,6 @@
 .container {
   display: flex;
-  height: calc(100vh - 82px);
+  height: calc(100dvh - 82px);
   overflow: hidden;
   position: absolute;
   top: 82px;
@@ -10,14 +10,46 @@
   background-color: #fff;
 }
 
+.searchTitle {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: #333;
+  padding-bottom: 10px;
+  margin-bottom: 10px;
+  border-bottom: 2px solid #ff6b00;
+}
+
+.searchSubtitle {
+  font-size: 14px;
+  color: #666;
+  padding-bottom: 15px;
+}
+
+
 .leftPanel {
+  display: flex;
+  flex-direction: column;
   flex: 0.25;
   padding: 24px;
-  overflow-y: auto;
   border-right: 1px solid #e5e5e5;
   background-color: #f8f9fa;
   min-width: 550px;
-  height: 100%;
+  height: calc(100dvh - 82px);
+  transition: transform 0.3s ease-in-out;
+  scrollbar-width: thin;
+  scrollbar-color: #ff6b00 #f1f1f1;
+  -webkit-overflow-scrolling: touch;
+  will-change: scroll-position;
+  transform: translateZ(0);
+  backface-visibility: hidden;
+  overflow: hidden;
+  touch-action: none;
+  -webkit-touch-callout: none;
+  -webkit-tap-highlight-color: transparent;
+  user-select: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
 }
 
 .rightPanel {
@@ -37,8 +69,10 @@
 
 .resultList {
   display: flex;
+  flex: 1;
   flex-direction: column;
   gap: 16px;
+  overflow-y: auto;
 }
 
 .resultItem {
@@ -49,8 +83,11 @@
   border-radius: 12px;
   background-color: #fff;
   cursor: pointer;
-  transition: all 0.2s ease-in-out;
+  transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out, border-color 0.2s ease-in-out, background-color 0.2s ease-in-out;
+  will-change: transform, box-shadow;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
 }
 
 .resultItem:hover,
@@ -101,17 +138,16 @@
 
 /* 스크롤바 스타일링 */
 .leftPanel::-webkit-scrollbar {
-  width: 8px;
+  width: 6px;
 }
 
 .leftPanel::-webkit-scrollbar-track {
   background: #f1f1f1;
-  border-radius: 4px;
 }
 
 .leftPanel::-webkit-scrollbar-thumb {
   background: #ff6b00;
-  border-radius: 4px;
+  border-radius: 3px;
 }
 
 .leftPanel::-webkit-scrollbar-thumb:hover {
@@ -120,30 +156,57 @@
 
 /* 반응형 디자인 */
 @media screen and (max-width: 1024px) {
-
-  .rightPanel {
-    flex: 0.8;
-  }
-
   .leftPanel {
-    flex: 0.2;
-    width: 300px;
-    height: 100%;
-    border-right: none;
-    border-bottom: none;
+    min-width: 350px;
   }
 
+  .searchTitle {
+    font-size: 1.2rem;
+  }
+
+  .searchSubtitle {
+    font-size: 12px;
+  }
+
+  .resultList {
+    gap: 12px;
+  }
+
+  .resultItem {
+    padding: 12px;
+  }
+
+  .resultImg {
+    width: 100px;
+    height: 100px;
+  }
+
+  .resultName {
+    font-size: 1rem;
+  }
+
+  .resultMeta {
+    font-size: 0.8rem;
+  }
+
+  .resultDesc {
+    font-size: 0.85rem;
+  }
 }
 
 @media screen and (max-width: 768px) {
   .container {
-    top: 133px;
-    height: calc(110vh - 133px);
+    top: 136px;
+    height: calc(100dvh - 136px);
+    overflow: hidden;
   }
 
   .leftPanel {
+    min-width: 300px;
     padding: 12px;
-    padding-bottom: 100px;
+    padding-bottom: env(safe-area-inset-bottom, 100px);
+    height: auto;
+    min-height: calc(100dvh - 136px);
   }
 
   .title {
@@ -153,11 +216,6 @@
   }
 
   .resultList {
-    gap: 12px;
-  }
-
-  .resultItem {
-    padding: 12px;
     gap: 12px;
   }
 
@@ -181,42 +239,106 @@
   }
 }
 
-@media screen and (max-width: 480px) {
-  .leftPanel {
-    padding: 8px;
-    padding-bottom: 100px;
+@media screen and (max-width: 630px) {
+  .container {
+    top: 136px;
+    height: calc(100dvh - 136px);
+    overflow: hidden;
+    flex-direction: column; 
   }
 
-  .title {
-    font-size: 1.1rem;
-    margin-bottom: 12px;
-    padding-bottom: 10px;
+  .leftPanel {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    min-width: unset;
+    width: 100vw;
+    border-radius: 20px 20px 0 0;
+    box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.1);
+    z-index: 1000;
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1); 
+    background: #fff;
+    display: flex; 
+    flex-direction: column; 
+    height: auto; 
+    min-height: 0; 
+    box-sizing: border-box; 
+  }
+
+
+  .rightPanel {
+    flex: 1; 
+    width: 100%;
+    height: 100%;
+    position: relative; 
+  }
+
+  .searchHeader {
+    padding: 20px 16px 10px; 
+    margin-bottom: 10px; 
+    box-sizing: border-box; 
   }
 
   .resultList {
-    gap: 8px;
+    flex: 1 1 0; 
+    min-height: 0; 
+    max-height: 100%; 
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    padding: 0 16px; 
+    padding-bottom: env(safe-area-inset-bottom, 20px); 
+    box-sizing: border-box; 
   }
 
-  .resultItem {
-    padding: 10px;
-    gap: 10px;
+  .drawerHandleZone {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100px;
+    z-index: 1;
+    background: transparent;
+    cursor: grab;
+    user-select: none;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding-top: 10px;
+    box-sizing: border-box;
+    transition: background-color 0.2s ease;
   }
 
-  .resultImg {
-    width: 70px;
-    height: 70px;
+  .drawerHandleZone::before {
+    content: '';
+    display: block;
+    width: 40px;
+    height: 4px;
+    margin-bottom: 80px;
+    background-color: #ccc;
+    border-radius: 2px;
+    transition: background-color 0.2s ease;
   }
 
-  .resultName {
-    font-size: 0.95rem;
+  .drawerHandleZone:active {
+    cursor: grabbing;
+    background: rgba(0,0,0,0.05);
   }
 
-  .resultMeta {
-    font-size: 0.75rem;
+  .drawerHandleZone:active::before {
+    background-color: #999;
   }
 
-  .resultDesc {
-    font-size: 0.8rem;
-    padding-top: 4px;
+  @media (hover: hover) and (pointer: fine) {
+    .drawerHandleZone:hover {
+      background: rgba(0,0,0,0.04);
+    }
+    
+    .drawerHandleZone:hover::before {
+      background-color: #999;
+    }
   }
-} 
+}

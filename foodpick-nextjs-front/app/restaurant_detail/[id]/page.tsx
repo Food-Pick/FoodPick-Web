@@ -94,7 +94,13 @@ export default async function RestaurantDetailPage(props: any) {
           </div>
         </section>
 
-        <MenuSection items={restaurant.menu} />
+        <MenuSection items={restaurant.menu.map(item => ({
+          ...item,
+          restaurantId: Number(restaurant.id),
+          restaurantName: restaurant.name,
+          restaurantImage: restaurant.image,
+          description: ''
+        }))} />
 
         <MergedPhotoGallery photos={[...restaurant.photos, ...restaurant.reviews.flatMap(r => r.images)]} />
 

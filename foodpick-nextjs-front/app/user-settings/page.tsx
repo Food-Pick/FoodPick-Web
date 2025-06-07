@@ -1,17 +1,58 @@
 'use client'
 
-import { useState } from 'react';
-import { useRouter } from 'next/navigation';
+import { useState, useEffect } from 'react';
+import { useRouter, useSearchParams } from 'next/navigation';
+import { useSession } from 'next-auth/react';
 import Header from '../components/Header';
 import styles from '../../styles/userSettingsPage.module.css';
-import LikedListSection from '../components/LikeListSection';
+import LikedListSectionWithData from '../components/LikedListSectionWithData';
 
 export default function SettingsPage() {
-  // const [activeTab, setActiveTab] = useState<'profile' | 'password' | 'delete'>('profile');
   const [activeTab, setActiveTab] = useState<'profile' | 'liked' | 'password' | 'delete'>('profile');
   const [showSuccessMessage, setShowSuccessMessage] = useState(false);
   const [showModal, setShowModal] = useState(false);
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const { data: session } = useSession();
+  const [likedList, setLikedList] = useState([]);
+
+  useEffect(() => {
+    const tab = searchParams.get('tab');
+    if (tab === 'liked') {
+      setActiveTab('liked');
+    }
+  }, [searchParams]);
+
+  useEffect(() => {
+    const fetchLikedList = async () => {
+      if (!session?.user?.id || !session?.user?.email) return;
+      try {
+        const res = await fetch(`/api/likes/${session.user.id}/${session.user.email}`);
+        if (res.ok) {
+          const data = await res.json();
+          // 서버 데이터 → LikedListSectionWithData에 맞게 가공
+          const grouped: any = {};
+          data.forEach((like: any) => {
+            if (!grouped[like.restaurantId]) {
+              grouped[like.restaurantId] = {
+                restaurantId: like.restaurantId,
+                restaurantName: like.restaurantName,
+                imageUrl: like.restaurantImage || null,
+                foods: [],
+              };
+            }
+            if (like.menuName) {
+              grouped[like.restaurantId].foods.push(like.menuName);
+            }
+          });
+          setLikedList(Object.values(grouped));
+        }
+      } catch (e) {
+        console.error('찜 목록 불러오기 실패:', e);
+      }
+    };
+    fetchLikedList();
+  }, [session?.user?.id, session?.user?.email]);
 
   const handleProfileEdit = () => {
     router.push('/user-settings/profile'); 
@@ -105,7 +146,7 @@ export default function SettingsPage() {
             </div>
           )}
 
-          {activeTab === 'liked' && <LikedListSection />}
+          {activeTab === 'liked' && <LikedListSectionWithData likedList={likedList} />}
           {activeTab === 'delete' && (
             <div className={styles.box}>
               <h3>회원 탈퇴하기</h3>

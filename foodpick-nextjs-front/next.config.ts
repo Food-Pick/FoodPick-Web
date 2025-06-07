@@ -53,6 +53,14 @@ const nextConfig: NextConfig = {
       {
         source: '/api/auth/update-profile',
         destination: `${BACKEND_API_INTERNAL_URL}/auth/update-profile`,
+      },
+      {
+        source: '/api/likes',
+        destination: `${BACKEND_API_INTERNAL_URL}/auth/update-auth-likes`,
+      },
+      {
+        source: '/api/likes/:userId/:userEmail',
+        destination: `${BACKEND_API_INTERNAL_URL}/auth/get-auth-likes/:userId/:userEmail`,
       }
     ];
   },

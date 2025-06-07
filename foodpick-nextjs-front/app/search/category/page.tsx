@@ -205,7 +205,7 @@ function CategorySearchContent() {
     const markers = results.map((item) => {
         let menu = [];
         try { menu = JSON.parse(item.restaurant_menu); } catch {}
-        const image = menu[0]?.images?.[0] || '/images/background.png';
+        const image = getFirstImage(item);
         return {
             lat: parseFloat(item.restaurant_latitude),
             lng: parseFloat(item.restaurant_longitude),
@@ -404,6 +404,34 @@ function CategorySearchContent() {
         );
     }
 
+    function getFirstImage(restaurant: Restaurant) {
+    // 1. restaurant_photo가 있으면 가장 먼저 시도
+    if (restaurant.restaurant_photo) {
+        try {
+            const photoArr = JSON.parse(restaurant.restaurant_photo);
+            if (Array.isArray(photoArr) && photoArr[0]) {
+        return photoArr[0];
+        }
+    } catch (e) {
+        console.error('getFirstImage 파싱 오류', e);
+        }
+    }
+     // 2. restaurant_menu의 images[0] 시도
+    if (restaurant.restaurant_menu) {
+        try {
+            const menuArr = JSON.parse(restaurant.restaurant_menu);
+            if (Array.isArray(menuArr) && menuArr[0]?.images?.[0]) {
+                return menuArr[0].images[0];
+            }
+        } catch (e) {
+        console.error('getFirstMenuImage 파싱 오류', e);
+        }
+    }
+
+    // 3. 기본 이미지
+    return "/images/background.png";
+    }
+
     return (
         <div className={styles.container}>
             <div 
@@ -457,7 +485,7 @@ function CategorySearchContent() {
                         {results.map((item) => {
                             let menu = [];
                             try { menu = JSON.parse(item.restaurant_menu); } catch {}
-                            const image = menu[0]?.images?.[0] || '/images/background.png';
+                            const image = getFirstImage(item)
                             const isHovered = hoveredRestaurant?.restaurant_id === item.restaurant_id;
 
                             return (

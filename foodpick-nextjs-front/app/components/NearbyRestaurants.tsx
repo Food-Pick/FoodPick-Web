@@ -13,7 +13,7 @@ interface Restaurant {
   restaurant_네이버_전화번호: string;
   restaurant_네이버_url: string;
   restaurant_menu: string | null;
-  restaraunt_photo: string | null;
+  restaurant_photo: string | null;
   dist: number;
 }
 
@@ -77,6 +77,35 @@ export default function NearbyRestaurants({ latitude, longitude, isLocationConfi
     };
   }, [latitude, longitude, isLocationConfirmed]);
 
+  function getFirstImage(restaurant: Restaurant) {
+    // 1. restaurant_photo가 있으면 가장 먼저 시도
+    if (restaurant.restaurant_photo) {
+      try {
+        const photoArr = JSON.parse(restaurant.restaurant_photo);
+        if (Array.isArray(photoArr) && photoArr[0]) {
+      return photoArr[0];
+    }
+  } catch (e) {
+    console.error('getFirstImage 파싱 오류', e);
+  }
+}
+
+  // 2. restaurant_menu의 images[0] 시도
+  if (restaurant.restaurant_menu) {
+    try {
+      const menuArr = JSON.parse(restaurant.restaurant_menu);
+      if (Array.isArray(menuArr) && menuArr[0]?.images?.[0]) {
+        return menuArr[0].images[0];
+      }
+    } catch (e) {
+      console.error('getFirstMenuImage 파싱 오류', e);
+    }
+  }
+
+  // 3. 기본 이미지
+  return "/images/background.png";
+  }
+
   return (
     <section className={styles.recommendSection}>
       <h2 className={styles.sectionTitle}>주변 음식점</h2>
@@ -105,11 +134,9 @@ export default function NearbyRestaurants({ latitude, longitude, isLocationConfi
                 key={restaurant.restaurant_id} 
                 className={styles.foodCard}
               >
-                <img 
-                  src={restaurant.restaurant_menu ? 
-                    JSON.parse(restaurant.restaurant_menu)[0]?.images?.[0] || "/images/background.png" 
-                    : "/images/background.png"} 
-                  alt={restaurant.restaurant_네이버_상호명 || restaurant.restaurant_사업장명} 
+                <img
+                  src={getFirstImage(restaurant)}
+                  alt={restaurant.restaurant_네이버_상호명 || restaurant.restaurant_사업장명}
                 />
                 <div className={styles.cardContent}>
                   <p className={styles.cardTitle}>

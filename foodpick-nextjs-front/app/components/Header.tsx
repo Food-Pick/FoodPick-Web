@@ -9,6 +9,7 @@ import { useRouter } from 'next/navigation';
 import { useLocation } from '../contexts/LocationContext';
 import { useSession, signOut } from 'next-auth/react';
 import { Session } from 'next-auth';
+import Portal from './Portal';
 
 interface HeaderProps {
   session: Session | null;
@@ -28,6 +29,8 @@ export default function Header() {
     pathname.startsWith('/search/result') ||
     pathname.startsWith('/search/category');
   const { data: session } = useSession();
+  const profileBtnRef = useRef<HTMLButtonElement>(null);
+  const [dropdownPosition, setDropdownPosition] = useState<{top: number, left: number} | null>(null);
 
   // 메뉴 상태 추적 Ref
   const showDropdownRef = useRef(showDropdown);
@@ -65,13 +68,16 @@ export default function Header() {
   // 드롭다운 외부 클릭 시 닫기
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
-      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
-        setShowDropdown(false);
+      if (showDropdown && profileBtnRef.current && !profileBtnRef.current.contains(event.target as Node)) {
+        const dropdownElement = document.querySelector(`.${styles.dropdownMenu}`);
+        if (dropdownElement && !dropdownElement.contains(event.target as Node)) {
+          setShowDropdown(false);
+        }
       }
     }
     document.addEventListener('mousedown', handleClickOutside);
     return () => document.removeEventListener('mousedown', handleClickOutside);
-  }, []);
+  }, [showDropdown]);
 
   // 검색어가 변경될 때마다 Context에 저장
   useEffect(() => {
@@ -113,6 +119,13 @@ export default function Header() {
     } else {
       setShowDropdown(!showDropdown);
       setShowMobileMenu(false);
+      if (!showDropdown && profileBtnRef.current) {
+        const rect = profileBtnRef.current.getBoundingClientRect();
+        setDropdownPosition({
+          top: rect.bottom + window.scrollY + 8,
+          left: rect.right + window.scrollX - 160,
+        });
+      }
     }
   };
 
@@ -131,10 +144,34 @@ export default function Header() {
   };
 
   const handleLikedList = () => {
-    router.push(`/liked`);
+    router.push('/user-settings?tab=liked');
     setShowDropdown(false);
     setShowMobileMenu(false);
   };
+
+  useEffect(() => {
+    if (!showDropdown) return;
+
+    function updateDropdownPosition() {
+      if (profileBtnRef.current) {
+        const rect = profileBtnRef.current.getBoundingClientRect();
+        setDropdownPosition({
+          top: rect.bottom + window.scrollY + 8,
+          left: rect.right + window.scrollX - 160,
+        });
+      }
+    }
+
+    updateDropdownPosition();
+
+    window.addEventListener('resize', updateDropdownPosition);
+    window.addEventListener('scroll', updateDropdownPosition);
+
+    return () => {
+      window.removeEventListener('resize', updateDropdownPosition);
+      window.removeEventListener('scroll', updateDropdownPosition);
+    };
+  }, [showDropdown]);
 
   return (
     <header className={styles.header}>
@@ -192,22 +229,48 @@ export default function Header() {
           <button
             className={styles.profileBtn}
             onClick={handleProfileClick}
+            ref={profileBtnRef}
           >
             {session.user?.name ? session.user.name.charAt(0) : <FiUser size={20} />}
           </button>
           {/* PC 버전 드롭다운 */}
-          {showDropdown && (
-            <div className={styles.dropdownMenu}>
-              <button onClick={handleLikedList} className={styles.dropdownItem}>
-                <FiHeart size={16} /> 찜 리스트
-              </button>
-              <button onClick={handleSettings} className={styles.dropdownItem}>
-                <FiSettings size={16} /> 계정 설정
-              </button>
-              <button onClick={handleLogout} className={styles.dropdownItem}>
-                <FiLogOut size={16} /> 로그아웃
-              </button>
-            </div>
+          {showDropdown && dropdownPosition && (
+            <Portal>
+              <div
+                className={styles.dropdownMenu}
+                style={{
+                  position: 'absolute',
+                  top: dropdownPosition.top,
+                  left: dropdownPosition.left,
+                  zIndex: 1000,
+                }}
+              >
+                <button 
+                  className={styles.dropdownItem}
+                  onClick={() => {
+                    handleLikedList();
+                  }}
+                >
+                  <FiHeart size={16} /> 찜 리스트
+                </button>
+                <button 
+                  className={styles.dropdownItem}
+                  onClick={() => {
+                    handleSettings();
+                  }}
+                >
+                  <FiSettings size={16} /> 계정 설정
+                </button>
+                <button 
+                  className={styles.dropdownItem}
+                  onClick={() => {
+                    handleLogout();
+                  }}
+                >
+                  <FiLogOut size={16} /> 로그아웃
+                </button>
+              </div>
+            </Portal>
           )}
         </div>
       ) : (

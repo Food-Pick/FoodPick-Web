@@ -111,7 +111,7 @@ export default function ProfileEditPage() {
         //   router.push('/user-settings');
         // }, 2000);
         alert('프로필 업데이트에 성공했습니다. 다시 로그인 해주세요.');
-        signOut({ callbackUrl: '/login' });
+        handleLogout();
       } else {
         alert('프로필 업데이트에 실패했습니다.');
       }
@@ -119,6 +119,11 @@ export default function ProfileEditPage() {
       console.error('프로필 업데이트 중 오류 발생:', error);
       alert('프로필 업데이트 중 오류가 발생했습니다.');
     }
+  };
+
+  const handleLogout = () => {
+    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://foodpick.net';
+    signOut({ callbackUrl: `${baseUrl}/login` });
   };
 
   const renderField = (label: string, value: string | null, icon: React.ReactNode) => (

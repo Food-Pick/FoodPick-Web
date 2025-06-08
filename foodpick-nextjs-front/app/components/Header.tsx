@@ -207,7 +207,7 @@ export default function Header() {
           <div className={styles.searchBox}>
             <input
               type="text"
-              placeholder={isLocationLoading ? "위치 정보를 가져오는 중..." : "지역, 가게명을 검색해보세요"}
+              placeholder={isLocationLoading ? "위치 정보를 가져오는 중..." : '음식명을 검색해보세요'}
               className={`${styles.searchInput} ${isLocationLoading ? styles.searchInputDisabled : ''}`}
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}

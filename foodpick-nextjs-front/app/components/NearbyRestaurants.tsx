@@ -15,6 +15,7 @@ interface Restaurant {
   restaurant_menu: string | null;
   restaurant_photo: string | null;
   dist: number;
+  restaurant_네이버_음식점_카테고리: string;
 }
 
 interface NearbyRestaurantsProps {
@@ -142,12 +143,21 @@ export default function NearbyRestaurants({ latitude, longitude, isLocationConfi
                   <p className={styles.cardTitle}>
                     {restaurant.restaurant_네이버_상호명 || restaurant.restaurant_사업장명}
                   </p>
-                  <div className={styles.cardMeta}>
-                    <span>{restaurant.restaurant_업태구분명}</span>
-                    <span style={{ marginLeft: '0.25rem', marginRight: '0.25rem' }}>
+                  <div className={styles.cardMeta} style={{flexDirection: 'column', alignItems: 'flex-start', gap: '2px'}}>
+                    <span className={styles.cardCategory}>{
+                      (() => {
+                        try {
+                          const category = JSON.parse(restaurant.restaurant_네이버_음식점_카테고리);
+                          return Array.isArray(category) ? category.join(', ') : category;
+                        } catch {
+                          return restaurant.restaurant_네이버_음식점_카테고리;
+                        }
+                      })()
+                    }</span>
+                    <span className={styles.cardLocation} style={{display: 'flex', alignItems: 'center', gap: '0.25rem', fontWeight: 400}}>
                       <FiMapPin size={14} />
+                      {Math.round(restaurant.dist)}m
                     </span>
-                    <span>{Math.round(restaurant.dist)}m</span>
                   </div>
                 </div>
               </Link>

@@ -465,6 +465,21 @@
   font-weight: 600;
 }
 
+.cardCategory {
+  font-weight: 600;
+  color: #444;
+  font-size: 0.85rem;
+  margin-bottom: 2px;
+}
+.cardLocation {
+  font-weight: 400;
+  color: #666;
+  font-size: 0.8rem;
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
 .videoScroll {
   display: flex;
   flex-wrap: nowrap;

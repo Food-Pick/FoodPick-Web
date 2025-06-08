@@ -3,7 +3,7 @@ export const dynamic = 'auto';
 import { AiFillStar } from 'react-icons/ai';
 import { FiMapPin, FiPhone, FiClock, FiCheckCircle } from 'react-icons/fi';
 import { restaurants } from '../../data/mockRestaurantData';
-import styles from '../../../styles/restaurant_Detail.module.css';
+import styles from '../../../styles/restaurant_detail.module.css';
 import Header from '../../components/Header';
 import { notFound } from 'next/navigation';
 import MenuSection from '../../components/MenuSection';

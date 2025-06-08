@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import { AiFillStar } from 'react-icons/ai';
 import { FiMapPin, FiPhone, FiClock, FiCheckCircle } from 'react-icons/fi';
-import styles from '../../../../styles/restaurant_Detail.module.css';
+import styles from '../../../../styles/restaurant_detail.module.css';
 import Header from '../../../components/Header';
 import MenuSection from '../../../components/MenuSection';
 import MergedPhotoGallery from '../../../components/MergedPhotoGallery';

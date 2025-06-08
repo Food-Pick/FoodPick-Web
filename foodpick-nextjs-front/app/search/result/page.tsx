@@ -394,6 +394,17 @@ function SearchResultContent() {
     // 그리고 transform으로 위치를 제어합니다.
     const drawerFullHeight = `calc(100dvh - ${headerHeight}px)`;
 
+    // 검색어(음식/카테고리)별 동적 타이틀 설정
+    useEffect(() => {
+        if (food) {
+            document.title = `FoodPick - ${food} 검색 결과`;
+        } else if (category) {
+            document.title = `FoodPick - ${category} 카테고리 검색 결과`;
+        } else {
+            document.title = 'FoodPick - 검색 결과';
+        }
+    }, [food, category]);
+
     if (loading) {
         return (
             <div className={styles.container}>

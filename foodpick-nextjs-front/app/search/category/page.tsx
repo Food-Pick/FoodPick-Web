@@ -380,6 +380,15 @@ function CategorySearchContent() {
     // 드로어의 높이를 고정 (헤더 제외한 뷰포트 전체 높이) (SearchResultPage와 동일)
     const drawerFullHeight = `calc(100dvh - ${headerHeight}px)`;
 
+    // 카테고리별 동적 타이틀 설정
+    useEffect(() => {
+        if (category) {
+            document.title = `FoodPick - ${categoryNames[category] || category} 카테고리`;
+        } else {
+            document.title = 'FoodPick - 카테고리 검색';
+        }
+    }, [category]);
+
     if (loading) {
         return (
             <div className={styles.container}>

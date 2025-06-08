@@ -103,7 +103,16 @@ export default function RestaurantDetail({
                             </span>
                         </h1>
 
-                        <p className={styles.tags}>{restaurant.업태구분명}</p>
+                        <p className={styles.tags}>{
+                            (() => {
+                                try {
+                                    const category = JSON.parse(restaurant.네이버_음식점_카테고리);
+                                    return Array.isArray(category) ? category.join(', ') : category;
+                                } catch {
+                                    return restaurant.네이버_음식점_카테고리;
+                                }
+                            })()
+                        }</p>
                         <div className={styles.infoRow}>
                             <FiMapPin />
                             <div className={styles.infoTextGroup}>

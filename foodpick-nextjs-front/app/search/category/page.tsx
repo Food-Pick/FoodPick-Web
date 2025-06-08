@@ -22,6 +22,7 @@ interface Restaurant {
     restaurant_photo: string;
     restaurant_latitude: string;
     restaurant_longitude: string;
+    restaurant_네이버_음식점_카테고리: string;
     restaurant_menu_tags: {
         menu_tags: {
             [key: string]: {
@@ -525,7 +526,21 @@ function CategorySearchContent() {
                                         <div className={styles.resultInfo}>
                                             <div className={styles.resultName}>{item.restaurant_사업장명}</div>
                                             {/* CategorySearch에서는 도로명주소가 아닌 업태구분명 사용 */}
-                                            <div className={styles.resultMeta}>{item.restaurant_업태구분명}</div>
+                                            <div className={styles.resultMeta}>
+                                                {
+                                                    (() => {
+                                                        try {
+                                                            // 배열 형태로 파싱
+                                                            const category = JSON.parse(item.restaurant_네이버_음식점_카테고리);
+                                                            // 배열이면 join, 아니면 그냥 출력
+                                                            return Array.isArray(category) ? category.join(', ') : category;
+                                                        } catch {
+                                                            // 파싱 실패 시 그냥 출력
+                                                            return item.restaurant_네이버_음식점_카테고리;
+                                                        }
+                                                    })()
+                                                }
+                                            </div>
                                             <div className={styles.resultDesc}>
                                                 {menu.slice(0, 2).map((m: any) => m.name).join(', ')}
                                             </div>
